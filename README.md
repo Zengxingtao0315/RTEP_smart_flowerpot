@@ -1,4 +1,4 @@
-#Smart Flowerpot
+# Smart Flowerpot
 
 ## Description
 The project about ENG5220: Real Time Embedded Programming (2022-23)
