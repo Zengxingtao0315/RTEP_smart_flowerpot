@@ -17,3 +17,7 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 |Xingtao Zeng  | 2721279z |
 | Wenbo Yang  | 2727018y |
 | Qidi Wang  | 2724200w |
+
+# Guide
+
+## 1.System Build
