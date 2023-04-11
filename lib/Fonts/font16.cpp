@@ -36,8 +36,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "fonts.h"
-
+#include "fonts.hpp"
+using std::uint8_t;
 // 
 //  Font data for Courier New 12pt
 // 

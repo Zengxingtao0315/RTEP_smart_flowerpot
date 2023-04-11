@@ -7,16 +7,17 @@
 *      Please use progressive scanning to generate images or fonts
 
 ******************************************************************************/
-#ifndef __DEBUG_H
-#define __DEBUG_H
+#ifndef DEBUG_HPP
+#define DEBUG_HPP
 
-#include <stdio.h>
+#include <iostream>
 
 #if DEBUG
-	#define Debug(__info,...) printf("Debug: " __info,##__VA_ARGS__)
+	#define Debug(info, ...) std::cout << "Debug: " << info << __VA_ARGS__ << std::endl
 #else
-	#define Debug(__info,...)  
+	#define Debug(info, ...)
 #endif
 
 #endif
+
 

@@ -1,11 +1,12 @@
+#ifndef _SENSOR_HPP_
+#define _SENSOR_HPP_
+
 #include <wiringPi.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
 #include <iostream>
-#include "test.h"
-#include <cstdio>
-#include <iostream>
+
 
 
 #define MAXTIMINGS  85

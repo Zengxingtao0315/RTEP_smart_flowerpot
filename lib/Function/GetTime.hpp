@@ -1,13 +1,16 @@
+#ifndef _GETTIME_HPP_
+#define _GETTIME_HPP_
+
 #include <wiringPi.h>
 #include <cstdio>
 #include <cstdlib>
 #include <ctdint>
 #include <iostream>
 extern "C" {
-	#include "test.h"
+	#include <time.h>
 };
 #include <ctime>
-#include <time.h>
+
 
 class Time {
 public:

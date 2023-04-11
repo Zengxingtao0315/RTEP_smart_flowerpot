@@ -5,16 +5,19 @@
 * | Info        :   Read and write /sys/class/gpio
 
 ******************************************************************************/
-#include "RPI_sysfs_gpio.h"
-#include <sys/stat.h>
-#include <sys/types.h>
+extern "C" {
+	#include <sys/stat.h>
+	#include <sys/types.h>
+	#include <unistd.h>
+}
+#include "RPI_sysfs_gpio.hpp"
 #include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-int SYSFS_GPIO_Export(int Pin)
+
+int GPIO::SYSFS_GPIO_Export(int Pin)
 {
     char buffer[NUM_MAXBUF];
     int len;
@@ -35,7 +38,7 @@ int SYSFS_GPIO_Export(int Pin)
     return 0;
 }
 
-int SYSFS_GPIO_Unexport(int Pin)
+int GPIO::SYSFS_GPIO_Unexport(int Pin)
 {
     char buffer[NUM_MAXBUF];
     int len;
@@ -56,7 +59,7 @@ int SYSFS_GPIO_Unexport(int Pin)
     return 0;
 }
 
-int SYSFS_GPIO_Direction(int Pin, int Dir)
+int GPIO::SYSFS_GPIO_Direction(int Pin, int Dir)
 {
     const char dir_str[]  = "in\0out";
     char path[DIR_MAXSIZ];
@@ -84,7 +87,7 @@ int SYSFS_GPIO_Direction(int Pin, int Dir)
     return 0;
 }
 
-int SYSFS_GPIO_Read(int Pin)
+int GPIO::SYSFS_GPIO_Read(int Pin)
 {
     char path[DIR_MAXSIZ];
     char value_str[3];
@@ -106,7 +109,7 @@ int SYSFS_GPIO_Read(int Pin)
     return(atoi(value_str));
 }
 
-int SYSFS_GPIO_Write(int Pin, int value)
+int GPIO::SYSFS_GPIO_Write(int Pin, int value)
 {
     const char s_values_str[] = "01";
     char path[DIR_MAXSIZ];

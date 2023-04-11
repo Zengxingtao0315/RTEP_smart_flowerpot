@@ -1,30 +1,52 @@
 extern "C" {
-	#include "test.h"
-};
+
+	#include <sys/socket.h>
+	#include <netdb.h>
+	#include <time.h>
+}
+#include "DEV_Config.hpp"
+#include "Debug.hpp"
+#include "GUI_Paint.hpp"
+#include "sensor.hpp"
+#include "GetTime.hpp"
+
+#include <ctime> 
+#include <cstdlib> 
+#include <cmath>
+#include <csignal> 
+#include <cstring> 
+#include <ctime>
+
+
+#include <wiringPi.h>
+
 #include <iostream> // C++标准头文件，其中包含cout和endl的定义。
 
+#define OLED_WIDTH 128
+#define OLED_HEIGHT 128
 
 using namespace std;
+DEV DEV;
 
 void Handler(int signo)
 {
-    // System Exit
-    std::cout << "Handler: exit" << std::endl;
-    DEV_ModuleExit();
+	// System Exit
+	std::cout << "Handler: exit" << std::endl;
+	DEV.ModuleExit();
 
-    exit(0);
+	std::exit(0);
 }
 
 int main()
 {
-    signal(SIGINT, Handler);
+	std::signal(SIGINT, Handler);
     
 	std::cout << "OLED showing" << std::endl;
-    if (DEV_ModuleInit() != 0) {
+    if (DEV.ModuleInit() != 0) {
         return -1;
     }
 
-    if (USE_IIC) {
+    if (0) {
         std::cout << "Only USE_SPI, Please revise DEV_Config.h !!!" << std::endl;
         return -1;
     }
@@ -35,7 +57,7 @@ int main()
 	wiringPiSetup();
 	
     OLED.Init();
-    DEV_Delay_ms(500);
+    DEV.Delay_ms(500);
     // Create a new image cache
     UBYTE *BlackImage;
     UWORD Imagesize = (OLED_WIDTH * 2) * OLED_HEIGHT;
@@ -50,7 +72,7 @@ int main()
     std::cout << "Drawing" << std::endl;
     //
     Paint.SelectImage(BlackImage);
-    DEV_Delay_ms(500);
+    DEV.Delay_ms(500);
     Paint.Clear(BLACK);
     // initialise the whole display
     //GUI_ReadBmp_65K("./pic/OLED.bmp", 0, 0);
@@ -63,7 +85,7 @@ int main()
     Paint.DrawString_EN(5, 48, "Light intensity:", &Font16, WHITE, BLACK);
     
 	OLED.Display(BlackImage);
-    DEV_Delay_ms(500);
+    DEV.Delay_ms(500);
     while (1) {
         //Get local time
 		Time time;

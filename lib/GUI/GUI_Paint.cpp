@@ -7,16 +7,17 @@
 * | Info        :
 
 ******************************************************************************/
-#include "GUI_Paint.h"
-extern "C" {
-    #include "DEV_Config.h"
-	#include "Debug.h"
-}
+#include "GUI_Paint.hpp"
+
+#include "DEV_Config.hpp"
+#include "Debug.hpp"
+
 #include <cstdint>
 #include <cstdlib>
 #include <cstring> //memset()
 #include <cmath>
 #include <ctime>
+#include <iostream>
 
 PAINT paint;
 using namespace std;
@@ -126,7 +127,7 @@ parameter:
 ******************************************************************************/
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
-    if(Xpoint > Paint.Width || Ypoint > Paint.Height){
+    if(Xpoint > paint.Width || Ypoint > paint.Height){
         Debug("Exceeding display boundaries\r\n");
         return;
     }      
@@ -269,8 +270,8 @@ void Paint::DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,
 {
     if (Xpoint > paint.Width || Ypoint > paint.Height) {
         Debug("Paint_DrawPoint Input exceeds the normal display range\r\n");
-				printf("Xpoint = %d , paint.Width = %d  \r\n ",Xpoint,paint.Width);
-				printf("Ypoint = %d , paint.Height = %d  \r\n ",Ypoint,paint.Height);
+				std::cout << "Xpoint = " << Xpoint << " , paint.Width = " << paint.Width << std::endl;
+				std::cout << "Ypoint = " << Ypoint << " , paint.Height = " << paint.Height << std::endl;
         return;
     }
 
@@ -519,14 +520,14 @@ UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 	// Binary file open
 	if((fp = fopen(path, "rb")) == NULL) {
 		Debug("Cann't open the file!\n");
-		exit(0);
+		std::exit(0);
 	}
 
 	// Set the file pointer from the beginning
 	fseek(fp, 0, SEEK_SET);
 	fread(&bmpFileHeader, sizeof(BMPFILEHEADER), 1, fp);    //sizeof(BMPFILEHEADER) must be 14
 	fread(&bmpInfoHeader, sizeof(BMPINFOHEADER), 1, fp);    //sizeof(BMPFILEHEADER) must be 50
-	printf("pixel = %d * %d\r\n", bmpInfoHeader.biWidth, bmpInfoHeader.biHeight);
+	std::cout << "pixel = " << bmpInfoHeader.biWidth << " * " << bmpInfoHeader.biHeight << std::endl;
 
 	UWORD Image_Width_Byte = bmpInfoHeader.biWidth * 2;
 	UWORD Bmp_Width_Byte = bmpInfoHeader.biWidth * 2;
@@ -535,10 +536,10 @@ UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 
 	// Determine if it is a monochrome bitmap
 	int readbyte = bmpInfoHeader.biBitCount;
-	printf("biBitCount = %d\r\n",readbyte);
+	std::cout << "biBitCount = " << readbyte << std::endl;
 	if(readbyte != 16){
 		Debug("Bmp image is not a 65K-color bitmap!\n");
-		exit(0);
+		std::exit(0);
 	}
 	// Read image data into the cache
 	UWORD x, y;
@@ -548,7 +549,7 @@ UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 	for(y = 0; y < bmpInfoHeader.biHeight; y++) {//Total display column
 		for(x = 0; x < Bmp_Width_Byte; x++) {//Show a line in the line
 			if(fread((char *)&Rdata, 1, 1, fp) != 1) {
-				perror("get bmpdata:\r\n");
+				std::cerr << "get bmpdata:" << std::endl;
 				break;
 			}
 			Image[x + (bmpInfoHeader.biHeight-1 - y)*Image_Width_Byte] =  Rdata;
@@ -558,8 +559,8 @@ UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 	
 	// Refresh the image to the display buffer based on the displayed orientation
 	UWORD color;
-	printf("bmpInfoHeader.biWidth = %d\r\n",bmpInfoHeader.biWidth);
-	printf("bmpInfoHeader.biHeight = %d\r\n",bmpInfoHeader.biHeight);
+	std::cout << "bmpInfoHeader.biWidth  = " << bmpInfoHeader.biWidth << std::endl;
+	std::cout << "bmpInfoHeader.biHeight  = " << bmpInfoHeader.biHeight << std::endl;
 	for(y = 0; y < bmpInfoHeader.biHeight; y++) {
 		for(x = 0; x < bmpInfoHeader.biWidth; x++) {
 			if(x > paint.Width || y > paint.Height) {

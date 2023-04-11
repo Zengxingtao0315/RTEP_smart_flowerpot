@@ -1,5 +1,5 @@
-#ifndef _DEV_CONFIG_H_
-#define _DEV_CONFIG_H_
+#ifndef _DEV_CONFIG_HPP_
+#define _DEV_CONFIG_HPP_
 /***********************************************************************************************************************
 			------------------------------------------------------------------------
 			|\\\																///|
@@ -13,17 +13,20 @@
     #include <wiringPiSPI.h>
 	#include <wiringPiI2C.h>
 #elif USE_DEV_LIB
-    #include "RPI_sysfs_gpio.h"
-    #include "dev_hardware_SPI.h"
-    #include "dev_hardware_i2c.h"   
+    #include "RPI_sysfs_gpio.hpp"
+    #include "dev_hardware_SPI.hpp"
+    #include "dev_hardware_i2c.hpp"   
 #endif
 
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <unistd.h>
-#include "Debug.h"
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <cstdint>
+extern "C" {
+    #include <unistd.h>
+}
+
+#include "Debug.hpp"
 
 #define USE_SPI 1
 #define USE_IIC 0
@@ -34,9 +37,9 @@
 /**
  * data
 **/
-#define UBYTE   uint8_t
-#define UWORD   uint16_t
-#define UDOUBLE uint32_t
+#define UBYTE   std::uint8_t
+#define UWORD   std::uint16_t
+#define UDOUBLE std::uint32_t
 
 //OLED Define
 #define OLED_CS         8		
@@ -54,17 +57,18 @@
 #define OLED_DC_1       DEV_Digital_Write(OLED_DC,1)
 
 /*------------------------------------------------------------------------------------------------------*/
+class DEV {
+	public:
+		UBYTE ModuleInit(void);
+		void  ModuleExit(void);
 
-UBYTE DEV_ModuleInit(void);
-void  DEV_ModuleExit(void);
+		void GPIO_Mode(UWORD Pin, UWORD Mode);
+		void Digital_Write(UWORD Pin, UBYTE Value);
+		UBYTE Digital_Read(UWORD Pin);
+		void Delay_ms(UDOUBLE xms);
 
-void DEV_GPIO_Mode(UWORD Pin, UWORD Mode);
-void DEV_Digital_Write(UWORD Pin, UBYTE Value);
-UBYTE DEV_Digital_Read(UWORD Pin);
-void DEV_Delay_ms(UDOUBLE xms);
-
-void I2C_Write_Byte(uint8_t value, uint8_t Cmd);
-void DEV_SPI_WriteByte(UBYTE Value);
-void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len);
-
+		void I2C_Write_Byte(uint8_t value, uint8_t Cmd);
+		void SPI_WriteByte(UBYTE Value);
+		void SPI_Write_nByte(uint8_t *pData, uint32_t Len);
+};
 #endif

@@ -1,18 +1,18 @@
 /*****************************************************************************
-* | File        :   dev_hardware_SPI.h
+* | File        :   dev_hardware_SPI.hpp
 * | Author      :   Xingtao Zeng
 * | Function    :   Read and write /dev/SPI,  hardware SPI
 * | Info        :
 
 ******************************************************************************/
-#ifndef __DEV_HARDWARE_SPI_
-#define __DEV_HARDWARE_SPI_
+#ifndef __DEV_HARDWARE_SPI_HPP_
+#define __DEV_HARDWARE_SPI_HPP_
 
-#include <stdint.h>
+#include <cstdint>
 
 #define DEV_HARDWARE_SPI_DEBUG 0
 #if DEV_HARDWARE_SPI_DEBUG
-#define DEV_HARDWARE_SPI_Debug(__info,...) printf("Debug: " __info,##__VA_ARGS__)
+#define DEV_HARDWARE_SPI_Debug(__info,...) std::cout << "Debug: " << info << __VA_ARGS__ << std::endl
 #else
 #define DEV_HARDWARE_SPI_Debug(__info,...)
 #endif
@@ -76,22 +76,23 @@ typedef struct SPIStruct {
 
 
 
+class DEV_SPI {
+	public:
+		void DEV_HARDWARE_SPI_begin(char *SPI_device);
+		void DEV_HARDWARE_SPI_beginSet(char *SPI_device, SPIMode mode, uint32_t speed);
+		void DEV_HARDWARE_SPI_end(void);
 
-void DEV_HARDWARE_SPI_begin(char *SPI_device);
-void DEV_HARDWARE_SPI_beginSet(char *SPI_device, SPIMode mode, uint32_t speed);
-void DEV_HARDWARE_SPI_end(void);
+		int DEV_HARDWARE_SPI_setSpeed(uint32_t speed);
 
-int DEV_HARDWARE_SPI_setSpeed(uint32_t speed);
+		uint8_t DEV_HARDWARE_SPI_TransferByte(uint8_t buf);
+		int DEV_HARDWARE_SPI_Transfer(uint8_t *buf, uint32_t len);
 
-uint8_t DEV_HARDWARE_SPI_TransferByte(uint8_t buf);
-int DEV_HARDWARE_SPI_Transfer(uint8_t *buf, uint32_t len);
-
-void DEV_HARDWARE_SPI_SetDataInterval(uint16_t us);
-int DEV_HARDWARE_SPI_SetBusMode(BusMode mode);
-int DEV_HARDWARE_SPI_SetBitOrder(SPIBitOrder Order);
-int DEV_HARDWARE_SPI_ChipSelect(SPIChipSelect CS_Mode);
-int DEV_HARDWARE_SPI_CSEN(SPICSEN EN);
-int DEV_HARDWARE_SPI_Mode(SPIMode mode);
-
+		void DEV_HARDWARE_SPI_SetDataInterval(uint16_t us);
+		int DEV_HARDWARE_SPI_SetBusMode(BusMode mode);
+		int DEV_HARDWARE_SPI_SetBitOrder(SPIBitOrder Order);
+		int DEV_HARDWARE_SPI_ChipSelect(SPIChipSelect CS_Mode);
+		int DEV_HARDWARE_SPI_CSEN(SPICSEN EN);
+		int DEV_HARDWARE_SPI_Mode(SPIMode mode);
+};
 
 #endif

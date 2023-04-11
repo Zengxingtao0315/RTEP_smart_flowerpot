@@ -5,8 +5,7 @@
 * | Info        :
 ******************************************************************************/
 
-#include "sensor.h"
-#include "test.h"
+#include "sensor.hpp"
 
 using namespace std;
 

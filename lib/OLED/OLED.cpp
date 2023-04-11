@@ -4,45 +4,47 @@
 * | Info        :
 * -----------------------------------------------------------------------------
 *****************************************************************************/
-#include "OLED.h"
+#include "OLED.hpp"
 #include <cstdio>
 #include <cstdint> //添加C++标准头文件，其中包含uint8_t和uint16_t等整数类型的定义。
 #include <cstdint>
 #include <cstring>
 
-
+DEV_SPI DEV_SPI;
+DEV DEV;
 /*******************************************************************************
 function:
             Hardware reset
 *******************************************************************************/
 using namespace std;
-static void OLED::Reset(void)
+
+void OLED::Reset(void)
 {
-	OLED_RST_1;
+	DEV.Digital_Write(OLED_RST,1);
+    DEV.Delay_ms(100);
+	DEV.Digital_Write(OLED_RST,0);
     DEV_Delay_ms(100);
-    OLED_RST_0;
-    DEV_Delay_ms(100);
-    OLED_RST_1;
-    DEV_Delay_ms(100);
+	DEV.Digital_Write(OLED_RST,1);
+    DEV.Delay_ms(100);
 }
 
 /*******************************************************************************
 function:
             Write register address and data
 *******************************************************************************/
-static void OLED::WriteReg(uint8_t Reg)
+void OLED::WriteReg(uint8_t Reg)
 {
 #if USE_SPI
-    OLED_DC_0;
-    DEV_SPI_WriteByte(Reg);
+    Digital_Write(OLED_DC,0)
+    DEV.SPI_WriteByte(Reg);
 #endif
 }
 
 static void OLED::WriteData(uint8_t Data)
 {   
 #if USE_SPI
-    OLED_DC_1;
-    DEV_SPI_WriteByte(Data);
+    Digital_Write(OLED_DC,1)
+    DEV.SPI_WriteByte(Data);
 #endif
 }
 
@@ -50,7 +52,7 @@ static void OLED::WriteData(uint8_t Data)
 function:
         Common register initialization
 *******************************************************************************/
-static void OLED::InitReg(void)
+void OLED::InitReg(void)
 {
     WriteReg(0xfd);  // command lock
     WriteData(0x12);
@@ -129,7 +131,7 @@ void OLED::Init(void)
 
     //Set the initialization register
     InitReg();
-    DEV_Delay_ms(200);
+    DEV.Delay_ms(200);
 
     //Turn on the OLED display
     WriteReg(0xAF);

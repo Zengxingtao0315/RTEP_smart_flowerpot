@@ -5,10 +5,10 @@
 * | Info        :   Read and write /sys/class/gpio
 
 ******************************************************************************/
-#ifndef __SYSFS_GPIO_
-#define __SYSFS_GPIO_
+#ifndef __SYSFS_GPIO_HPP_
+#define __SYSFS_GPIO_HPP_
 
-#include <stdio.h>
+#include <cstdio>
 
 #define SYSFS_GPIO_IN  0
 #define SYSFS_GPIO_OUT 1
@@ -21,7 +21,7 @@
 
 #define SYSFS_GPIO_DEBUG 0
 #if SYSFS_GPIO_DEBUG 
-	#define SYSFS_GPIO_Debug(__info,...) printf("Debug: " __info,##__VA_ARGS__)
+	#define SYSFS_GPIO_Debug(__info,...) std::cout << "Debug: " << info << __VA_ARGS__ << std::endl
 #else
 	#define SYSFS_GPIO_Debug(__info,...)  
 #endif 
@@ -49,11 +49,12 @@
 #define GPIO26 26 // 37, 26
 #define GPIO20 20 // 38, 20
 #define GPIO21 21 // 40, 21
-
-int SYSFS_GPIO_Export(int Pin);
-int SYSFS_GPIO_Unexport(int Pin);
-int SYSFS_GPIO_Direction(int Pin, int Dir);
-int SYSFS_GPIO_Read(int Pin);
-int SYSFS_GPIO_Write(int Pin, int value);
-
+class GPIO{
+public:
+	int SYSFS_GPIO_Export(int Pin);
+	int SYSFS_GPIO_Unexport(int Pin);
+	int SYSFS_GPIO_Direction(int Pin, int Dir);
+	int SYSFS_GPIO_Read(int Pin);
+	int SYSFS_GPIO_Write(int Pin, int value);
+};
 #endif

@@ -7,13 +7,13 @@
 * | Info        :
 
 ******************************************************************************/
-#ifndef __GUI_PAINT_H
-#define __GUI_PAINT_H
+#ifndef __GUI_PAINT_HPP_
+#define __GUI_PAINT_HPP_
 
-extern "C" {
-    #include "DEV_Config.h"
-	#include "../Fonts/fonts.h"
-}
+
+#include "../Config/DEV_Config.hpp"
+#include "../Fonts/fonts.hpp"
+
 
 /*Bitmap file header   14bit*/
 typedef struct BMP_FILE_HEADER {

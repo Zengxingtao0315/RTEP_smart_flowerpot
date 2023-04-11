@@ -36,8 +36,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __FONTS_H
-#define __FONTS_H
+#ifndef __FONTS_HPP_
+#define __FONTS_HPP_
 
 /*×î´ó×ÖÌåÎ¢ÈíÑÅºÚ24 (32x41) */
 #define MAX_HEIGHT_FONT         41
@@ -48,7 +48,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
+#include <cstdint>
 
 //ASCII
 typedef struct _tFont

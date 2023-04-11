@@ -4,22 +4,19 @@
 * | Function    :   Get local time
 * | Info        :
 ******************************************************************************/
-extern "C" {
-	#include "test.h"
-};
-#include "GetTime.h"
 
+#include "GetTime.hpp"
 
 /*******************************************************************************
 function:
             Get local time
 *******************************************************************************/
 void Time::GetLocalTime(PAINT_TIME *time) {
-    time_t now;
-    struct tm *local;
+    std::time_t now;
+    std::tm *local;
 
-    time(&now);
-    local = localtime(&now);
+    std::time(&now);
+    local = std::localtime(&now);
 
     // 提取需要的时间信息
     time->Hour = local->tm_hour;
