@@ -15,6 +15,38 @@ extern "C" {
 	#include "../Fonts/fonts.h"
 }
 
+/*Bitmap file header   14bit*/
+typedef struct BMP_FILE_HEADER {
+    UWORD bType;        //File identifier
+    UDOUBLE bSize;      //The size of the file
+    UWORD bReserved1;   //Reserved value, must be set to 0
+    UWORD bReserved2;   //Reserved value, must be set to 0
+    UDOUBLE bOffset;    //The offset from the beginning of the file header to the beginning of the image data bit
+} __attribute__ ((packed)) BMPFILEHEADER;    // 14bit
+
+/*Bitmap information header  40bit*/
+typedef struct BMP_INFO {
+    UDOUBLE biInfoSize;      //The size of the header
+    UDOUBLE biWidth;         //The width of the image
+    UDOUBLE biHeight;        //The height of the image
+    UWORD biPlanes;          //The number of planes in the image
+    UWORD biBitCount;        //The number of bits per pixel
+    UDOUBLE biCompression;   //Compression type
+    UDOUBLE bimpImageSize;   //The size of the image, in bytes
+    UDOUBLE biXPelsPerMeter; //Horizontal resolution
+    UDOUBLE biYPelsPerMeter; //Vertical resolution
+    UDOUBLE biClrUsed;       //The number of colors used
+    UDOUBLE biClrImportant;  //The number of important colors
+} __attribute__ ((packed)) BMPINFOHEADER;
+
+/*Color table: palette */
+typedef struct RGB_QUAD {
+    UBYTE rgbBlue;               //Blue intensity
+    UBYTE rgbGreen;              //Green strength
+    UBYTE rgbRed;                //Red intensity
+    UBYTE rgbReversed;           //Reserved value
+} __attribute__ ((packed)) BMPRGBQUAD;
+/**************************************** end ***********************************************/
 
 /**
  * Image attributes
@@ -131,19 +163,17 @@ extern PAINT_TIME sPaint_time;
 
 class Paint {
 public:
-    Paint();
-	~Paint();
 
-   //init and Clear
 	void NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD Color);
 	void SelectImage(UBYTE *image);
 	void SetRotate(UWORD Rotate);
 	void SetMirroring(UBYTE mirror);
 	void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
 	void SetScale(UBYTE scale);
+
 	void Clear(UWORD Color);
 	void ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color);
-	
+
 	//Display string
 	void DrawChar(UWORD Xstart, UWORD Ystart, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 	void DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
@@ -151,21 +181,9 @@ public:
 	void DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 
 	//pic
-	void Paint_DrawBitMap(const unsigned char* image_buffer);
-	void Paint_DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region);
-	
-private:
-    UBYTE* mImage;
-    UWORD mWidthMemory;
-    UWORD mHeightMemory;
-    UWORD mColor;
-    UBYTE mScale;
-    UWORD mWidth;
-    UWORD mHeight;
-    UWORD mRotate;
-    UBYTE mMirror;
-    UWORD mWidthByte;
-	UWORD mHeightByte;
+	void DrawBitMap(const unsigned char* image_buffer);
+	void DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region);
+	UBYTE GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart);
 
 };
 

@@ -4,7 +4,9 @@
 * | Function    :   Get local time
 * | Info        :
 ******************************************************************************/
-#include "test.h"
+extern "C" {
+	#include "test.h"
+};
 #include "GetTime.h"
 
 

@@ -23,5 +23,8 @@ extern "C" {
 #include <cstring> // C++标准头文件，其中包含字符串处理函数的定义。
 #include <time.h>
 #include <ctime>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <wiringPi.h>
 
 #endif

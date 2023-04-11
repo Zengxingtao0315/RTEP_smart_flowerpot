@@ -18,20 +18,8 @@ extern "C" {
 #include <cmath>
 #include <ctime>
 
-Paint::Paint() {
-	mImage = paint.Image;
-    mWidthMemory = paint.WidthMemory;
-    mHeightMemory = paint.HeightMemory;
-    mColor = BLACK;
-    mScale = 2;
-    mWidth = paint.Width;
-    mHeight = paint.Height;
-    mRotate = ROTATE_0;
-    mMirror = MIRROR_NONE;
-    mWidthByte = paint.WidthByte;
-	mHeightByte = paint.HeightByte;
-}
-
+PAINT paint;
+using namespace std;
 /******************************************************************************
 function: Create Image
 parameter:
@@ -42,28 +30,28 @@ parameter:
 ******************************************************************************/
 void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD Color)
 {
-    mImage = NULL;
-    mImage = image;
+    paint.Image = NULL;
+    paint.Image = image;
 
-    mWidthMemory = Width;
-    mHeightMemory = Height;
-    mColor = Color;    
-	mScale = 2;
+    paint.WidthMemory = Width;
+    paint.HeightMemory = Height;
+    paint.Color = Color;    
+	paint.Scale = 2;
 		
-    mWidthByte = (Width % 8 == 0)? (Width / 8 ): (Width / 8 + 1);
-    mHeightByte = Height;    
-//    printf("WidthByte = %d, HeightByte = %d\r\n", mWidthByte, mHeightByte);
+    paint.WidthByte = (Width % 8 == 0)? (Width / 8 ): (Width / 8 + 1);
+    paint.HeightByte = Height;    
+//    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
 //    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-    mRotate = Rotate;
-    mMirror = MIRROR_NONE;
+    paint.Rotate = Rotate;
+    paint.Mirror = MIRROR_NONE;
     
     if(Rotate == ROTATE_0 || Rotate == ROTATE_180) {
-        mWidth = Width;
-        mHeight = Height;
+        paint.Width = Width;
+        paint.Height = Height;
     } else {
-        mWidth = Height;
-        mHeight = Width;
+        paint.Width = Height;
+        paint.Height = Width;
     }
 }
 
@@ -74,7 +62,7 @@ parameter:
 ******************************************************************************/
 void Paint::SelectImage(UBYTE *image)
 {
-    mImage = image;
+    paint.Image = image;
 }
 
 /******************************************************************************
@@ -86,7 +74,7 @@ void Paint::SetRotate(UWORD Rotate)
 {
     if(Rotate == ROTATE_0 || Rotate == ROTATE_90 || Rotate == ROTATE_180 || Rotate == ROTATE_270) {
         Debug("Set image Rotate %d\r\n", Rotate);
-        mRotate = Rotate;
+        paint.Rotate = Rotate;
     } else {
         Debug("rotate = 0, 90, 180, 270\r\n");
     }
@@ -95,17 +83,17 @@ void Paint::SetRotate(UWORD Rotate)
 void Paint::SetScale(UBYTE scale)
 {
     if(scale == 2){
-        mScale = scale;
-        mWidthByte = (mWidthMemory % 8 == 0)? (mWidthMemory / 8 ): (mWidthMemory / 8 + 1);
+        paint.Scale = scale;
+        paint.WidthByte = (paint.WidthMemory % 8 == 0)? (paint.WidthMemory / 8 ): (paint.WidthMemory / 8 + 1);
     }else if(scale == 4){
-        mScale = scale;
-        mWidthByte = (mWidthMemory % 4 == 0)? (mWidthMemory / 4 ): (mWidthMemory / 4 + 1);
+        paint.Scale = scale;
+        paint.WidthByte = (paint.WidthMemory % 4 == 0)? (paint.WidthMemory / 4 ): (paint.WidthMemory / 4 + 1);
     }else if(scale ==16) {
-        mScale = scale;
-        mWidthByte = (mWidthMemory%2==0) ? (mWidthMemory/2) : (mWidthMemory/2+1); 
+        paint.Scale = scale;
+        paint.WidthByte = (paint.WidthMemory%2==0) ? (paint.WidthMemory/2) : (paint.WidthMemory/2+1); 
     }else if(scale ==65) {
-        mScale = scale;
-        mWidthByte = mWidthMemory*2; 
+        paint.Scale = scale;
+       paint.WidthByte = paint.WidthMemory*2; 
     }else{
         Debug("Set Scale Input parameter error\r\n");
         Debug("Scale Only support: 2 4 16 65\r\n");
@@ -122,7 +110,7 @@ void Paint::SetMirroring(UBYTE mirror)
     if(mirror == MIRROR_NONE || mirror == MIRROR_HORIZONTAL || 
         mirror == MIRROR_VERTICAL || mirror == MIRROR_ORIGIN) {
         Debug("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
-        mMirror = mirror;
+        paint.Mirror = mirror;
     } else {
         Debug("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
         MIRROR_VERTICAL or MIRROR_ORIGIN\r\n");
@@ -138,79 +126,79 @@ parameter:
 ******************************************************************************/
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
-    if(Xpoint > mWidth || Ypoint > mHeight){
+    if(Xpoint > Paint.Width || Ypoint > Paint.Height){
         Debug("Exceeding display boundaries\r\n");
         return;
     }      
     UWORD X, Y;
 
-    switch(mRotate) {
+    switch(paint.Rotate) {
     case 0:
         X = Xpoint;
         Y = Ypoint;  
         break;
     case 90:
-        X = mWidthMemory - Ypoint - 1;
+        X = paint.WidthMemory - Ypoint - 1;
         Y = Xpoint;
         break;
     case 180:
-        X = mWidthMemory - Xpoint - 1;
-        Y = mHeightMemory - Ypoint - 1;
+        X = paint.WidthMemory - Xpoint - 1;
+        Y = paint.HeightMemory - Ypoint - 1;
         break;
     case 270:
         X = Ypoint;
-        Y = mHeightMemory - Xpoint - 1;
+        Y = paint.HeightMemory - Xpoint - 1;
         break;
     default:
         return;
     }
     
-    switch(mMirror) {
+    switch(paint.Mirror) {
     case MIRROR_NONE:
         break;
     case MIRROR_HORIZONTAL:
-        X = mWidthMemory - X - 1;
+        X = paint.WidthMemory - X - 1;
         break;
     case MIRROR_VERTICAL:
-        Y = mHeightMemory - Y - 1;
+        Y = paint.HeightMemory - Y - 1;
         break;
     case MIRROR_ORIGIN:
-        X = mWidthMemory - X - 1;
-        Y = mHeightMemory - Y - 1;
+        X = paint.WidthMemory - X - 1;
+        Y = paint.HeightMemory - Y - 1;
         break;
     default:
         return;
     }
 
-    if(X > mWidthMemory || Y > mHeightMemory){
+    if(X > paint.WidthMemory || Y > paint.HeightMemory){
         Debug("Exceeding display boundaries\r\n");
         return;
     }
     
-    if(mScale == 2){
-        UDOUBLE Addr = X / 8 + Y * mWidthByte;
-        UBYTE Rdata = mImage[Addr];
+    if(paint.Scale == 2){
+        UDOUBLE Addr = X / 8 + Y * paint.WidthByte;
+        UBYTE Rdata = paint.Image[Addr];
         if(Color == BLACK)
-            mImage[Addr] = Rdata & ~(0x80 >> (X % 8));
+            paint.Image[Addr] = Rdata & ~(0x80 >> (X % 8));
         else
-            mImage[Addr] = Rdata | (0x80 >> (X % 8));
-    }else if(mScale == 4){
-        UDOUBLE Addr = X / 4 + Y * mWidthByte;
+            paint.Image[Addr] = Rdata | (0x80 >> (X % 8));
+    }else if(paint.Scale == 4){
+        UDOUBLE Addr = X / 4 + Y * paint.WidthByte;
         Color = Color % 4;//Guaranteed color scale is 4  --- 0~3
-        UBYTE Rdata = mImage[Addr];
+        UBYTE Rdata = paint.Image[Addr];
         
         Rdata = Rdata & (~(0xC0 >> ((X % 4)*2)));
-        mImage[Addr] = Rdata | ((Color << 6) >> ((X % 4)*2));
-    }else if(mScale == 16) {
-        UDOUBLE Addr = X / 2 + Y * mWidthByte;
-        UBYTE Rdata = mImage[Addr];
+        paint.Image[Addr] = Rdata | ((Color << 6) >> ((X % 4)*2));
+    }else if(paint.Scale == 16) {
+        UDOUBLE Addr = X / 2 + Y * paint.WidthByte;
+        UBYTE Rdata = paint.Image[Addr];
         Color = Color % 16;
         Rdata = Rdata & (~(0xf0 >> ((X % 2)*4)));
-        mImage[Addr] = Rdata | ((Color << 4) >> ((X % 2)*4));
-    }else if(mScale == 65) {
-        UDOUBLE Addr = X*2 + Y*mWidthByte;
-        mImage[Addr] = 0xff & (Color>>8);
-        mImage[Addr+1] = 0xff & Color;
+        paint.Image[Addr] = Rdata | ((Color << 4) >> ((X % 2)*4));
+    }else if(paint.Scale == 65) {
+        UDOUBLE Addr = X*2 + Y*paint.WidthByte;
+        paint.Image[Addr] = 0xff & (Color>>8);
+        paint.Image[Addr+1] = 0xff & Color;
     }
 
 }
@@ -222,27 +210,27 @@ parameter:
 ******************************************************************************/
 void Paint::Clear(UWORD Color)
 {
-    if(mScale == 2 || mScale == 4) {
-        for (UWORD Y = 0; Y < mHeightByte; Y++) {
-            for (UWORD X = 0; X < mWidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X + Y*mWidthByte;
-                mImage[Addr] = Color;
+    if(paint.Scale == 2 || paint.Scale == 4) {
+        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
+            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
+                UDOUBLE Addr = X + Y*paint.WidthByte;
+                paint.Image[Addr] = Color;
             }
         }
-    }else if(mScale == 16) {
-        for (UWORD Y = 0; Y < mHeightByte; Y++) {
-            for (UWORD X = 0; X < mWidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X + Y*mWidthByte;
+    }else if(paint.Scale == 16) {
+        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
+            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
+                UDOUBLE Addr = X + Y*paint.WidthByte;
                 Color = Color & 0x0f;
-                mImage[Addr] = (Color<<4) | Color;
+                paint.Image[Addr] = (Color<<4) | Color;
             }
         }
-    }else if(mScale == 65) {
-        for (UWORD Y = 0; Y < mHeightByte; Y++) {
-            for (UWORD X = 0; X < mWidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X*2 + Y*mWidthByte;
-                mImage[Addr] = 0x0f & (Color>>8);
-                mImage[Addr+1] = 0x0f & Color;
+    }else if(paint.Scale == 65) {
+        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
+            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
+                UDOUBLE Addr = X*2 + Y*paint.WidthByte;
+                paint.Image[Addr] = 0x0f & (Color>>8);
+                paint.Image[Addr+1] = 0x0f & Color;
             }
         }
     }
@@ -267,6 +255,43 @@ void Paint::ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWO
     }
 }
 
+/******************************************************************************
+function: Draw Point(Xpoint, Ypoint) Fill the color
+parameter:
+    Xpoint		: The Xpoint coordinate of the point
+    Ypoint		: The Ypoint coordinate of the point
+    Color		: Painted color
+    Dot_Pixel	: point size
+    Dot_Style	: point Style
+******************************************************************************/
+void Paint::DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,
+                     DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style)
+{
+    if (Xpoint > paint.Width || Ypoint > paint.Height) {
+        Debug("Paint_DrawPoint Input exceeds the normal display range\r\n");
+				printf("Xpoint = %d , paint.Width = %d  \r\n ",Xpoint,paint.Width);
+				printf("Ypoint = %d , paint.Height = %d  \r\n ",Ypoint,paint.Height);
+        return;
+    }
+
+    int16_t XDir_Num , YDir_Num;
+    if (Dot_Style == DOT_FILL_AROUND) {
+        for (XDir_Num = 0; XDir_Num < 2 * Dot_Pixel - 1; XDir_Num++) {
+            for (YDir_Num = 0; YDir_Num < 2 * Dot_Pixel - 1; YDir_Num++) {
+                if(Xpoint + XDir_Num - Dot_Pixel < 0 || Ypoint + YDir_Num - Dot_Pixel < 0)
+                    break;
+                // printf("x = %d, y = %d\r\n", Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel);
+                SetPixel(Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel, Color);
+            }
+        }
+    } else {
+        for (XDir_Num = 0; XDir_Num <  Dot_Pixel; XDir_Num++) {
+            for (YDir_Num = 0; YDir_Num <  Dot_Pixel; YDir_Num++) {
+                SetPixel(Xpoint + XDir_Num - 1, Ypoint + YDir_Num - 1, Color);
+            }
+        }
+    }
+}
 
 
 /******************************************************************************
@@ -284,7 +309,7 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
 {
     UWORD Page, Column;
 
-    if (Xpoint > mWidth || Ypoint > mHeight) {
+    if (Xpoint > paint.Width || Ypoint > paint.Height) {
         Debug("Paint_DrawChar Input exceeds the normal display range\r\n");
         return;
     }
@@ -328,26 +353,26 @@ parameter:
     Color_Foreground : Select the foreground color
     Color_Background : Select the background color
 ******************************************************************************/
-void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char * pString,
+void Paint::DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
                          sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     UWORD Xpoint = Xstart;
     UWORD Ypoint = Ystart;
 
-    if (Xstart > mWidth || Ystart > mHeight) {
-        Debug("DrawString Input exceeds the normal display range\r\n");
+    if (Xstart > paint.Width || Ystart > paint.Height) {
+        Debug("Paint_DrawString_EN Input exceeds the normal display range\r\n");
         return;
     }
 
     while (* pString != '\0') {
         //if X direction filled , reposition to(Xstart,Ypoint),Ypoint is Y direction plus the Height of the character
-        if ((Xpoint + Font->Width ) > mWidth ) {
+        if ((Xpoint + Font->Width ) > paint.Width ) {
             Xpoint = Xstart;
             Ypoint += Font->Height;
         }
 
         // If the Y direction is full, reposition to(Xstart, Ystart)
-        if ((Ypoint  + Font->Height ) > mHeight ) {
+        if ((Ypoint  + Font->Height ) > paint.Height ) {
             Xpoint = Xstart;
             Ypoint = Ystart;
         }
@@ -360,7 +385,6 @@ void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char * pString,
         Xpoint += Font->Width;
     }
 }
-
 
 
 /******************************************************************************
@@ -384,7 +408,7 @@ void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
 	int temp = Nummber;
 	float decimals;
 	uint8_t i;
-    if (Xpoint > mWidth || Ypoint > mHeight) {
+    if (Xpoint > paint.Width || Ypoint > paint.Height) {
         Debug("Paint_DisNum Input exceeds the normal display range\r\n");
         return;
     }
@@ -421,7 +445,7 @@ void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
     }
 
     //show
-    DrawString(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
+    DrawString_EN(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
 }
 
 /******************************************************************************
@@ -465,24 +489,87 @@ void Paint::DrawBitMap(const unsigned char* image_buffer)
     UWORD x, y;
     UDOUBLE Addr = 0;
 
-    for (y = 0; y < mHeightByte; y++) {
-        for (x = 0; x < mWidthByte; x++) {//8 pixel =  1 byte
-            Addr = x + y * mWidthByte;
-            mImage[Addr] = (unsigned char)image_buffer[Addr];
+    for (y = 0; y < paint.HeightByte; y++) {
+        for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
+            Addr = x + y * paint.WidthByte;
+            paint.Image[Addr] = (unsigned char)image_buffer[Addr];
         }
     }
 }
 
-void Paint_DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region)
+void Paint::DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region)
 {
     UWORD x, y;
     UDOUBLE Addr = 0;
-		for (y = 0; y < mHeightByte; y++) {
-				for (x = 0; x < mWidthByte; x++) {//8 pixel =  1 byte
-						Addr = x + y * mWidthByte ;
-						mImage[Addr] = \
-						(unsigned char)image_buffer[Addr+ (mHeightByte)*mWidthByte*(Region - 1)];
+		for (y = 0; y < paint.HeightByte; y++) {
+				for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
+						Addr = x + y * paint.WidthByte ;
+						paint.Image[Addr] = \
+						(unsigned char)image_buffer[Addr+ (paint.HeightByte)*paint.WidthByte*(Region - 1)];
 				}
 		}
 }
 
+UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
+{
+	FILE *fp;                     //Define a file pointer
+	BMPFILEHEADER bmpFileHeader;  //Define a bmp file header structure
+	BMPINFOHEADER bmpInfoHeader;  //Define a bmp info header structure
+	
+	// Binary file open
+	if((fp = fopen(path, "rb")) == NULL) {
+		Debug("Cann't open the file!\n");
+		exit(0);
+	}
+
+	// Set the file pointer from the beginning
+	fseek(fp, 0, SEEK_SET);
+	fread(&bmpFileHeader, sizeof(BMPFILEHEADER), 1, fp);    //sizeof(BMPFILEHEADER) must be 14
+	fread(&bmpInfoHeader, sizeof(BMPINFOHEADER), 1, fp);    //sizeof(BMPFILEHEADER) must be 50
+	printf("pixel = %d * %d\r\n", bmpInfoHeader.biWidth, bmpInfoHeader.biHeight);
+
+	UWORD Image_Width_Byte = bmpInfoHeader.biWidth * 2;
+	UWORD Bmp_Width_Byte = bmpInfoHeader.biWidth * 2;
+	UBYTE Image[Image_Width_Byte * bmpInfoHeader.biHeight];
+	memset(Image, 0xFF, Image_Width_Byte * bmpInfoHeader.biHeight);
+
+	// Determine if it is a monochrome bitmap
+	int readbyte = bmpInfoHeader.biBitCount;
+	printf("biBitCount = %d\r\n",readbyte);
+	if(readbyte != 16){
+		Debug("Bmp image is not a 65K-color bitmap!\n");
+		exit(0);
+	}
+	// Read image data into the cache
+	UWORD x, y;
+	UBYTE Rdata;
+	fseek(fp, bmpFileHeader.bOffset, SEEK_SET);
+	
+	for(y = 0; y < bmpInfoHeader.biHeight; y++) {//Total display column
+		for(x = 0; x < Bmp_Width_Byte; x++) {//Show a line in the line
+			if(fread((char *)&Rdata, 1, 1, fp) != 1) {
+				perror("get bmpdata:\r\n");
+				break;
+			}
+			Image[x + (bmpInfoHeader.biHeight-1 - y)*Image_Width_Byte] =  Rdata;
+		}
+	}
+	fclose(fp);
+	
+	// Refresh the image to the display buffer based on the displayed orientation
+	UWORD color;
+	printf("bmpInfoHeader.biWidth = %d\r\n",bmpInfoHeader.biWidth);
+	printf("bmpInfoHeader.biHeight = %d\r\n",bmpInfoHeader.biHeight);
+	for(y = 0; y < bmpInfoHeader.biHeight; y++) {
+		for(x = 0; x < bmpInfoHeader.biWidth; x++) {
+			if(x > paint.Width || y > paint.Height) {
+				break;
+			}
+			color = 0;
+			color |= Image[x*2 + y*bmpInfoHeader.biWidth*2];
+			color |= Image[x*2 + y*bmpInfoHeader.biWidth*2 + 1] << 8;
+			SetPixel(Xstart + x, Ystart + y, color);
+		}
+	}
+	return 0;
+}

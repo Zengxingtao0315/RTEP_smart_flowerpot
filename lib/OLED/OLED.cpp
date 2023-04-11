@@ -15,9 +15,9 @@
 function:
             Hardware reset
 *******************************************************************************/
+using namespace std;
 static void OLED::Reset(void)
 {
-    mDEV.setGpinPin(mPin);
 	OLED_RST_1;
     DEV_Delay_ms(100);
     OLED_RST_0;
@@ -190,7 +190,7 @@ void OLED::Display(uint8_t *Image)
     }
 }
 /********************************************************************************
-function:   Updates memory to OLED based on Function OLED_SetWindow
+function:   Updates memory to OLED 
 ********************************************************************************/
 void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 {

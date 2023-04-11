@@ -24,11 +24,10 @@ function:
 ********************************************************************************/
 class OLED {
 public:
-    void Init();
-    void Clear();
-    void Display(uint8_t *Image);
-    void SetWindow(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
-    void SetWindowDisplay(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+	void Init(void);
+	void Clear(void);
+	void Display(UBYTE *Image);
+	void SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 private:
     static void Reset();
@@ -42,7 +41,6 @@ typedef struct {
 	float humidity;
 	float light_intensity;
 	} pSTATUS;
-extern pSTATUS pstatus;
 
 
 

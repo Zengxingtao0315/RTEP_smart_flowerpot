@@ -3,7 +3,9 @@
 #include <cstdlib>
 #include <ctdint>
 #include <iostream>
-#include "test.h"
+extern "C" {
+	#include "test.h"
+};
 #include <ctime>
 #include <time.h>
 

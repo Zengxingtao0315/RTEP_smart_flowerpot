@@ -8,6 +8,7 @@
 #include "sensor.h"
 #include "test.h"
 
+using namespace std;
 
 Sensor::Sensor(int digitalPin, float analogPin, int dhtPin) {
         this->digitalPin = digitalPin;
