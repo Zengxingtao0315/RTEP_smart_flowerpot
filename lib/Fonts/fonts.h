@@ -45,11 +45,10 @@
 #define OFFSET_BITMAP           
 
 #ifdef __cplusplus
- extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <cstdint>
+#include <stdint.h>
 
 //ASCII
 typedef struct _tFont

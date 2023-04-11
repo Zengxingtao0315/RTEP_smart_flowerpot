@@ -11,7 +11,7 @@
 extern "C" {
     #include "DEV_Config.h"
 	#include "Debug.h"
-}
+};
 #include "GUI_Paint.h"
 #include "GUI_BMPfile.h"
 #include "sensor.h"

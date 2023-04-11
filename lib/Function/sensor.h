@@ -5,7 +5,6 @@
 #include <iostream>
 #include "test.h"
 #include <cstdio>
-#include <wiringPi.h>
 #include <iostream>
 
 
