@@ -6,13 +6,13 @@ DIR_Function = ./lib/Function
 DIR_BIN      = ./bin
 DIR_MAIN     = ./main
 #C++ files
-OBJ_CPP = $(wildcard ${DIR_OLED}/*.cpp ${DIR_Config}/*.cpp ${DIR_GUI}/*.cpp ${DIR_Function}/*.cpp ${DIR_FONTS}/*.cpp ${DIR_MAIN}/*.cpp)
-OBJ_CPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${OBJ_CPP}))
+SRC_CPP = $(wildcard ${DIR_OLED}/*.cpp ${DIR_Config}/*.cpp ${DIR_GUI}/*.cpp ${DIR_Function}/*.cpp ${DIR_FONTS}/*.cpp ${DIR_MAIN}/*.cpp)
+OBJ_CPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${SRC_CPP}))
 
 
 #C files
-OBJ_C = $(wildcard ${DIR_OLED}/*.c ${DIR_Config}/*.c ${DIR_GUI}/*.c ${DIR_Function}/*.c ${DIR_FONTS}/*.c ${DIR_MAIN}/*.c)
-OBJ_C = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
+SRC_C = $(wildcard ${DIR_OLED}/*.c ${DIR_Config}/*.c ${DIR_GUI}/*.c ${DIR_Function}/*.c ${DIR_FONTS}/*.c ${DIR_MAIN}/*.c)
+OBJ_C = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${SRC_C}))
 
 TARGET = main
 
