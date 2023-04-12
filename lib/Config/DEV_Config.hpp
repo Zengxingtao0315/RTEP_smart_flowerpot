@@ -54,6 +54,7 @@ class DEV {
 		void  ModuleExit(void);
 
 		void GPIO_Mode(UWORD Pin, UWORD Mode);
+		void GPIO_Init(void);
 		void Digital_Write(UWORD Pin, UBYTE Value);
 		UBYTE Digital_Read(UWORD Pin);
 		void Delay_ms(UDOUBLE xms);
