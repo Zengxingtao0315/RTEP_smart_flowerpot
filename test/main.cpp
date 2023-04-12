@@ -94,7 +94,7 @@ int main()
         //Get local time
 		Time time;
 		PAINT_TIME local_time;
-		local_time = time.GetLocalTime();
+		local_time = time.getLocalTime();
         // display of time
 
         Paint.DrawTime(0, 0, &local_time, &Font12, BLACK, TIME_COLOR);
@@ -112,7 +112,7 @@ int main()
 		int digitalValue = Sensor.readDigitalValue();
 		float analogValue = Sensor.readAnalogValue();
 		float temperature, humidity;
-		int dhtResult = sensor.readDHTdata(temperature, humidity);
+		int dhtResult = Sensor.readDHTdata(temperature, humidity);
 		
 		if (dhtResult == 0) {
 			Paint.DrawNum(49, 16, temperature, &Font16, 4, WHITE, BLACK);
