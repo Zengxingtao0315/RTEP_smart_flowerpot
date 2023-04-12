@@ -22,7 +22,7 @@ ifeq ($(USELIB), USE_BCM2835_LIB)
 else ifeq ($(USELIB), USE_WIRINGPI_LIB)
     LIB = -lwiringPi -lm 
 else ifeq ($(USELIB), USE_DEV_LIB)
-    LIB = -lm 
+    LIB =  -lwiringPi -lm 
 endif
 
 
