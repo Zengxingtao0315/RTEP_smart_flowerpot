@@ -16,3 +16,5 @@ class Time {
 public:
     PAINT_TIME getLocalTime(PAINT_TIME time);
 };
+
+#endif
