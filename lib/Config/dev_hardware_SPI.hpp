@@ -9,7 +9,7 @@
 #define __DEV_HARDWARE_SPI_HPP_
 
 #include <cstdint>
-
+#include <iostream>
 #define DEV_HARDWARE_SPI_DEBUG 0
 #if DEV_HARDWARE_SPI_DEBUG
 #define DEV_HARDWARE_SPI_Debug(__info,...) std::cout << "Debug: " << info << __VA_ARGS__ << std::endl

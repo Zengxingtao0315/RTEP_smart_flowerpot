@@ -107,7 +107,7 @@ Info:
 ******************************************************************************/
 UBYTE DEV::ModuleInit(void)
 {
-	
+	SPIMode mode = SPI_MODE3;
  #ifdef USE_BCM2835_LIB
     if(!bcm2835_init()) {
         std::cout << "bcm2835 init failed  !!!" << std::endl;
@@ -157,7 +157,7 @@ UBYTE DEV::ModuleInit(void)
 	GPIO_Init();
     #if USE_SPI
         std::cout << "USE_SPI" << std::endl;      
-        DEV_SPI.DEV_HARDWARE_SPI_beginSet("/dev/spidev0.0",SPI_MODE_3,10000000);
+        DEV_SPI.DEV_HARDWARE_SPI_beginSet("/dev/spidev0.0",mode,10000000);
     #elif USE_IIC   
         std::cout << "USE_IIC" << std::endl;	
         Digital_Write(OLED_DS,0)

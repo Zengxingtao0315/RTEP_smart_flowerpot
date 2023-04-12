@@ -10,7 +10,7 @@ extern "C" {
 	#include <time.h>
 };
 #include <ctime>
-#include "GUI_Paint.hpp"
+#include "../GUI/GUI_Paint.hpp"
 
 
 class Time {

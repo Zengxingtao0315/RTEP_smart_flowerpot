@@ -15,7 +15,7 @@ extern "C" {
 }
 
 
-#include "DEV_Config.hpp"
+#include "../Config/DEV_Config.hpp"
 
 
 #define OLED_WIDTH   128//OLED width

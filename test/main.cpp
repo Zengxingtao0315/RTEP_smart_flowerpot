@@ -9,6 +9,8 @@ extern "C" {
 #include "GUI_Paint.hpp"
 #include "sensor.hpp"
 #include "GetTime.hpp"
+#include "OLED.hpp"
+#include "checkInternet.hpp"
 
 #include <ctime> 
 #include <cstdlib> 
