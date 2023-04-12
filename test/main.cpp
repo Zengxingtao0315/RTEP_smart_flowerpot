@@ -82,13 +82,13 @@ int main()
     //OLED_Display(BlackImage);
     //DEV_Delay_ms(500);
     //Paint_Clear(BLACK);
-    Paint.DrawString_EN(0, 16, "Temp:", &Font12, WHITE, BLACK);
-    Paint.DrawString_EN(0, 28, "Hum:", &Font12, WHITE, BLACK);
-    Paint.DrawString_EN(0, 40, "Lux:", &Font16, WHITE, BLACK);
+    Paint.DrawString_EN(10, 16, "Temp:", &Font12, WHITE, BLACK);
+    Paint.DrawString_EN(10, 28, "Hum:", &Font12, WHITE, BLACK);
+    Paint.DrawString_EN(10, 40, "Lux:", &Font16, WHITE, BLACK);
     
 	OLED.Display(BlackImage);
-    DEV.Delay_ms(500);
-	Paint.Clear(BLACK);
+    DEV.Delay_ms(3000);
+	
 
     while (1) {
         //Get local time
@@ -97,15 +97,16 @@ int main()
 		local_time = time.getLocalTime();
         // display of time
 
-        Paint.DrawTime(0, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-        OLED.SetWindow_Display(BlackImage, 0, 0, 111, 15);
-
+        Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
+        OLED.SetWindow_Display(BlackImage, 10, 0, 64, 15);
+		DEV.Delay_ms(3000);
+		
         //display of internet status
 		InternetConnectionChecker checker;
 		bool connected = checker.CheckInternetConnection();
-        connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 112, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 112, 0);
-        OLED.SetWindow_Display(BlackImage, 112, 0, 127, 15);
-        DEV.Delay_ms(500);
+        connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 65, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 65, 0);
+        OLED.SetWindow_Display(BlackImage, 65, 0, 127, 15);
+        DEV.Delay_ms(2000);
 		
 		//display of plant information
 		Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
@@ -128,11 +129,11 @@ int main()
 	
 		Paint.DrawNum(49, 40, analogValue, &Font16, 4, WHITE, BLACK);
 		OLED.SetWindow_Display(BlackImage,49, 48, 127, 51);
-		DEV.Delay_ms(500);
+		DEV.Delay_ms(2000);
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K("./pic/happy.bmp", 32, 64);
 		OLED.SetWindow_Display(BlackImage,32, 64, 96, 127);
-		DEV.Delay_ms(500);
+		DEV.Delay_ms(2000);
 		
 		
 		OLED.Clear();
