@@ -15,7 +15,7 @@ extern "C" {
 
 class Time {
 public:
-    PAINT_TIME getLocalTime(PAINT_TIME time);
+    PAINT_TIME getLocalTime();
 };
 
 #endif

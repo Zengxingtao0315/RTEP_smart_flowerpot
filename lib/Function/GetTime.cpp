@@ -11,8 +11,9 @@
 function:
             Get local time
 *******************************************************************************/
-PAINT_TIME Time::getLocalTime(PAINT_TIME time) {
-    std::time_t now;
+PAINT_TIME Time::getLocalTime() {
+    PAINT_TIME time;
+	std::time_t now;
     std::tm *local;
 
     std::time(&now);
