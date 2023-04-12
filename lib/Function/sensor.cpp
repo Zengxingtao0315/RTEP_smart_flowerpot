@@ -10,9 +10,9 @@
 using namespace std;
 
 Sensor::Sensor(int digitalPin, float analogPin, int dhtPin) {
-        this->digitalPin = digitalPin;
-        this->analogPin = analogPin;
-		this->dhtPin = dhtpin;
+        this->digitalPin = DIGITALPIN;
+        this->analogPin = ANALOGPIN;
+		this->dhtPin = DHTPIN;
     }
 	
 	// get light digital value

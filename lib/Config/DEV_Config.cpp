@@ -12,8 +12,9 @@ extern "C" {
 #include <iostream> 
 
 uint32_t fd;
-DEV_SPI DEV_SPI;
+extern DEV_SPI DEV_SPI;
 GPIO GPIO;
+DEV_I2C DEV_I2C;
 using namespace std;
 /*****************************************
                 GPIO

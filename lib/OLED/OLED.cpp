@@ -23,7 +23,7 @@ void OLED::Reset(void)
 	DEV.Digital_Write(OLED_RST,1);
     DEV.Delay_ms(100);
 	DEV.Digital_Write(OLED_RST,0);
-    DEV_Delay_ms(100);
+    DEV.Delay_ms(100);
 	DEV.Digital_Write(OLED_RST,1);
     DEV.Delay_ms(100);
 }
@@ -35,15 +35,15 @@ function:
 void OLED::WriteReg(uint8_t Reg)
 {
 #if USE_SPI
-    Digital_Write(OLED_DC,0)
+    DEV.Digital_Write(OLED_DC,0)
     DEV.SPI_WriteByte(Reg);
 #endif
 }
 
-static void OLED::WriteData(uint8_t Data)
+void OLED::WriteData(uint8_t Data)
 {   
 #if USE_SPI
-    Digital_Write(OLED_DC,1)
+    DEV.Digital_Write(OLED_DC,1)
     DEV.SPI_WriteByte(Data);
 #endif
 }
@@ -157,18 +157,6 @@ void OLED::Clear()
     }
 }
 
-/********************************************************************************
-function:   Set the drawing area
-********************************************************************************/
-void OLED::SetWindow(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
-{
-    WriteReg(0x15);
-    WriteData(x1);
-    WriteData(x2 - 1);
-    WriteReg(0x75);
-    WriteData(y1 / 8);
-    WriteData(y2 / 8 - 1);
-}
 
 /********************************************************************************
 function:   Update all memory to OLED
@@ -222,3 +210,4 @@ void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2,
     }
 }
 
+bin

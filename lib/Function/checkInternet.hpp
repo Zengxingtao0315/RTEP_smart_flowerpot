@@ -10,6 +10,6 @@ extern "C" {
 
 class InternetConnectionChecker {
 public:
-    bool InternetConnectionChecker::CheckInternetConnection() {
+    CheckInternetConnection();
         
 };

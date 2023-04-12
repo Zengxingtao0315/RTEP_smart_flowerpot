@@ -14,6 +14,7 @@
 #include <cstdint> 
 #include <cstdio> 
 #include <cstdlib> 
+#include <iostream>
 extern "C" {
 	#include <getopt.h> 
 	#include <unistd.h> 

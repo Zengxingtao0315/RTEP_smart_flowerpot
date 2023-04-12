@@ -18,8 +18,8 @@ extern "C" {
 #include "DEV_Config.hpp"
 
 
-#define OLED_WIDTH   128;//OLED width
-#define OLED_HEIGHT  128;//OLED height
+#define OLED_WIDTH   128//OLED width
+#define OLED_HEIGHT  128//OLED height
 /********************************************************************************
 function:	
 		Define the full screen height length of the display
