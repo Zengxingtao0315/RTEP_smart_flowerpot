@@ -10,6 +10,9 @@ extern "C" {
 
 class InternetConnectionChecker {
 public:
-    CheckInternetConnection();
+    bool CheckInternetConnection();
         
 };
+
+
+#endif

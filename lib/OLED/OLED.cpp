@@ -35,7 +35,7 @@ function:
 void OLED::WriteReg(uint8_t Reg)
 {
 #if USE_SPI
-    DEV.Digital_Write(OLED_DC,0)
+    DEV.Digital_Write(OLED_DC,0);
     DEV.SPI_WriteByte(Reg);
 #endif
 }
@@ -43,7 +43,7 @@ void OLED::WriteReg(uint8_t Reg)
 void OLED::WriteData(uint8_t Data)
 {   
 #if USE_SPI
-    DEV.Digital_Write(OLED_DC,1)
+    DEV.Digital_Write(OLED_DC,1);
     DEV.SPI_WriteByte(Data);
 #endif
 }
@@ -209,5 +209,3 @@ void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2,
         }
     }
 }
-
-bin

@@ -93,7 +93,7 @@ void DEV::Delay_ms(UDOUBLE xms)
 #endif
 }
 
-static void DEV::GPIO_Init(void)
+void DEV::GPIO_Init(void)
 {
     GPIO_Mode(OLED_CS, 1);
     GPIO_Mode(OLED_RST, 1);
@@ -226,7 +226,6 @@ function:	Module exits, closes SPI and BCM2835 library
 parameter:
 Info:
 ******************************************************************************/
-DEV_SPI DEV_SPI;
 void DEV::ModuleExit(void)
 {
 #ifdef USE_BCM2835_LIB
@@ -245,7 +244,7 @@ void DEV::ModuleExit(void)
 	Digital_Write(OLED_RST,1);
 	Digital_Write(OLED_DC,0);
     DEV_SPI.DEV_HARDWARE_SPI_end();
-    DEV_SPI.DEV_HARDWARE_I2C_end();
+    DEV_I2C.DEV_HARDWARE_I2C_end();
 #endif
 }
 

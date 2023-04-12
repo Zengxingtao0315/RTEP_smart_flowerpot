@@ -9,7 +9,7 @@
 #define __DEV_HARDWARE_I2C_HPP_
 
 #include <cstdint>
-
+#include <iostream>
 
 #define DEV_HARDWARE_I2C_DEBUG 0
 #if DEV_HARDWARE_I2C_DEBUG

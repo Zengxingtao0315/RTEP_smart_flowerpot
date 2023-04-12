@@ -22,7 +22,7 @@
 #define SPI_MODE_0      (0|0)
 #define SPI_MODE_1      (0|SPI_CPHA)
 #define SPI_MODE_2      (SPI_CPOL|0)
-#define SPI_MODE_3      (SPI_CPOL|SPI_CPHA)
+#define SPI_MODE_3      (0x02|0x01)
 
 typedef enum{
     SPI_MODE0 = SPI_MODE_0,  /*!< CPOL = 0, CPHA = 0 */

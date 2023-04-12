@@ -50,6 +50,7 @@ Info:
 void DEV_SPI::DEV_HARDWARE_SPI_begin(char *SPI_device)
 {
     //device
+	SPIMode mode = SPI_MODE0;
     int ret = 0; 
     if((hardware_SPI.fd = open(SPI_device, O_RDWR )) < 0)  {
         std::cerr << "Failed to open SPI device." << std::endl;
@@ -71,7 +72,7 @@ void DEV_SPI::DEV_HARDWARE_SPI_begin(char *SPI_device)
     }
     tr.bits_per_word = bits;
     
-    DEV_HARDWARE_SPI_Mode(SPI_MODE_0);
+    DEV_HARDWARE_SPI_Mode(mode);
     DEV_HARDWARE_SPI_ChipSelect(SPI_CS_Mode_LOW);
     DEV_HARDWARE_SPI_SetBitOrder(SPI_BIT_ORDER_MSBFIRST);
     DEV_HARDWARE_SPI_setSpeed(20000000);

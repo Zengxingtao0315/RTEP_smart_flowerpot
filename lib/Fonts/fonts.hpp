@@ -58,7 +58,7 @@ extern sFONT Font8;
 extern cFONT Font12CN;
 extern cFONT Font24CN;
 #ifdef __cplusplus
-}
+
 #endif
   
 #endif /* __FONTS_H */

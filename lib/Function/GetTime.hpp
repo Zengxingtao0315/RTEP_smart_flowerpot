@@ -4,7 +4,7 @@
 #include <wiringPi.h>
 #include <cstdio>
 #include <cstdlib>
-#include <ctdint>
+#include <cstdint>
 #include <iostream>
 extern "C" {
 	#include <time.h>
