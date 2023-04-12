@@ -26,7 +26,7 @@ extern "C" {
 #define OLED_HEIGHT 128
 
 using namespace std;
-DEV DEV;
+extern DEV DEV;
 
 void Handler(int signo)
 {
@@ -86,11 +86,12 @@ int main()
     
 	OLED.Display(BlackImage);
     DEV.Delay_ms(500);
+	/*******
     while (1) {
         //Get local time
 		Time time;
 		PAINT_TIME local_time;
-		time.GetLocalTime(&local_time);
+		local_time = time.GetLocalTime();
         // display of time
 
         Paint.DrawTime(0, 0, local_time, &Font12, BLACK, TIME_COLOR);
@@ -132,8 +133,8 @@ int main()
 		
 		
 		OLED.Clear();
-		
-		
+	}
+	*****************************************************/
 
     return 0;
 }
