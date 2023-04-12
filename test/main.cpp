@@ -82,13 +82,14 @@ int main()
     //OLED_Display(BlackImage);
     //DEV_Delay_ms(500);
     //Paint_Clear(BLACK);
-    Paint.DrawString_EN(5, 16, "Temperature:", &Font16, WHITE, BLACK);
-    Paint.DrawString_EN(5, 32, "Humidity:", &Font16, WHITE, BLACK);
-    Paint.DrawString_EN(5, 48, "Light intensity:", &Font16, WHITE, BLACK);
+    Paint.DrawString_EN(0, 16, "Temp:", &Font12, WHITE, BLACK);
+    Paint.DrawString_EN(0, 28, "Hum:", &Font12, WHITE, BLACK);
+    Paint.DrawString_EN(0, 40, "Lux:", &Font16, WHITE, BLACK);
     
 	OLED.Display(BlackImage);
     DEV.Delay_ms(500);
-	/*******
+	Paint.Clear(BLACK);
+
     while (1) {
         //Get local time
 		Time time;
@@ -96,14 +97,14 @@ int main()
 		local_time = time.GetLocalTime();
         // display of time
 
-        Paint.DrawTime(0, 0, local_time, &Font12, BLACK, TIME_COLOR);
+        Paint.DrawTime(0, 0, &local_time, &Font12, BLACK, TIME_COLOR);
         OLED.SetWindow_Display(BlackImage, 0, 0, 111, 15);
 
         //display of internet status
 		InternetConnectionChecker checker;
 		bool connected = checker.CheckInternetConnection();
-        connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 111, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 111, 0);
-        OLED.SetWindow_Display(BlackImage, 111, 0, 127, 15);
+        connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 112, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 112, 0);
+        OLED.SetWindow_Display(BlackImage, 112, 0, 127, 15);
         DEV.Delay_ms(500);
 		
 		//display of plant information
@@ -114,29 +115,29 @@ int main()
 		int dhtResult = sensor.readDHTdata(temperature, humidity);
 		
 		if (dhtResult == 0) {
-			Paint.DrawNum(69, 16, temperature, &Font16, 4, WHITE, BLACK);
-			OLED.SetWindow_Display(BlackImage,69, 16, 127, 31);
-			
-			Paint.DrawNum(69, 32, humidity, &Font16, 4, WHITE, BLACK);
-			OLED.SetWindow_Display(BlackImage,69, 32, 127, 47);
+			Paint.DrawNum(49, 16, temperature, &Font16, 4, WHITE, BLACK);
+			OLED.SetWindow_Display(BlackImage,49, 16, 127, 27);
+			DEV.Delay_ms(500);
+			Paint.DrawNum(49, 28, humidity, &Font16, 4, WHITE, BLACK);
+			OLED.SetWindow_Display(BlackImage,49, 32, 127, 39);
 		}
 		else {
 			cout << "Failed to read DHT data." << endl;
 		}
 		
 	
-		Paint.DrawNum(69, 48, analogValue, &Font16, 4, WHITE, BLACK);
-		OLED.SetWindow_Display(BlackImage,69, 48, 127, 63);
-		
+		Paint.DrawNum(49, 40, analogValue, &Font16, 4, WHITE, BLACK);
+		OLED.SetWindow_Display(BlackImage,49, 48, 127, 51);
+		DEV.Delay_ms(500);
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K("./pic/happy.bmp", 32, 64);
 		OLED.SetWindow_Display(BlackImage,32, 64, 96, 127);
-		
+		DEV.Delay_ms(500);
 		
 		
 		OLED.Clear();
 	}
-	*****************************************************/
+
 
     return 0;
 }

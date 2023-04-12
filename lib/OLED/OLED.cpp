@@ -170,12 +170,12 @@ void OLED::Display(uint8_t *Image)
     WriteData(OLED_WIDTH - 1);
     WriteReg(0x75);
     WriteData(0);
-    WriteData(OLED_HEIGHT / 8 - 1);
+    WriteData(OLED_HEIGHT - 1);
     WriteReg(0x5C);
 
-    for (i = 0; i < OLED_HEIGHT / 8; i++) {
-        for (j = 0; j < OLED_WIDTH; j++) {
-            WriteData(Image[j + i * OLED_WIDTH]);
+    for (i = 0; i < OLED_HEIGHT; i++) {
+        for (j = 0; j < OLED_WIDTH*2; j++) {
+            WriteData(Image[j + i * 256]);
         }
     }
 }
@@ -187,25 +187,21 @@ void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2,
     uint16_t i, j, temp;
     uint16_t width = x2 - x1;
     uint16_t height = y2 - y1;
-    uint16_t start_index = x1 + y1 * OLED_WIDTH;
-    uint16_t end_index = x2 + y2 * OLED_WIDTH;
+
 
     WriteReg(0x15);
     WriteData(x1);
-    WriteData(x2 - 1);
+    WriteData(x2);
     WriteReg(0x75);
-    WriteData(y1 / 8);
-    WriteData(y2 / 8 - 1);
+    WriteData(y1);
+    WriteData(y2);
     WriteReg(0x5C);
-
-    for (i = start_index; i < end_index; i++) {
-        if (i >= start_index + width && (i - start_index) % OLED_WIDTH == 0) {
-            i = i + OLED_WIDTH - width;
-        }
-
-        if (i >= start_index && i < end_index) {
-            temp = Image[i];
+	for(i=x1; i<height; i++)
+        for(j=y1; j<width*2; j++)
+        {
+            temp = Image[j + i*256];
             WriteData(temp);
         }
-    }
+		
+    
 }
