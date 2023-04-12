@@ -37,3 +37,4 @@ public:
     int readAnalogValue();
     int readDHTdata(float& temperature, float& humidity);
 };
+#endif
