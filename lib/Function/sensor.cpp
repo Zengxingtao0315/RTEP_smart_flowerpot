@@ -9,7 +9,7 @@
 
 using namespace std;
 
-Sensor::Sensor(int digitalPin, float analogPin, int dhtPin) {
+Sensor::Sensor(int digitalPin, int analogPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
         this->analogPin = ANALOGPIN;
 		this->dhtPin = DHTPIN;
@@ -22,13 +22,13 @@ int Sensor::readDigitalValue() {
     }
 	
 	// get light analogue value
-int Sensor::readAnalogValue() {
+float Sensor::readAnalogValue() {
         float value = analogRead(analogPin);
         return value;
     }
 	
 	// get dht temperature and humidity
-int Sensor::readDHTdata(float& temperature, float& humidity) {
+float Sensor::readDHTdata(float& temperature, float& humidity) {
     
 	if ( wiringPiSetup() == -1 )
     exit( 1 );

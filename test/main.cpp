@@ -104,12 +104,12 @@ int main()
 		bool connected = checker.CheckInternetConnection();
         connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 111, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 111, 0);
         OLED.SetWindow_Display(BlackImage, 111, 0, 127, 15);
-        DEV_Delay_ms(500);
+        DEV.Delay_ms(500);
 		
 		//display of plant information
 		Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
-		int digitalValue = sensor.readDigitalValue();
-		float analogValue = sensor.readAnalogValue();
+		int digitalValue = Sensor.readDigitalValue();
+		float analogValue = Sensor.readAnalogValue();
 		float temperature, humidity;
 		int dhtResult = sensor.readDHTdata(temperature, humidity);
 		

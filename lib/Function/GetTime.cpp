@@ -19,8 +19,8 @@ PAINT_TIME Time::getLocalTime(PAINT_TIME time) {
     local = std::localtime(&now);
 
     // 提取需要的时间信息
-    time->Hour = local->tm_hour;
-    time->Min = local->tm_min;
-	time->Sec = local->tm_sec;
+    time.Hour = local->tm_hour;
+    time.Min = local->tm_min;
+	time.Sec = local->tm_sec;
 	return time;
 }

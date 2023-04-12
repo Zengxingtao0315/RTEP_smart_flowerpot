@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <iostream>
-
+#include "../Config/DEV_Config.hpp"
 
 
 #define MAXTIMINGS  85
@@ -34,7 +34,7 @@ private:
 public:
     Sensor(int digitalPin, int analogPin, int dhtPin);
     int readDigitalValue();
-    int readAnalogValue();
-    int readDHTdata(float& temperature, float& humidity);
+    float readAnalogValue();
+    float readDHTdata(float& temperature, float& humidity);
 };
 #endif
