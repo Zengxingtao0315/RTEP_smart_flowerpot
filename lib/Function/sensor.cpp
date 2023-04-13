@@ -8,6 +8,7 @@
 #include "sensor.hpp"
 
 using namespace std;
+UBYTE dht_data[5];
 
 Sensor::Sensor(int digitalPin, int analogPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
@@ -16,19 +17,19 @@ Sensor::Sensor(int digitalPin, int analogPin, int dhtPin) {
     }
 	
 	// get light digital value
-int Sensor::readDigitalValue() {
-        int value = digitalRead(digitalPin);
+UWORD Sensor::readDigitalValue() {
+        UWORD value = digitalRead(digitalPin);
         return value;
     }
 	
 	// get light analogue value
-float Sensor::readAnalogValue() {
-        float value = analogRead(analogPin);
+UWORD Sensor::readAnalogValue() {
+        UWORD value = analogRead(analogPin);
         return value;
     }
 	
 	// get dht temperature and humidity
-float Sensor::readDHTdata(float& temperature, float& humidity) {
+bool Sensor::readDHTdata(float* temperature, float* humidity) {
     
 	if ( wiringPiSetup() == -1 )
     exit( 1 );
@@ -38,7 +39,6 @@ float Sensor::readDHTdata(float& temperature, float& humidity) {
     UBYTE j = 0, i;
     float f;
 	
-    dht_data.humidity_int = dht_data.humidity_dec = dht_data.temperature_int = dht_data.temperature_dec = 0;
 	
     dht_data.data[0] = dht_data.data[1] = dht_data.data[2] = dht_data.data[3] = dht_data.data[4] = 0;
     // pull pin down for 18 milliseconds
@@ -78,18 +78,14 @@ float Sensor::readDHTdata(float& temperature, float& humidity) {
    */
    
     if ((j >= 40) && (dht_data.data[4] == ((dht_data.data[0] + dht_data.data[1] + dht_data.data[2] + dht_data.data[3]) & 0xFF))) {
-        f = dht_data.data[2] * 9.0 / 5.0 + 32;
-        dht_data.humidity_int = dht_data.data[0];
-        dht_data.humidity_dec = dht_data.data[1];
-        dht_data.temperature_int = dht_data.data[2] / 10;
-        dht_data.temperature_dec = dht_data.data[2] % 10;
+        //f = dht_data.data[2] * 9.0 / 5.0 + 32;
 		
 		
-		temperature = dht_data.temperature_int + (float)dht_data.temperature_dec / 10.0;
-        humidity = dht_data.humidity_int + (float)dht_data.humidity_dec / 10.0;
+		*temperature = dht_data.data[0] + (float)dht_data.data[1] / 100.0;
+        *humidity = dht_data.data[2] + (float)dht_data.data[3] / 100.0;
 		
-		std::cout << "Temperature: " << temperature << std::endl;
-        std::cout << "Humidity: " << humidity << std::endl;
+		std::cout << "Temperature: " << *temperature << std::endl;
+        std::cout << "Humidity: " << *humidity << std::endl;
         return 0;  
     }
     else {

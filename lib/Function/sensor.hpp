@@ -15,26 +15,17 @@
 #define ANALOGPIN  3   // 模拟输出引脚
 
 
-typedef struct {
-    uint8_t humidity_int;
-    uint8_t humidity_dec;
-    uint8_t temperature_int;
-    uint8_t temperature_dec;
-    uint8_t data[5];
-} DHTData;
-
 
 class Sensor {
 private:
     int digitalPin;
     int analogPin;
     int dhtPin;
-    DHTData dht_data;
 
 public:
     Sensor(int digitalPin, int analogPin, int dhtPin);
-    int readDigitalValue();
-    float readAnalogValue();
-    float readDHTdata(float& temperature, float& humidity);
+    UWORD readDigitalValue();
+    UWORD readAnalogValue();
+    bool readDHTdata(float* temperature, float* humidity);
 };
 #endif

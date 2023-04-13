@@ -82,9 +82,9 @@ int main()
     //OLED_Display(BlackImage);
     //DEV_Delay_ms(500);
     //Paint_Clear(BLACK);
-    Paint.DrawString_EN(10, 16, "Temp:", &Font12, WHITE, BLACK);
-    Paint.DrawString_EN(10, 28, "Hum:", &Font12, WHITE, BLACK);
-    Paint.DrawString_EN(10, 40, "Lux:", &Font16, WHITE, BLACK);
+    Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
+    Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
+    Paint.DrawString_EN(10, 40, "Lux:", &Font16, BLACK, WHITE);
     
 	OLED.Display(BlackImage);
     DEV.Delay_ms(3000);
@@ -110,20 +110,18 @@ int main()
 		
 		//display of plant information
 		Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
-		int digitalValue = Sensor.readDigitalValue();
-		float analogValue = Sensor.readAnalogValue();
+		UWORD  digitalValue = Sensor.readDigitalValue();
+		UWORD  analogValue = Sensor.readAnalogValue();
 		float temperature, humidity;
-		int dhtResult = Sensor.readDHTdata(temperature, humidity);
-		
-		if (dhtResult == 0) {
+		DEV.Delay_ms(1000);
+		if(Sensor.readDHTdata(&temperature, &humidity))
+		{
+			
 			Paint.DrawNum(49, 16, temperature, &Font16, 4, WHITE, BLACK);
 			OLED.SetWindow_Display(BlackImage,49, 16, 127, 27);
 			DEV.Delay_ms(500);
 			Paint.DrawNum(49, 28, humidity, &Font16, 4, WHITE, BLACK);
 			OLED.SetWindow_Display(BlackImage,49, 32, 127, 39);
-		}
-		else {
-			cout << "Failed to read DHT data." << endl;
 		}
 		
 	
