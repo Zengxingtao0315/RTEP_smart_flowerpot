@@ -86,53 +86,63 @@ int main()
     Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
     Paint.DrawString_EN(10, 40, "Lux:", &Font16, BLACK, WHITE);
     
-	OLED.Display(BlackImage);
-    DEV.Delay_ms(3000);
-	
 
+	
+	Time time;
+	PAINT_TIME local_time;
+	InternetConnectionChecker checker;
+	bool connected;
+	Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
+	UWORD  digitalValue;
+	UWORD  analogValue;
+	float temperature, humidity;
+	Duration light_duration;
     while (1) {
         //Get local time
-		Time time;
-		PAINT_TIME local_time;
 		local_time = time.getLocalTime();
         // display of time
 
         Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-        OLED.SetWindow_Display(BlackImage, 10, 0, 64, 15);
-		DEV.Delay_ms(3000);
+		DEV.Delay_ms(50);
 		
         //display of internet status
-		InternetConnectionChecker checker;
-		bool connected = checker.CheckInternetConnection();
+		connected = checker.CheckInternetConnection();
         connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 65, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 65, 0);
-        OLED.SetWindow_Display(BlackImage, 65, 0, 127, 15);
-        DEV.Delay_ms(2000);
+        DEV.Delay_ms(50);
 		
 		//display of plant information
-		Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
-		UWORD  digitalValue = Sensor.readDigitalValue();
-		UWORD  analogValue = Sensor.readAnalogValue();
-		float temperature, humidity;
+		
+		digitalValue = Sensor.readDigitalValue();
+		analogValue = Sensor.readAnalogValue();
+		if(digitalValue != 0){
+			if(light_duration.hour < 8){
+				calculateDaylightDuration(int digitalValue, Duration *light_duration);
+				std::cout << "Need more light" << std::endl;
+				
+			}
+			
+		}
 		DEV.Delay_ms(1000);
 		if(Sensor.readDHTdata(&temperature, &humidity))
 		{
 			
-			Paint.DrawNum(49, 16, temperature, &Font16, 4, WHITE, BLACK);
-			OLED.SetWindow_Display(BlackImage,49, 16, 127, 27);
-			DEV.Delay_ms(500);
-			Paint.DrawNum(49, 28, humidity, &Font16, 4, WHITE, BLACK);
-			OLED.SetWindow_Display(BlackImage,49, 32, 127, 39);
+			Paint.DrawNum(49, 16, temperature, &Font12, 4, WHITE, BLACK);
+			DEV.Delay_ms(50);
+			Paint.DrawNum(49, 28, humidity, &Font12, 4, WHITE, BLACK);
+
 		}
 		
 	
-		Paint.DrawNum(49, 40, analogValue, &Font16, 4, WHITE, BLACK);
-		OLED.SetWindow_Display(BlackImage,49, 48, 127, 51);
-		DEV.Delay_ms(2000);
+		Paint.DrawNum(49, 40, analogValue, &Font12, 4, WHITE, BLACK);
+
+		DEV.Delay_ms(50);
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K("./pic/happy.bmp", 32, 64);
-		OLED.SetWindow_Display(BlackImage,32, 64, 96, 127);
-		DEV.Delay_ms(2000);
+
+		DEV.Delay_ms(50);
 		
+		OLED.Display(BlackImage);
+		DEV.Delay_ms(50);
 		
 		OLED.Clear();
 	}

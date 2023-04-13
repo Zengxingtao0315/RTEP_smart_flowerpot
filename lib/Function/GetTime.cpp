@@ -25,3 +25,41 @@ PAINT_TIME Time::getLocalTime() {
 	time.Sec = local->tm_sec;
 	return time;
 }
+
+
+
+int SunlightDurationRecorder::recordSunlightDuration(bool digitalValue) {
+	auto now = std::chrono::system_clock::now();
+	if (!initialized_) {
+		// 第一次调用函数，初始化记录信息
+		start_time_ = now;
+		duration_0_ = std::chrono::duration<int, std::ratio<1, 1>>(0);
+		last_reset_time_ = now;
+		initialized_ = true;
+	} else {
+		// 检查是否到达新的一天，如果是则重置时长记录
+		auto time_since_last_reset = now - last_reset_time_;
+		if (time_since_last_reset >= std::chrono::hours(24)) {
+			duration_0_ = std::chrono::duration<int, std::ratio<1, 1>>{0};
+			last_reset_time_ = now;
+		}
+	}
+
+	// 根据 digital 记录时长
+	auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start_time_);
+	if (digitalValue == 0) {
+		duration_0_ += duration;
+	} 
+	if (digitalValue == 0) {
+        start_time_ = now;
+    }
+	return duration_0_.count();
+}
+float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue){
+	int light_duration = recordSunlightDuration(digitalValue);
+	std::chrono::seconds duration{light_duration};  // 12345 秒
+    float hours = std::chrono::duration_cast<std::chrono::hours>(duration).count();
+    std::cout << hours << " hours" << std::endl;
+	return hours;
+}
+
