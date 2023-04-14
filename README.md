@@ -12,10 +12,10 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 5) Intuitive screen display
 
 ## Hardwares
-(1) Raspberry Pi B+/4B+
-(2) DHT11 Module
-(3) Photosensitive Diode Sensor
-(4) 128*128 RGB OLED with SPI Interface
+1) Raspberry Pi B+/4B+
+2) DHT11 Module
+3) Photosensitive Diode Sensor
+4) 128*128 RGB OLED with SPI Interface
 
 ## Contributors
 |  Name   | ID  |
