@@ -8,7 +8,22 @@
 #include "sensor.hpp"
 
 using namespace std;
-UBYTE dht_data[5];
+
+
+int waitForPinStatus(int status, int timeout)
+{
+    int t = 0;
+    while (digitalRead(DHT_PIN) != status) {
+        if (t >= timeout) {
+            return -1;
+        }
+        delayMicroseconds(1);
+        t++;
+    }
+    return 0;
+}
+
+
 
 Sensor::Sensor(int digitalPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
@@ -30,46 +45,46 @@ UWORD Sensor::readAnalogValue() {
     }
 	*************************/
 	// get dht temperature and humidity
-bool Sensor::readDHTdata(float* temperature, float* humidity) {
+bool Sensor::readDHTdata(double* temperature, double* humidity) {
     
+	UBYTE dht_data[5];
+	UBYTE crc = 0;
 	if ( wiringPiSetup() == -1 )
     exit( 1 );
 
 	UBYTE laststate = HIGH;
     UBYTE counter = 0;
     UBYTE j = 0, i;
-    float f;
+
 	
+	for(i=0;i<5;i++)
+        dht_dat[i]=0;
 	
-    dht_data[0] = dht_data[1] = dht_data[2] = dht_data[3] = dht_data[4] = 0;
-    // pull pin down for 18 milliseconds
+    // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-    delay(18);
+    delay(20);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    delayMicroseconds(40);
+    delayMicroseconds(30);
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
+	pullUpDnControl(dhtPin, PUD_UP);
+	
+	if (waitForPinStatus(LOW, 5000) < 0) {
+        return -1;
+    }
+	
 	// detect change and read data 
-    for (i = 0; i < MAXTIMINGS; i++) {
-        counter = 0;
-        while (digitalRead(dhtPin) == laststate) {
-            counter++;
-            delayMicroseconds(1);
-            if (counter == 255) {
-                break;
-            }
+    for (int i = 0; i < 40; i++) {
+        if (waitForPinStatus(HIGH, 100) < 0) {
+            return -2;
         }
-        laststate = digitalRead(dhtPin);
-        if (counter == 255) break;
-		// ignore first 3 transitions
-        if ((i >= 4) && (i % 2 == 0)) {
-		// shove each bit into the storage bytes 
-            dht_data[j / 8] <<= 1;
-            if (counter > 16)
-                dht_data[j / 8] |= 1;
-            j++;
+
+        delayMicroseconds(30);
+
+        if (digitalRead(dhtPin)) {
+            buf[i / 8] |= (1 << (7 - (i % 8)));
         }
     }
 	
@@ -77,21 +92,21 @@ bool Sensor::readDHTdata(float* temperature, float* humidity) {
    * check we read 40 bits (8bit x 5 ) + verify checksum in the last byte
    * print it out if data is good
    */
-   
-    if ((j >= 40) && (dht_data[4] == ((dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF))) {
+	crc = dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3];
+    if (crc != buf[4]) {
+        std::cout << "Data not good, skip" << std::endl;
+		return -3;
+    }
+    else {
         //f = dht_data.data[2] * 9.0 / 5.0 + 32;
 		
-		
-		*temperature = dht_data[0] + (float)dht_data[1] / 100.0;
-        *humidity = dht_data[2] + (float)dht_data[3] / 100.0;
+		*temperature = dht_data[0] + (double)dht_data[1] *0.1;
+        *humidity = dht_data[2] + (double)dht_data[3] *0.1;
 		
 		std::cout << "Temperature: " << *temperature << std::endl;
         std::cout << "Humidity: " << *humidity << std::endl;
         return 0;  
     }
-    else {
-        std::cout << "Data not good, skip" << std::endl;
-        return -1; 
-    }
+
 }
 

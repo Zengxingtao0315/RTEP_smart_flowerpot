@@ -136,7 +136,7 @@ int main()
 	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	UWORD  digitalValue;
 	//UWORD  analogValue;
-	float temperature, humidity;
+	double temperature, humidity;
 	float light_duration;
 	SunlightDurationRecorder duration;
 	
@@ -161,9 +161,9 @@ int main()
 		{
 			
 			Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
-			Paint.DrawNum(59, 16, &temperature, &Font12, 4, BLACK, WHITE);
+			Paint.DrawNum(59, 16, temperature, &Font12, 4, BLACK, WHITE);
 			Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
-			Paint.DrawNum(59, 28, &humidity, &Font12, 4, BLACK, WHITE);
+			Paint.DrawNum(59, 28, humidity, &Font12, 4, BLACK, WHITE);
 			DEV.Delay_ms(50);
 
 		}

@@ -11,8 +11,9 @@
 
 #define MAXTIMINGS  85
 #define DHTPIN    7
-#define DIGITALPIN 0   // 数字输出引脚
-#define ANALOGPIN  3   // 模拟输出引脚
+#define DIGITALPIN 0   
+#define ANALOGPIN  3   
+#define ATTEMPTS 5      //retry 5 times when no response
 
 
 
@@ -26,6 +27,6 @@ public:
     Sensor(int digitalPin, int dhtPin);
     UWORD readDigitalValue();
     //UWORD readAnalogValue();
-    bool readDHTdata(float* temperature, float* humidity);
+    bool readDHTdata(double* temperature, double* humidity);
 };
 #endif
