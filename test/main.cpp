@@ -32,34 +32,33 @@ extern DEV DEV;
 
 
 //expression plants emotion or status
-char EmojiSelector(float temperature, float humidity, int digitalValue, float light_duration ){
-	char emojipath = 0;
+const char* EmojiSelector(float temperature, float humidity, int digital, float light_duration ){
 	//When everything is fine
 	if(temperature <= 38.0 && temperature >= 15.0 && digital == 0 && humidity >= 30.0 && humidity <= 50.0)
 	{
-		emojipath = "./pic/happy.bmp";		
+		return "./pic/happy.bmp";		
 	}//Too many hours of sunlight when the temperature is too high
 	else if(temperature > 38.0  && digital == 0 && humidity >= 30.0 && humidity <= 50.0 && light_duration > 8.0){
-		emojipath = "./pic/too_much_light.bmp";
+		return "./pic/too_much_light.bmp";
 	}//Insufficient sunshine hours when the temperature is too high
 	else if(temperature > 38.0  && digital == 0 && humidity >= 30.0 && humidity <= 50.0 && light_duration <= 8.0){
-		emojipath = "./pic/too_hot.bmp";
+		return "./pic/too_hot.bmp";
 	}//When plants are not exposed to light and have insufficient hours of sunlight
 	else if(temperature <= 38.0 && temperature >= 15.0  && digital == 1 && humidity >= 30.0 && humidity <= 50.0 && light_duration <= 8.0){
-		emojipath = "./pic/lack_of_sunlight.bmp";
+		return "./pic/lack_of_sunlight.bmp";
 	}//Any time the temperature is too low
 	else if(temperature < 15.0  && humidity >= 30.0 && humidity <= 50.0 ){
-		emojipath = "./pic/cold.bmp";
+		return "./pic/cold.bmp";
 	}//Any time the humidity is too low
 	else if(humidity < 30.0 ){
-		emojipath = "./pic/need_water.bmp";
+		return "./pic/need_water.bmp";
 	}//Any time the humidity is too high
 	else if(humidity > 50.0 ){
-		emojipath = "./pic/overwatered.bmp";
+		return "./pic/overwatered.bmp";
 	}
 
 	
-	return emojipath;
+	
 }
 
 
@@ -134,16 +133,15 @@ int main()
 	bool connected; //Determining network connection status
 	
 	//init Sensors pin
-	Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
+	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	UWORD  digitalValue;
 	//UWORD  analogValue;
 	float temperature, humidity;
 	float light_duration;
 	SunlightDurationRecorder duration;
 	string LightHours = "hours of light still needed ";
-	char Emojipath = "";
-	char Temp = "Temp:";
-	char Hum = "Temp:";
+	string Temp = "Temp:";
+	string Hum = "Temp:";
     while (1) {
         //Get local time
 		local_time = time.getLocalTime();
@@ -163,10 +161,10 @@ int main()
 		dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
 		if(dhtFLAG)
 		{
-			Temp = Temp + to_string(temperature);
-			Paint.DrawString_EN(10, 16, &Temp, &Font12, BLACK, WHITE);
+			Temp = "Temp:" + to_string(temperature);
+			Paint.DrawString_EN(10, 16, reinterpret_cast<const char*>(&Temp), &Font12, BLACK, WHITE);
 			Hum = Hum  + to_string(humidity);
-			Paint.DrawString_EN(10, 28, &Hum, &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 28, reinterpret_cast<const char*>(&Hum), &Font12, BLACK, WHITE);
 			DEV.Delay_ms(50);
 
 		}
@@ -183,11 +181,10 @@ int main()
 			LightHours = "not need more light";
 		}
 		
-		Paint.DrawString_EN(10, 40, &LightHours, &Font12, BLACK, WHITE);
+		Paint.DrawString_EN(10, 40, reinterpret_cast<const char*>(&LightHours), &Font12, BLACK, WHITE);
 		DEV.Delay_ms(50);
 		//display of the plant emoji
-		Emojipath = EmojiSelector(temperature, humidity,digitalValue, light_duration);
-		Paint.GUI_ReadBmp_65K(&Emojipath, 32, 64);
+		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
 		DEV.Delay_ms(50);
 		
 		OLED.Display(BlackImage);
