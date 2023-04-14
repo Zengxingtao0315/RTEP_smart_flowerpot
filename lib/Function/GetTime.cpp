@@ -55,8 +55,8 @@ float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue) {
     }
 	
 	int light_duration = duration_0_.count();
-	std::chrono::seconds duration{light_duration};  // 12345 秒
-    float hours = std::chrono::duration_cast<std::chrono::hours>(duration).count();
+	std::chrono::seconds Drt{light_duration};  // 
+    float hours = std::chrono::duration_cast<std::chrono::hours>(Drt).count();
     std::cout << hours << " hours" << std::endl;
 	return hours;
 	

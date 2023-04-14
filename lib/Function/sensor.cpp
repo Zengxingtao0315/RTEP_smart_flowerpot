@@ -41,7 +41,7 @@ bool Sensor::readDHTdata(float* temperature, float* humidity) {
     float f;
 	
 	
-    dht_data.data[0] = dht_data.data[1] = dht_data.data[2] = dht_data.data[3] = dht_data.data[4] = 0;
+    dht_data[0] = dht_data[1] = dht_data[2] = dht_data[3] = dht_data[4] = 0;
     // pull pin down for 18 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
@@ -66,9 +66,9 @@ bool Sensor::readDHTdata(float* temperature, float* humidity) {
 		// ignore first 3 transitions
         if ((i >= 4) && (i % 2 == 0)) {
 		// shove each bit into the storage bytes 
-            dht_data.data[j / 8] <<= 1;
+            dht_data[j / 8] <<= 1;
             if (counter > 16)
-                dht_data.data[j / 8] |= 1;
+                dht_data[j / 8] |= 1;
             j++;
         }
     }
@@ -78,12 +78,12 @@ bool Sensor::readDHTdata(float* temperature, float* humidity) {
    * print it out if data is good
    */
    
-    if ((j >= 40) && (dht_data.data[4] == ((dht_data.data[0] + dht_data.data[1] + dht_data.data[2] + dht_data.data[3]) & 0xFF))) {
+    if ((j >= 40) && (dht_data[4] == ((dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF))) {
         //f = dht_data.data[2] * 9.0 / 5.0 + 32;
 		
 		
-		*temperature = dht_data.data[0] + (float)dht_data.data[1] / 100.0;
-        *humidity = dht_data.data[2] + (float)dht_data.data[3] / 100.0;
+		*temperature = dht_data[0] + (float)dht_data[1] / 100.0;
+        *humidity = dht_data[2] + (float)dht_data[3] / 100.0;
 		
 		std::cout << "Temperature: " << *temperature << std::endl;
         std::cout << "Humidity: " << *humidity << std::endl;
