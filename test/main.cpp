@@ -23,6 +23,10 @@ extern "C" {
 #include <wiringPi.h>
 
 #include <iostream> // C++标准头文件，其中包含cout和endl的定义。
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
+#include <string>
+#include <thread>
 
 #define OLED_WIDTH 128
 #define OLED_HEIGHT 128
@@ -88,7 +92,7 @@ int main()
         std::cout << "Only USE_SPI, Please revise DEV_Config.h !!!" << std::endl;
         return -1;
     }
-
+	start_server(2.3,2.3,2.3);
 	//OLED Init...
     std::cout << "OLED Init..." << std::endl;
 	
