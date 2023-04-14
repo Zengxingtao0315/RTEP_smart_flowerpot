@@ -160,10 +160,10 @@ int main()
 		if(dhtFLAG)
 		{
 			
-			Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
-			Paint.DrawNum(59, 16, temperature, &Font12, 4, BLACK, WHITE);
-			Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
-			Paint.DrawNum(59, 28, humidity, &Font12, 4, BLACK, WHITE);
+			Paint.DrawString_EN(10, 20, "Temp:", &Font12, BLACK, WHITE);
+			Paint.DrawNum(59, 20, temperature, &Font12, 4, BLACK, WHITE);
+			Paint.DrawString_EN(10, 32, "Hum:", &Font12, BLACK, WHITE);
+			Paint.DrawNum(59, 32, humidity, &Font12, 4, BLACK, WHITE);
 			DEV.Delay_ms(50);
 
 		}
@@ -171,20 +171,23 @@ int main()
 		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light
 		digitalValue = Sensor.readDigitalValue();
 		if (digitalValue){
+			Paint.DrawString_EN(10, 44, "light", &Font12, BLACK, WHITE);
 			std::cout<<"light"<<std::endl;
 		}else{
 			std::cout<<"dark""<<std::endl;
+			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
 		}
 		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
+		/**********************************
 		if(light_duration < 8.0){
 			Paint.DrawString_EN(10, 40, "need more light", &Font12, BLACK, WHITE);
 		}
 		else{
 			Paint.DrawString_EN(10, 40, "light sufficient", &Font12, BLACK, WHITE);
 		}
-		
+		**********************************/
 		
 		DEV.Delay_ms(50);
 		//display of the plant emoji
