@@ -139,9 +139,7 @@ int main()
 	float temperature, humidity;
 	float light_duration;
 	SunlightDurationRecorder duration;
-	string LightHours = "hours of light still needed ";
-	string Temp = "Temp:";
-	string Hum = "Temp:";
+	
     while (1) {
         //Get local time
 		local_time = time.getLocalTime();
@@ -152,19 +150,20 @@ int main()
 		
         //display of internet status
 		connected = checker.CheckInternetConnection();
-        connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 65, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 65, 0);
+        connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
         DEV.Delay_ms(50);
 		
 		//display of plant information
 		//Read the temperature and humidity of the DHT sensor after approximately one second
-		DEV.Delay_ms(1000);
-		dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
+		DEV.Delay_ms(2000);
+		bool dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
 		if(dhtFLAG)
 		{
-			Temp = "Temp:" + to_string(temperature);
-			Paint.DrawString_EN(10, 16, reinterpret_cast<const char*>(&Temp), &Font12, BLACK, WHITE);
-			Hum = Hum  + to_string(humidity);
-			Paint.DrawString_EN(10, 28, reinterpret_cast<const char*>(&Hum), &Font12, BLACK, WHITE);
+			
+			Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
+			Paint.DrawNum(59, 16, &temperature, &Font12, 4, BLACK, WHITE);
+			Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
+			Paint.DrawNum(59, 28, &humidity, &Font12, 4, BLACK, WHITE);
 			DEV.Delay_ms(50);
 
 		}
@@ -174,14 +173,14 @@ int main()
 		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
-		if(LightHours < 8.0){
-			LightHours = to_string(8.0-light_duration) + "hours of light still needed " ;
+		if(light_duration < 8.0){
+			Paint.DrawString_EN(10, 40, "need more light", &Font12, BLACK, WHITE);
 		}
 		else{
-			LightHours = "not need more light";
+			Paint.DrawString_EN(10, 40, "light sufficient", &Font12, BLACK, WHITE);
 		}
 		
-		Paint.DrawString_EN(10, 40, reinterpret_cast<const char*>(&LightHours), &Font12, BLACK, WHITE);
+		
 		DEV.Delay_ms(50);
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
