@@ -13,7 +13,7 @@ using namespace std;
 int waitForPinStatus(int status, int timeout)
 {
     int t = 0;
-    while (digitalRead(DHT_PIN) != status) {
+    while (digitalRead(DHTPIN) != status) {
         if (t >= timeout) {
             return -1;
         }
@@ -58,7 +58,7 @@ bool Sensor::readDHTdata(double* temperature, double* humidity) {
 
 	
 	for(i=0;i<5;i++)
-        dht_dat[i]=0;
+        dht_data[i]=0;
 	
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
@@ -84,7 +84,7 @@ bool Sensor::readDHTdata(double* temperature, double* humidity) {
         delayMicroseconds(30);
 
         if (digitalRead(dhtPin)) {
-            buf[i / 8] |= (1 << (7 - (i % 8)));
+            dht_data[i / 8] |= (1 << (7 - (i % 8)));
         }
     }
 	
@@ -93,7 +93,7 @@ bool Sensor::readDHTdata(double* temperature, double* humidity) {
    * print it out if data is good
    */
 	crc = dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3];
-    if (crc != buf[4]) {
+    if (crc != dht_data[4]) {
         std::cout << "Data not good, skip" << std::endl;
 		return -3;
     }

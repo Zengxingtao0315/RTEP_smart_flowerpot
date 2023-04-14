@@ -170,6 +170,11 @@ int main()
 		
 		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light
 		digitalValue = Sensor.readDigitalValue();
+		if (digitalValue){
+			std::cout<<"light"<<std::endl;
+		}else{
+			std::cout<<"dark""<<std::endl;
+		}
 		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
