@@ -183,7 +183,7 @@ int main()
 			LightHours = "not need more light";
 		}
 		
-		Paint.DrawString_EN(10, 40, LightHours, &Font12, BLACK, WHITE);
+		Paint.DrawString_EN(10, 40, &LightHours, &Font12, BLACK, WHITE);
 		DEV.Delay_ms(50);
 		//display of the plant emoji
 		Emojipath = EmojiSelector(temperature, humidity,digitalValue, light_duration);
