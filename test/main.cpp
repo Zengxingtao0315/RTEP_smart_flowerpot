@@ -142,8 +142,8 @@ int main()
 	SunlightDurationRecorder duration;
 	string LightHours = "hours of light still needed ";
 	char Emojipath = "";
-	string Temp = "Temp:";
-	string Hum = "Temp:";
+	char Temp = "Temp:";
+	char Hum = "Temp:";
     while (1) {
         //Get local time
 		local_time = time.getLocalTime();
@@ -164,9 +164,9 @@ int main()
 		if(dhtFLAG)
 		{
 			Temp = Temp + to_string(temperature);
-			Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 16, &Temp, &Font12, BLACK, WHITE);
 			Hum = Hum  + to_string(humidity);
-			Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 28, &Hum, &Font12, BLACK, WHITE);
 			DEV.Delay_ms(50);
 
 		}
@@ -187,7 +187,7 @@ int main()
 		DEV.Delay_ms(50);
 		//display of the plant emoji
 		Emojipath = EmojiSelector(temperature, humidity,digitalValue, light_duration);
-		Paint.GUI_ReadBmp_65K(Emojipath, 32, 64);
+		Paint.GUI_ReadBmp_65K(&Emojipath, 32, 64);
 		DEV.Delay_ms(50);
 		
 		OLED.Display(BlackImage);
