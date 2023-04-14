@@ -13,11 +13,6 @@ extern "C" {
 #include <ctime>
 #include "../GUI/GUI_Paint.hpp"
 
-struct {
-    int sec = 0;
-    int min = 0;
-    int hour = 0;
-}Duration;
 
 class Time {
 public:
@@ -26,7 +21,6 @@ public:
 
 class SunlightDurationRecorder {
 public:
-    int recordSunlightDuration(bool digitalValue);
 	float getSunlightDurationInHours(bool digitalValue);
 private:
     bool initialized_{false};

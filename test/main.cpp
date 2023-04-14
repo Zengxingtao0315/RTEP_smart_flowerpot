@@ -30,6 +30,43 @@ extern "C" {
 using namespace std;
 extern DEV DEV;
 
+
+//expression plants emotion or status
+char EmojiSelector(float temperature, float humidity, int digitalValue, float light_duration ){
+	char emojipath = 0;
+	//When everything is fine
+	if(temperature <= 38.0 && temperature >= 15.0 && digital == 0 && humidity >= 30.0 && humidity <= 50.0)
+	{
+		emojipath = "./pic/happy.bmp";		
+	}//Too many hours of sunlight when the temperature is too high
+	else if(temperature > 38.0  && digital == 0 && humidity >= 30.0 && humidity <= 50.0 && light_duration > 8.0){
+		emojipath = "./pic/too_much_light.bmp";
+	}//Insufficient sunshine hours when the temperature is too high
+	else if(temperature > 38.0  && digital == 0 && humidity >= 30.0 && humidity <= 50.0 && light_duration <= 8.0){
+		emojipath = "./pic/too_hot.bmp";
+	}//When plants are not exposed to light and have insufficient hours of sunlight
+	else if(temperature <= 38.0 && temperature >= 15.0  && digital == 1 && humidity >= 30.0 && humidity <= 50.0 && light_duration <= 8.0){
+		emojipath = "./pic/lack_of_sunlight.bmp";
+	}//Any time the temperature is too low
+	else if(temperature < 15.0  && humidity >= 30.0 && humidity <= 50.0 ){
+		emojipath = "./pic/cold.bmp";
+	}//Any time the humidity is too low
+	else if(humidity < 30.0 ){
+		emojipath = "./pic/need_water.bmp";
+	}//Any time the humidity is too high
+	else if(humidity > 50.0 ){
+		emojipath = "./pic/overwatered.bmp";
+	}
+
+	
+	return emojipath;
+}
+
+
+
+
+
+
 void Handler(int signo)
 {
 	// System Exit
@@ -53,13 +90,16 @@ int main()
         return -1;
     }
 
+	//OLED Init...
     std::cout << "OLED Init..." << std::endl;
-	//
-	OLED OLED;
-	wiringPiSetup();
 	
+	wiringPiSetup();
+	Paint Paint;
+	OLED OLED;
+ 
     OLED.Init();
     DEV.Delay_ms(500);
+	
     // Create a new image cache
     UBYTE *BlackImage;
     UWORD Imagesize = (OLED_WIDTH * 2) * OLED_HEIGHT;
@@ -68,35 +108,42 @@ int main()
         return -1;
     }
     std::cout << "Paint_NewImage" << std::endl;
-	Paint Paint;
+	
     Paint.NewImage(BlackImage, OLED_WIDTH, OLED_HEIGHT, 0, BLACK);
     Paint.SetScale(65);
     std::cout << "Drawing" << std::endl;
-    //
+    
+	//Select Image
     Paint.SelectImage(BlackImage);
     DEV.Delay_ms(500);
     Paint.Clear(BLACK);
+	
     // initialise the whole display
     //GUI_ReadBmp_65K("./pic/OLED.bmp", 0, 0);
     // Show image on page
     //OLED_Display(BlackImage);
     //DEV_Delay_ms(500);
     //Paint_Clear(BLACK);
-    Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
-    Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
-    Paint.DrawString_EN(10, 40, "Lux:", &Font16, BLACK, WHITE);
-    
 
-	
+	// init time funciton, get local time.
 	Time time;
 	PAINT_TIME local_time;
+	
+	//init InternetConnectionChecker
 	InternetConnectionChecker checker;
-	bool connected;
+	bool connected; //Determining network connection status
+	
+	//init Sensors pin
 	Sensor Sensor(DIGITALPIN, ANALOGPIN, DHTPIN);
 	UWORD  digitalValue;
-	UWORD  analogValue;
+	//UWORD  analogValue;
 	float temperature, humidity;
-	Duration light_duration;
+	float light_duration;
+	SunlightDurationRecorder duration;
+	string LightHours = "hours of light still needed ";
+	char Emojipath = "";
+	string Temp = "Temp:";
+	string Hum = "Temp:";
     while (1) {
         //Get local time
 		local_time = time.getLocalTime();
@@ -111,34 +158,36 @@ int main()
         DEV.Delay_ms(50);
 		
 		//display of plant information
-		
-		digitalValue = Sensor.readDigitalValue();
-		analogValue = Sensor.readAnalogValue();
-		if(digitalValue != 0){
-			if(light_duration.hour < 8){
-				calculateDaylightDuration(int digitalValue, Duration *light_duration);
-				std::cout << "Need more light" << std::endl;
-				
-			}
-			
-		}
+		//Read the temperature and humidity of the DHT sensor after approximately one second
 		DEV.Delay_ms(1000);
-		if(Sensor.readDHTdata(&temperature, &humidity))
+		dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
+		if(dhtFLAG)
 		{
-			
-			Paint.DrawNum(49, 16, temperature, &Font12, 4, WHITE, BLACK);
+			Temp = Temp + to_string(temperature);
+			Paint.DrawString_EN(10, 16, "Temp:", &Font12, BLACK, WHITE);
+			Hum = Hum  + to_string(humidity);
+			Paint.DrawString_EN(10, 28, "Hum:", &Font12, BLACK, WHITE);
 			DEV.Delay_ms(50);
-			Paint.DrawNum(49, 28, humidity, &Font12, 4, WHITE, BLACK);
 
 		}
 		
-	
-		Paint.DrawNum(49, 40, analogValue, &Font12, 4, WHITE, BLACK);
-
+		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light
+		digitalValue = Sensor.readDigitalValue();
+		//analogValue = Sensor.readAnalogValue();
+		//Calculate the duration of the reading at 0, which is also the duration of daylight
+		light_duration = duration.getSunlightDurationInHours(digitalValue);
+		if(LightHours < 8.0){
+			LightHours = to_string(8.0-light_duration) + "hours of light still needed " ;
+		}
+		else{
+			LightHours = "not need more light";
+		}
+		
+		Paint.DrawString_EN(10, 40, LightHours, &Font12, BLACK, WHITE);
 		DEV.Delay_ms(50);
 		//display of the plant emoji
-		Paint.GUI_ReadBmp_65K("./pic/happy.bmp", 32, 64);
-
+		Emojipath = EmojiSelector(temperature, humidity,digitalValue, light_duration);
+		Paint.GUI_ReadBmp_65K(Emojipath, 32, 64);
 		DEV.Delay_ms(50);
 		
 		OLED.Display(BlackImage);

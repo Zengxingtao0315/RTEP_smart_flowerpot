@@ -10,9 +10,9 @@
 using namespace std;
 UBYTE dht_data[5];
 
-Sensor::Sensor(int digitalPin, int analogPin, int dhtPin) {
+Sensor::Sensor(int digitalPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
-        this->analogPin = ANALOGPIN;
+        //this->analogPin = ANALOGPIN;
 		this->dhtPin = DHTPIN;
     }
 	
@@ -23,11 +23,12 @@ UWORD Sensor::readDigitalValue() {
     }
 	
 	// get light analogue value
+	/*************************
 UWORD Sensor::readAnalogValue() {
         UWORD value = analogRead(analogPin);
         return value;
     }
-	
+	*************************/
 	// get dht temperature and humidity
 bool Sensor::readDHTdata(float* temperature, float* humidity) {
     

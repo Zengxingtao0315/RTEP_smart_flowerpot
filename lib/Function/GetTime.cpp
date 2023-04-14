@@ -28,7 +28,7 @@ PAINT_TIME Time::getLocalTime() {
 
 
 
-int SunlightDurationRecorder::recordSunlightDuration(bool digitalValue) {
+float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue) {
 	auto now = std::chrono::system_clock::now();
 	if (!initialized_) {
 		// 第一次调用函数，初始化记录信息
@@ -50,16 +50,15 @@ int SunlightDurationRecorder::recordSunlightDuration(bool digitalValue) {
 	if (digitalValue == 0) {
 		duration_0_ += duration;
 	} 
-	if (digitalValue == 0) {
+	if (digitalValue == 1) {
         start_time_ = now;
     }
-	return duration_0_.count();
-}
-float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue){
-	int light_duration = recordSunlightDuration(digitalValue);
+	
+	int light_duration = duration_0_.count();
 	std::chrono::seconds duration{light_duration};  // 12345 秒
     float hours = std::chrono::duration_cast<std::chrono::hours>(duration).count();
     std::cout << hours << " hours" << std::endl;
 	return hours;
+	
 }
 

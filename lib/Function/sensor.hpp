@@ -19,13 +19,13 @@
 class Sensor {
 private:
     int digitalPin;
-    int analogPin;
+    //int analogPin;
     int dhtPin;
 
 public:
-    Sensor(int digitalPin, int analogPin, int dhtPin);
+    Sensor(int digitalPin, int dhtPin);
     UWORD readDigitalValue();
-    UWORD readAnalogValue();
+    //UWORD readAnalogValue();
     bool readDHTdata(float* temperature, float* humidity);
 };
 #endif
