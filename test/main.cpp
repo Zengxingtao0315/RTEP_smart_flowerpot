@@ -32,8 +32,8 @@ extern "C" {
 #define OLED_HEIGHT 128
 
 using namespace std;
-extern DEV DEV;
-
+//extern DEV DEV;
+extern Timer Timer;
 
 //expression plants emotion or status
 const char* EmojiSelector(float temperature, float humidity, int digital, float light_duration ){
@@ -100,7 +100,8 @@ int main()
 	OLED OLED;
  
     OLED.Init();
-    DEV.Delay_ms(50);
+    //DEV.Delay_ms(50);
+
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -149,7 +150,7 @@ int main()
         // display of time
 
         Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-		DEV.Delay_ms(500);
+		//DEV.Delay_ms(500);
 		
         //display of internet status
 		connected = checker.CheckInternetConnection();
