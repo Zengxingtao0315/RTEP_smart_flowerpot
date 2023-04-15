@@ -63,10 +63,10 @@ bool Sensor::readDHTdata(double* temperature, double* humidity) {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-    delay(20);
+    delay(18);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    delayMicroseconds(30);
+    delayMicroseconds(40);
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
 	pullUpDnControl(dhtPin, PUD_UP);
@@ -92,6 +92,11 @@ bool Sensor::readDHTdata(double* temperature, double* humidity) {
    * check we read 40 bits (8bit x 5 ) + verify checksum in the last byte
    * print it out if data is good
    */
+	std::cout << dht_data[0] << std::endl;
+	std::cout << dht_data[1] << std::endl;
+	std::cout << dht_data[2] << std::endl;
+	std::cout << dht_data[3] << std::endl;
+	std::cout << dht_data[4] << std::endl;
 	crc = dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3];
     if (crc != dht_data[4]) {
         std::cout << "Data not good, skip" << std::endl;

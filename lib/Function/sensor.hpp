@@ -12,7 +12,7 @@
 #define MAXTIMINGS  85
 #define DHTPIN    7
 #define DIGITALPIN 0   
-#define ANALOGPIN  3   
+  
 #define ATTEMPTS 5      //retry 5 times when no response
 
 
