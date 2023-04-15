@@ -160,8 +160,9 @@ int main()
 		//display of plant information
 		//Read the temperature and humidity of the DHT sensor after approximately one second
 		DEV.Delay_ms(2000);
-		bool dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
-		if(dhtFLAG)
+		dhtSTAT dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
+		if(dhtFLAG == TIMEOUT) Debug("DHT11 module timeout");
+		if(dhtFLAG == SUCCESS)
 		{
 			
 			Paint.DrawString_EN(10, 20, "Temp:", &Font12, BLACK, WHITE);
