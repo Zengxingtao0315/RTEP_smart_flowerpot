@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Example</title>
+</head>
+<body>
+    <div id="messages"></div>
+    <script>
+        const url = "ws://192.168.1.103:12345";
+        const socket = new WebSocket(url);
+        
+        socket.onopen = function(event) {
+            console.log("WebSocket connection established");
+        };
+        
+        socket.onmessage = function(event) {
+            const message = event.data;
+            console.log("Received message from server:", message);
+            
+            const messagesDiv = document.getElementById("messages");
+            const newMessage = document.createElement("div");
+            newMessage.innerHTML = message;
+            messagesDiv.appendChild(newMessage);
+        };
+        
+        socket.onerror = function(event) {
+            console.error("WebSocket error:", event);
+        };
+        
+        socket.onclose = function(event) {
+            console.log("WebSocket connection closed");
+        };
+    </script>
+</body>
+</html>
