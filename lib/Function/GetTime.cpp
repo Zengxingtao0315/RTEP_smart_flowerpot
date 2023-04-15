@@ -49,6 +49,7 @@ float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue) {
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start_time_);
 	if (digitalValue == 0) {
 		duration_0_ += duration;
+		
 	} 
 	if (digitalValue == 1) {
         start_time_ = now;
