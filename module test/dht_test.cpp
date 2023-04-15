@@ -37,13 +37,13 @@ void read_dht11_dat()
 	for ( i = 0; i < 40; i++ )
 	{
 		loopCnt = 10000;
-		while(digitalRead(pin) == LOW)
+		while(digitalRead(DHTPIN) == LOW)
 			if (loopCnt-- == 0) return -2;
 
 		unsigned long t = micros();
 
 		loopCnt = 10000;
-		while(digitalRead(pin) == HIGH)
+		while(digitalRead(DHTPIN) == HIGH)
 			if (loopCnt-- == 0) return -2;
 
 		if ((micros() - t) > 40) dht11_dat[idx] |= (1 << cnt);

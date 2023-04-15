@@ -8,22 +8,7 @@
 #include "sensor.hpp"
 
 using namespace std;
-
-
-int waitForPinStatus(int status, int timeout)
-{
-    int t = 0;
-    while (digitalRead(DHTPIN) != status) {
-        if (t >= timeout) {
-            return -1;
-        }
-        delayMicroseconds(1);
-        t++;
-    }
-    return 0;
-}
-
-
+extern DEV DEV;
 
 Sensor::Sensor(int digitalPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
@@ -45,17 +30,14 @@ UWORD Sensor::readAnalogValue() {
     }
 	*************************/
 	// get dht temperature and humidity
-bool Sensor::readDHTdata(double* temperature, double* humidity) {
+dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
     
 	UBYTE dht_data[5];
 	UBYTE crc = 0;
+	UBYTE idx = 0;
+	float	f;
 	if ( wiringPiSetup() == -1 )
     exit( 1 );
-
-	UBYTE laststate = HIGH;
-    UBYTE counter = 0;
-    UBYTE j = 0, i;
-
 	
 	for(i=0;i<5;i++)
         dht_data[i]=0;
@@ -63,55 +45,59 @@ bool Sensor::readDHTdata(double* temperature, double* humidity) {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-    delay(18);
+    DEV.Delay_ms(18);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    delayMicroseconds(40);
+    usleep(40);
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
 	pullUpDnControl(dhtPin, PUD_UP);
 	
-	if (waitForPinStatus(LOW, 5000) < 0) {
-        return -1;
-    }
-	
-	// detect change and read data 
-    for (int i = 0; i < 40; i++) {
-        if (waitForPinStatus(HIGH, 100) < 0) {
-            return -2;
-        }
+	// ACKNOWLEDGE or TIMEOUT
+	unsigned int loopCnt = 10000;
+	while(digitalRead(dhtPin) == LOW)
+		if (loopCnt-- == 0) return TIMEOUT;
 
-        delayMicroseconds(30);
-
-        if (digitalRead(dhtPin)) {
-            dht_data[i / 8] |= (1 << (7 - (i % 8)));
-        }
-    }
 	
-	/*
-   * check we read 40 bits (8bit x 5 ) + verify checksum in the last byte
-   * print it out if data is good
-   */
-	std::cout << dht_data[0] << std::endl;
-	std::cout << dht_data[1] << std::endl;
-	std::cout << dht_data[2] << std::endl;
-	std::cout << dht_data[3] << std::endl;
-	std::cout << dht_data[4] << std::endl;
-	crc = dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3];
-    if (crc != dht_data[4]) {
-        std::cout << "Data not good, skip" << std::endl;
-		return -3;
-    }
-    else {
-        //f = dht_data.data[2] * 9.0 / 5.0 + 32;
-		
-		*temperature = dht_data[0] + (double)dht_data[1] *0.1;
-        *humidity = dht_data[2] + (double)dht_data[3] *0.1;
-		
-		std::cout << "Temperature: " << *temperature << std::endl;
-        std::cout << "Humidity: " << *humidity << std::endl;
-        return 0;  
-    }
+	loopCnt = 10000;
+	while(digitalRead(dhtPin) == HIGH)
+		if (loopCnt-- == 0) return TIMEOUT;
+	
+	for ( i = 0; i < 40; i++ )
+	{
+		loopCnt = 10000;
+		while(digitalRead(dhtPin) == LOW)
+			if (loopCnt-- == 0) return TIMEOUT;
+
+		unsigned long t = micros();
+
+		loopCnt = 10000;
+		while(digitalRead(dhtPin) == HIGH)
+			if (loopCnt-- == 0) return TIMEOUT;
+
+		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
+		if (cnt == 0)   // next byte?
+		{
+			cnt = 7;    // restart at MSB
+			idx++;      // next byte!
+		}
+		else cnt--;
+	}
+ 
+	if  (dht_data[4] == ( (dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF) ) 
+	{
+		f = dht_data[2] * 9. / 5. + 32;
+		humidity* = dht_data[0] + dht_data[1] * 0.1;
+		temperature* = dht_data[2] + dht_data[3] * 0.1;
+		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
+          << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
+          << f << " F)" << std::endl;
+		  return SUCCESS;
+
+	}else  {
+		printf( "Data not good, skip\n" );
+		return FAIL;
+	}
 
 }
 

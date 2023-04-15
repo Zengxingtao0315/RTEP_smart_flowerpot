@@ -92,7 +92,6 @@ int main()
         std::cout << "Only USE_SPI, Please revise DEV_Config.h !!!" << std::endl;
         return -1;
     }
-	start_server(2.3,2.3,2.3);
 	//OLED Init...
     std::cout << "OLED Init..." << std::endl;
 	
@@ -101,7 +100,7 @@ int main()
 	OLED OLED;
  
     OLED.Init();
-    DEV.Delay_ms(500);
+    DEV.Delay_ms(50);
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -118,7 +117,7 @@ int main()
     
 	//Select Image
     Paint.SelectImage(BlackImage);
-    DEV.Delay_ms(500);
+    DEV.Delay_ms(50);
     Paint.Clear(BLACK);
 	
     // initialise the whole display
@@ -150,25 +149,26 @@ int main()
         // display of time
 
         Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(500);
 		
         //display of internet status
 		connected = checker.CheckInternetConnection();
         connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
-        DEV.Delay_ms(50);
+        DEV.Delay_ms(500);
 		
 		//display of plant information
 		//Read the temperature and humidity of the DHT sensor after approximately one second
-		DEV.Delay_ms(2000);
-		bool dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
-		if(dhtFLAG)
+		DEV.Delay_ms(1000);
+		dhtSTAT dhtFLAG = Sensor.readDHTdata(&temperature, &humidity);
+		if(dhtFLAG == TIMEOUT) Debug("DHT11 module timeout");
+		if(dhtFLAG == SUCCESS)
 		{
 			
-			Paint.DrawString_EN(10, 20, "Temp:", &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 20, "Temp(C):", &Font12, BLACK, WHITE);
 			Paint.DrawNum(59, 20, temperature, &Font12, 4, BLACK, WHITE);
-			Paint.DrawString_EN(10, 32, "Hum:", &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
 			Paint.DrawNum(59, 32, humidity, &Font12, 4, BLACK, WHITE);
-			DEV.Delay_ms(50);
+			DEV.Delay_ms(500);
 
 		}
 		
@@ -181,6 +181,7 @@ int main()
 			std::cout<<"dark""<<std::endl;
 			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
 		}
+		DEV.Delay_ms(1000);
 		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
@@ -193,13 +194,12 @@ int main()
 		}
 		**********************************/
 		
-		DEV.Delay_ms(50);
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(1000);
 		
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(1000);
 		
 		OLED.Clear();
 	}

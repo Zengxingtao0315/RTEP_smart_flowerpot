@@ -1,43 +1,50 @@
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
 #include <boost/asio.hpp>
-#include <boost/beast.hpp>
+#include <boost/bind.hpp>
 #include <iostream>
-#include <string>
-#include <thread>
 
-void start_server(double temperature, double humidity, float lightDuration) {
-  // Create the IO context and endpoint
-  boost::asio::io_context io_context;
-  boost::asio::ip::tcp::endpoint endpoint{boost::asio::ip::tcp::v4(), 8080};
+using websocketpp::server;
 
-  // Create and bind the acceptor
-  boost::asio::ip::tcp::acceptor acceptor{io_context, endpoint};
-  acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-  acceptor.listen();
+int main() {
+    // Create a WebSocket server
+    server<websocketpp::config::asio> ws_server;
+    ws_server.init_asio();
 
-  // Accept WebSocket connections
-  boost::asio::spawn(io_context, [&](boost::asio::yield_context yield) {
-    while (true) {
-      boost::asio::ip::tcp::socket socket{io_context};
-      acceptor.async_accept(socket, yield);
+    // Set up the server's callback functions
+    ws_server.set_open_handler([&](websocketpp::connection_hdl hdl) {
+        std::cout << "Client connected" << std::endl;
+    });
 
-      boost::beast::websocket::stream<boost::asio::ip::tcp::socket> ws{
-          std::move(socket)};
-      ws.async_accept(yield);
+    ws_server.set_close_handler([&](websocketpp::connection_hdl hdl) {
+        std::cout << "Client disconnected" << std::endl;
+    });
 
-      // Send real-time data to the WebSocket connection
-      while (true) {
-        // 假设获取到的实时数据分别保存在 temperature、humidity 和 lightDuration 变量中
-		std::string data = std::to_string(temperature) + "," + std::to_string(humidity) + "," + std::to_string(lightDuration);
+    // Set up a timer to periodically send updated data to clients
+    boost::asio::deadline_timer timer(ws_server.get_io_service());
+    timer.expires_from_now(boost::posix_time::seconds(1));
+    timer.async_wait(boost::bind([&](const boost::system::error_code& ec) {
+        if (!ec) {
+            // Generate some data to send
+            std::string data = "{\"time\": \"12:00\", \"temperature\": 23.5, \"humidity\": 60, \"light\": 100}";
 
-        boost::beast::websocket::frame frame{boost::beast::websocket::opcode::text, boost::beast::websocket::frame::create(data)};
-        ws.async_write(frame, yield);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-      }
-    }
-  });
+            // Broadcast the data to all connected clients
+            for (auto it = ws_server.get_connections().begin(); it != ws_server.get_connections().end(); ++it) {
+                ws_server.send(*it, data, websocketpp::frame::opcode::text);
+            }
 
-  // Run the IO context
-  io_context.run();
+            // Reschedule the timer
+            timer.expires_from_now(boost::posix_time::seconds(1));
+            timer.async_wait(boost::bind([&](const boost::system::error_code& ec) {
+                // Handle timer expiration recursively
+            }));
+        }
+    }, _1));
+
+    // Start the server listening on port 12345
+    ws_server.listen(12345);
+    ws_server.start_accept();
+
+    // Run the server
+    ws_server.run();
 }
-
-

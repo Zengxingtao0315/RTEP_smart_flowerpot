@@ -15,7 +15,11 @@
   
 #define ATTEMPTS 5      //retry 5 times when no response
 
-
+enum dhtSTAT{
+	TIMEOUT,
+	FAIL,
+	SUCCESS
+};
 
 class Sensor {
 private:
@@ -27,6 +31,6 @@ public:
     Sensor(int digitalPin, int dhtPin);
     UWORD readDigitalValue();
     //UWORD readAnalogValue();
-    bool readDHTdata(double* temperature, double* humidity);
+    dhtSTAT readDHTdata(double* temperature, double* humidity);
 };
 #endif
