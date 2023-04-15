@@ -1,81 +1,68 @@
 import RPi.GPIO as GPIO
 import time
 
-#############################################################
-dhtpin = 4 # 这里填写GPIO号（BCM引脚编号模式）    手动改变此行
-#############################################################
+channel =4 
+data = []
+j = 0
 
-GPIO.setmode(GPIO.BCM)  # 设置使用BCM引脚编号模式
+GPIO.setmode(GPIO.BCM)
 
-def main(dhtpin):
-    dht_data = [0] * 5
-    cnt = 7
-    idx = 0
-    f = 0.0
-    if GPIO.getmode() is None:
-        GPIO.setmode(GPIO.BCM)
+time.sleep(1)
 
-    for i in range(5):
-        dht_data[i] = 0
+GPIO.setup(channel, GPIO.OUT)
+GPIO.output(channel, GPIO.LOW)
+time.sleep(0.02)
+GPIO.output(channel, GPIO.HIGH)
+GPIO.setup(channel, GPIO.IN)
 
-    # pull pin down for 20 milliseconds
-    GPIO.setup(dhtpin, GPIO.OUT)
-    GPIO.output(dhtpin, GPIO.LOW)
-    time.sleep(0.018)
+while GPIO.input(channel) == GPIO.LOW:
+  continue
+while GPIO.input(channel) == GPIO.HIGH:
+  continue
 
-    # then pull it up for 40 microseconds
-    GPIO.output(dhtpin, GPIO.HIGH)
-    time.sleep(0.00004)
+while j < 40:
+  k = 0
+  while GPIO.input(channel) == GPIO.LOW:
+    continue
+  while GPIO.input(channel) == GPIO.HIGH:
+    k += 1
+    if k > 100:
+      break
+  if k < 8:
+    data.append(0)
+  else:
+    data.append(1)
 
-    # prepare to read the pin
-    GPIO.setup(dhtpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+  j += 1
 
-    # ACKNOWLEDGE or TIMEOUT
-    loopCnt = 10000
-    while GPIO.input(dhtpin) == GPIO.LOW:
-        if loopCnt == 0:
-            return -2
-        loopCnt -= 1
+print "sensor is working."
+print data
 
-    loopCnt = 10000
-    while GPIO.input(dhtpin) == GPIO.HIGH:
-        if loopCnt == 0:
-            return -2
-        loopCnt -= 1
+humidity_bit = data[0:8]
+humidity_point_bit = data[8:16]
+temperature_bit = data[16:24]
+temperature_point_bit = data[24:32]
+check_bit = data[32:40]
 
-    for i in range(40):
-        loopCnt = 10000
-        while GPIO.input(dhtpin) == GPIO.LOW:
-            if loopCnt == 0:
-                return -2
-            loopCnt -= 1
+humidity = 0
+humidity_point = 0
+temperature = 0
+temperature_point = 0
+check = 0
 
-        t = time.time()
+for i in range(8):
+  humidity += humidity_bit[i] * 2 ** (7-i)
+  humidity_point += humidity_point_bit[i] * 2 ** (7-i)
+  temperature += temperature_bit[i] * 2 ** (7-i)
+  temperature_point += temperature_point_bit[i] * 2 ** (7-i)
+  check += check_bit[i] * 2 ** (7-i)
 
-        loopCnt = 10000
-        while GPIO.input(dhtpin) == GPIO.HIGH:
-            if loopCnt == 0:
-                return -2
-            loopCnt -= 1
+tmp = humidity + humidity_point + temperature + temperature_point
 
-        if (time.time() - t) > 0.00004:
-            dht_data[idx] |= (1 << cnt)
-        if cnt == 0:   # next byte?
-            cnt = 7    # restart at MSB
-            idx += 1      # next byte!
-        else:
-            cnt -= 1
+if check == tmp:
+  print "temperature :", temperature, "*C, humidity :", humidity, "%"
+else:
+  print "wrong"
+  print "temperature :", temperature, "*C, humidity :", humidity, "% check :", check, ", tmp :", tmp
 
-    if dht_data[4] == ((dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF):
-        f = dht_data[2] * 9. / 5. + 32
-        humidity = dht_data[0] + dht_data[1] * 0.1
-        temperature = dht_data[2] + dht_data[3] * 0.1
-        print("Humidity = {:.1f} %, Temperature = {:.1f} C ({:.1f} F)".format(humidity, temperature, f))
-        return humidity, temperature
-    else:
-        print("Data not good, skip")
-        return -3
-
-
-if __name__ =='__main__':
-    humidity, temperature = main(dhtpin)
+GPIO.cleanup()
