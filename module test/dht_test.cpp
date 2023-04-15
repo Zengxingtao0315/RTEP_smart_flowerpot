@@ -8,48 +8,54 @@ int dht11_dat[5] = { 0, 0, 0, 0, 0 };
  
 void read_dht11_dat()
 {
-	uint8_t laststate	= HIGH;
-	uint8_t counter		= 0;
-	uint8_t j		= 0, i;
+	
+	uint8_t cnt = 7;
+	uint8_t idx = 0;
 	float	f; 
  
 	dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
  
 	pinMode( DHTPIN, OUTPUT );
 	digitalWrite( DHTPIN, LOW );
-	delay( 18 );
+	delay( 20 );
 	digitalWrite( DHTPIN, HIGH );
 	delayMicroseconds( 40 );
 	pinMode( DHTPIN, INPUT );
- 
-	for ( i = 0; i < MAXTIMINGS; i++ )
+	// ACKNOWLEDGE or TIMEOUT
+	unsigned int loopCnt = 10000;
+	while(digitalRead(DHTPIN) == LOW)
+		if (loopCnt-- == 0) return -2;
+
+
+	loopCnt = 10000;
+	while(digitalRead(DHTPIN) == HIGH)
+		if (loopCnt-- == 0) return -2;
+	
+	
+	
+	
+	for ( i = 0; i < 40; i++ )
 	{
-		counter = 0;
-		while ( digitalRead( DHTPIN ) == laststate )
+		loopCnt = 10000;
+		while(digitalRead(pin) == LOW)
+			if (loopCnt-- == 0) return -2;
+
+		unsigned long t = micros();
+
+		loopCnt = 10000;
+		while(digitalRead(pin) == HIGH)
+			if (loopCnt-- == 0) return -2;
+
+		if ((micros() - t) > 40) dht11_dat[idx] |= (1 << cnt);
+		if (cnt == 0)   // next byte?
 		{
-			counter++;
-			delayMicroseconds( 1 );
-			if ( counter == 255 )
-			{
-				break;
-			}
+			cnt = 7;    // restart at MSB
+			idx++;      // next byte!
 		}
-		laststate = digitalRead( DHTPIN );
- 
-		if ( counter == 255 )
-			break;
- 
-		if ( (i >= 4) && (i % 2 == 0) )
-		{
-			dht11_dat[j / 8] <<= 1;
-			if ( counter > 16 )
-				dht11_dat[j / 8] |= 1;
-			j++;
-		}
+		else cnt--;
 	}
  
-	if ( (j >= 40) &&
-	     (dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF) ) )
+	if  (dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF) ) 
 	{
 		f = dht11_dat[2] * 9. / 5. + 32;
 		printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
