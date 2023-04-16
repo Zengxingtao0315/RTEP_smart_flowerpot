@@ -23,8 +23,6 @@ extern "C" {
 #include <wiringPi.h>
 
 #include <iostream> // C++标准头文件，其中包含cout和endl的定义。
-#include <boost/asio.hpp>
-#include <boost/beast.hpp>
 #include <string>
 #include <thread>
 
@@ -92,7 +90,6 @@ int main()
         std::cout << "Only USE_SPI, Please revise DEV_Config.h !!!" << std::endl;
         return -1;
     }
-	start_server(2.3,2.3,2.3);
 	//OLED Init...
     std::cout << "OLED Init..." << std::endl;
 	
@@ -101,7 +98,7 @@ int main()
 	OLED OLED;
  
     OLED.Init();
-    DEV.Delay_ms(500);
+    DEV.Delay_ms(2000);
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -118,9 +115,9 @@ int main()
     
 	//Select Image
     Paint.SelectImage(BlackImage);
-    DEV.Delay_ms(500);
+    
     Paint.Clear(BLACK);
-	
+	DEV.Delay_ms(500);
     // initialise the whole display
     //GUI_ReadBmp_65K("./pic/OLED.bmp", 0, 0);
     // Show image on page
@@ -150,12 +147,12 @@ int main()
         // display of time
 
         Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(2000);
 		
         //display of internet status
 		connected = checker.CheckInternetConnection();
         connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
-        DEV.Delay_ms(50);
+        DEV.Delay_ms(2000);
 		
 		//display of plant information
 		//Read the temperature and humidity of the DHT sensor after approximately one second
@@ -166,25 +163,32 @@ int main()
 		{
 			
 			Paint.DrawString_EN(10, 20, "Temp:", &Font12, BLACK, WHITE);
+			DEV.Delay_ms(500);
 			Paint.DrawNum(59, 20, temperature, &Font12, 4, BLACK, WHITE);
+			DEV.Delay_ms(500);
 			Paint.DrawString_EN(10, 32, "Hum:", &Font12, BLACK, WHITE);
+			DEV.Delay_ms(500);
 			Paint.DrawNum(59, 32, humidity, &Font12, 4, BLACK, WHITE);
-			DEV.Delay_ms(50);
+			DEV.Delay_ms(500);
 
 		}
 		
 		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light
 		digitalValue = Sensor.readDigitalValue();
+		DEV.Delay_ms(500);
 		if (digitalValue){
 			Paint.DrawString_EN(10, 44, "light", &Font12, BLACK, WHITE);
 			std::cout<<"light"<<std::endl;
+			DEV.Delay_ms(500);
 		}else{
 			std::cout<<"dark""<<std::endl;
 			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
+			DEV.Delay_ms(500);
 		}
 		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
+		DEV.Delay_ms(500);
 		/**********************************
 		if(light_duration < 8.0){
 			Paint.DrawString_EN(10, 40, "need more light", &Font12, BLACK, WHITE);
@@ -194,15 +198,15 @@ int main()
 		}
 		**********************************/
 		
-		DEV.Delay_ms(50);
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(2000);
 		
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(2000);
 		
 		OLED.Clear();
+		DEV.Delay_ms(2000);
 	}
 
 
