@@ -57,20 +57,20 @@ void Timer::stop() {
 
 DelayedTimer::DelayedTimer() : running(false) {}
 
-void DelayedTimer::setTimeout(std::function<void()> function, int delay) {
-    std::unique_lock<std::mutex> lock(mutex);
+void DelayedTimer::setTimeout(F&& function, int delay, Args&&... args) {
+        std::unique_lock<std::mutex> lock(mutex_);
 
-    if (running) {
-        condition.wait(lock, [=]{ return !running; });
-    }
+        if (running_) {
+            condition_.wait(lock, [=]{ return !running_; });
+        }
 
-    running = true;
-    std::thread t([=]() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-        function();
-        std::unique_lock<std::mutex> lock(mutex);
-        running = false;
-        condition.notify_one();
-    });
-    t.detach();
+        running_ = true;
+        std::thread t([=]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            std::invoke(function, std::forward<Args>(args)...);
+            std::unique_lock<std::mutex> lock(mutex_);
+            running_ = false;
+            condition_.notify_one();
+        });
+        t.detach();
 }
