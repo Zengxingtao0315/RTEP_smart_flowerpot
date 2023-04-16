@@ -51,7 +51,7 @@ html='''
                     Temperature
                 </h2>
                 <h2 class='font_1' style='font-size: 80px;line-height:150px; '>
-                    {{wendu}}°C
+                    {{temperature}}°C
                 </h2>
 
             </div>
@@ -61,7 +61,7 @@ html='''
                     Humidity
                 </h2>
                 <h2 class='font_1' style='font-size: 80px;line-height:150px;margin: 7px; '>
-                    {{shidu}}%
+                    {{humidity}}%
                 </h2>
             </div>
 

@@ -48,8 +48,9 @@ UWORD Sensor::readAnalogValue() {
 dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
     
 	UBYTE dht_data[5];
-	UBYTE crc = 0;
+	UBYTE cnt = 0;
 	UBYTE idx = 0;
+	int i ;
 	float	f;
 	if ( wiringPiSetup() == -1 )
     exit( 1 );
@@ -60,23 +61,30 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-    delay(18);
+    usleep(18055);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    delayMicroseconds(40);
+    usleep(40);
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
 	pullUpDnControl(dhtPin, PUD_UP);
 	
 	// ACKNOWLEDGE or TIMEOUT
 	unsigned int loopCnt = 10000;
-	while(digitalRead(dhtPin) == LOW)
-		if (loopCnt-- == 0) return TIMEOUT;
+	while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
+        loopCnt--;
+    }
+    if (loopCnt == 0) {
+        return TIMEOUT;
+    }
 
-	
-	loopCnt = 10000;
-	while(digitalRead(dhtPin) == HIGH)
-		if (loopCnt-- == 0) return TIMEOUT;
+    loopCnt = 10000;
+    while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
+        loopCnt--;
+    }
+    if (loopCnt == 0) {
+        return TIMEOUT;
+    }
 	
 	for ( i = 0; i < 40; i++ )
 	{
