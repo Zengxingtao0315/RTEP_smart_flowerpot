@@ -33,7 +33,7 @@ extern "C" {
 
 using namespace std;
 extern DEV DEV;
-Timer main_timer;
+
 
 //expression plants emotion or status
 const char* EmojiSelector(float temperature, float humidity, int digital, float light_duration ){
