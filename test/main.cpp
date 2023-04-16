@@ -11,7 +11,6 @@ extern "C" {
 #include "GetTime.hpp"
 #include "OLED.hpp"
 #include "checkInternet.hpp"
-#include "timer.hpp"
 
 #include <ctime> 
 #include <cstdlib> 
