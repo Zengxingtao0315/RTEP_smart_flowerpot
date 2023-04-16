@@ -5,13 +5,13 @@ import getlightvalue
 
 import Adafruit_DHT
 
-dhtpin = 4 #BCM is 4, wiring is 7, BORAD is 7
-lightpin = 17 #BCM is 17, wiring is 0, BORAD is 11
+dhtpin = 23 #BCM is 23, wiring is 4, BORAD is 16
+lightpin = 18 #BCM is 17, wiring is 0, BORAD is 11
 app = Bottle()
 
 @app.route('/')
 def hello():
-    humidity, temperature = Adafruit_DHT.read_retry(11, pin)
+    humidity, temperature = Adafruit_DHT.read_retry(11, dhtpin)
     lightFlag = getlightvalue.read_pin(lightpin)
     localtime = time.localtime(time.time())
     time_now = '{}:{}:{}'.format(localtime.tm_hour, localtime.tm_min, localtime.tm_sec)

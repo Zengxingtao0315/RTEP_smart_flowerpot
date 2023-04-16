@@ -2,30 +2,75 @@
 #include "timer.hpp"
 
 using namespace std;
-void Timer::setTimeout(auto function, int delay) {
-	this->clear = false;
+
+Timer::Timer() : stop_flag_(false) {}
+Timer::~Timer() {
+	stop();
+}
+
+template<typename F, typename... Args>
+void Timer::setTimeout_ms(F&& f, int delay_ms, Args&&... args) {
+	clear();
 	std::thread t([=]() {
-		if (this->clear) return;
-		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-		if (this->clear) return;
-		function();
+		if (stop_flag_.load()) return;
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+		if (stop_flag_.load()) return;
+		std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
 	});
 	t.detach();
 }
 
-void Timer::setInterval(auto function, int interval) {
-	this->clear = false;
+template<typename F, typename... Args>
+void Timer::setInterval_ms(F&& f, int interval_ms, Args&&... args) {
+	clear();
 	std::thread t([=]() {
-		while (true) {
-			if (this->clear) return;
-			std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-			if (this->clear) return;
-			function();
+		while (!stop_flag_.load()) {
+			std::unique_lock<std::mutex> lock(mutex_);
+			if (cv_.wait_for(lock, std::chrono::milliseconds(interval_ms),
+							 [=]() { return stop_flag_.load(); })) {
+				return;
+			}
+			std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
 		}
 	});
-	t.detach();
+	thread_ = std::move(t);
 }
 
 void Timer::stop() {
-	this->clear = true;
+	stop_flag_.store(true);
+	if (thread_.joinable()) {
+		thread_.join();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+DelayedTimer::DelayedTimer() : running(false) {}
+
+void DelayedTimer::setTimeout(std::function<void()> function, int delay) {
+    std::unique_lock<std::mutex> lock(mutex);
+
+    if (running) {
+        condition.wait(lock, [=]{ return !running; });
+    }
+
+    running = true;
+    std::thread t([=]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        function();
+        std::unique_lock<std::mutex> lock(mutex);
+        running = false;
+        condition.notify_one();
+    });
+    t.detach();
 }

@@ -11,7 +11,7 @@
 
 #define MAXTIMINGS  85
 #define DHTPIN    7
-#define DIGITALPIN 0   
+#define DIGITALPIN 1   
   
 
 enum dhtSTAT{
