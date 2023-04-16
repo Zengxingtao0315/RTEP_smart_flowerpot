@@ -11,6 +11,7 @@ extern "C" {
 #include "GetTime.hpp"
 #include "OLED.hpp"
 #include "checkInternet.hpp"
+#include "timer.hpp"
 
 #include <ctime> 
 #include <cstdlib> 
@@ -30,7 +31,7 @@ extern "C" {
 
 using namespace std;
 extern DEV DEV;
-
+Timer main_timer;
 
 //expression plants emotion or status
 const char* EmojiSelector(float temperature, float humidity, int digital, float light_duration ){
@@ -199,10 +200,8 @@ int main()
 		
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
-		DEV.Delay_ms(1000);
-		DEV.Delay_ms(5000);
-		OLED.Display(BlackImage);
-		DEV.Delay_ms(1000);
+
+		main_timer.setTimeout_ms(OLED.Display(BlackImage),5000);
 		
 		OLED.Clear();
 	}
