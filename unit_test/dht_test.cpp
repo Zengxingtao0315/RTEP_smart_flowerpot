@@ -6,7 +6,7 @@
 #define DHTPIN		7
 int dht11_dat[5] = { 0, 0, 0, 0, 0 };
  
-void read_dht11_dat()
+int read_dht11_dat()
 {
 	
 	uint8_t cnt = 7;
