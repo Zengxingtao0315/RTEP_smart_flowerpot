@@ -6,7 +6,7 @@ import getlightvalue
 import Adafruit_DHT
 
 dhtpin = 23 #BCM is 23, wiring is 4, BORAD is 16
-lightpin = 18 #BCM is 17, wiring is 0, BORAD is 11
+lightpin = 18 #BCM is 18, wiring is 1, BORAD is 12
 app = Bottle()
 
 @app.route('/')
