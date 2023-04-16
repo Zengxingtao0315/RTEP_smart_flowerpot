@@ -110,8 +110,8 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
 	if  (dht_data[4] == ( (dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF) ) 
 	{
 		f = dht_data[2] * 9. / 5. + 32;
-		humidity* = dht_data[0] + dht_data[1] * 0.1;
-		temperature* = dht_data[2] + dht_data[3] * 0.1;
+		*humidity = dht_data[0] + dht_data[1] * 0.1;
+		*temperature = dht_data[2] + dht_data[3] * 0.1;
 		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
           << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
           << f << " F)" << std::endl;
