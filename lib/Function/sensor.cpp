@@ -23,7 +23,7 @@ void Sensor::readDHTdataLoop() {
         dataCondVar.notify_all();
 
         // 等待一段时间再进行下一次读取
-        std::this_thread::sleep_for(std::chrono::milliseconds(23001));
+        std::this_thread::sleep_for(std::chrono::milliseconds(3001));
 		}
 	}
 	
@@ -100,7 +100,7 @@ DHTdata Sensor::readDHTdata() {
 	unsigned int loopCnt = 10000;
 	while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
         loopCnt--;
-    }
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
     if (loopCnt == 0) {
 		std::cout<<"1dht read timeout"<<std::endl;
 
@@ -112,6 +112,7 @@ DHTdata Sensor::readDHTdata() {
     loopCnt = 10000;
     while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
         loopCnt--;
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
     if (loopCnt == 0) {
 		std::cout<<"2dht read timeout"<<std::endl;
@@ -125,6 +126,7 @@ DHTdata Sensor::readDHTdata() {
 		loopCnt = 10000;
 		while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
 			loopCnt--;
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 		if (loopCnt == 0) {
 			std::cout<<"3dht read timeout"<<std::endl;
@@ -134,9 +136,10 @@ DHTdata Sensor::readDHTdata() {
 		loopCnt = 10000;
 		while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
 			loopCnt--;
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 		if (loopCnt == 0) {
-			std::cout<<"3dht read timeout"<<std::endl;
+			std::cout<<"4dht read timeout"<<std::endl;
 		}
 		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
