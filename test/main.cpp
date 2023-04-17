@@ -131,7 +131,7 @@ int main()
 	InternetConnectionChecker checker;
 	bool connected ; //Determining network connection status
 	//init Sensors pin
-	Sensor Sensor(DIGITALPIN,  DHTPIN);
+	
 	UWORD  digitalValue;
 	//UWORD  analogValue;
 	float light_duration;
@@ -142,6 +142,7 @@ int main()
 	
 	
     while (1) {
+		Sensor Sensor(DIGITALPIN,  DHTPIN);
 		std::cout<<"painting the first page!"<<std::endl;
 		//time
 		Paint.DrawString_EN(10, 0, "Time", &Font16, BLACK, WHITE);
