@@ -13,7 +13,9 @@ void Sensor::readDHTdataLoop() {
 			DHTdata data = readDHTdata();
 
 			// 确保线程安全
-			std::lock_guard<std::mutex> lock(dataMutex);
+			std::unique_lock<std::mutex> lock(dataMutex);
+
+
 			temperature = data.temperature;
 			humidity = data.humidity;
 		
@@ -24,6 +26,7 @@ void Sensor::readDHTdataLoop() {
         dataCondVar.wait_for(lock, std::chrono::milliseconds(10000));
 		}
 	}
+	
 double Sensor::getTemperature() {
     std::unique_lock<std::mutex> lock(dataMutex);
     // 等待新数据的到来，或者超时
