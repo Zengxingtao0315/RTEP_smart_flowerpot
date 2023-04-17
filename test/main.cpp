@@ -136,7 +136,7 @@ int main()
 	//UWORD  analogValue;
 	float light_duration;
 	SunlightDurationRecorder duration;
-	double * temp ;
+	double temp ;
 	double hum ;
 	
 	
