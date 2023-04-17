@@ -23,14 +23,14 @@ void Sensor::readDHTdataLoop() {
         dataCondVar.notify_all();
 
         // 等待一段时间再进行下一次读取
-        dataCondVar.wait_for(lock, std::chrono::milliseconds(10000));
+        dataCondVar.wait_for(lock, std::chrono::milliseconds(2000));
 		}
 	}
 	
 double Sensor::getTemperature() {
     std::unique_lock<std::mutex> lock(dataMutex);
     // 等待新数据的到来，或者超时
-    dataCondVar.wait_for(lock, std::chrono::milliseconds(10000), [this] {
+    dataCondVar.wait_for(lock, std::chrono::milliseconds(2000), [this] {
         return temperature != lastTemperature;
     });
     // 更新最新的温度值
@@ -41,7 +41,7 @@ double Sensor::getTemperature() {
 double Sensor::getHumidity() {
     std::unique_lock<std::mutex> lock(dataMutex);
     // 等待新数据的到来，或者超时
-    dataCondVar.wait_for(lock, std::chrono::milliseconds(10000), [this] {
+    dataCondVar.wait_for(lock, std::chrono::milliseconds(2000), [this] {
         return humidity != lastHumidity;
     });
     // 更新最新的湿度值
