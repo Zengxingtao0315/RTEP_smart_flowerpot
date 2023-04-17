@@ -95,7 +95,7 @@ int main()
 	Paint Paint;
 	OLED OLED;
 	OLED.Init();
-	DEV_Delay_ms(500);	
+	DEV.Delay_ms(500);	
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -129,7 +129,7 @@ int main()
 	PAINT_TIME local_time;
 	//init InternetConnectionChecker
 	InternetConnectionChecker checker;
-	bool connected = Ture; //Determining network connection status
+	bool connected ; //Determining network connection status
 	//init Sensors pin
 	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	UWORD  digitalValue;
@@ -158,9 +158,9 @@ int main()
         std::cout << "Humidity: " << humidity << "%" << std::endl;
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		Paint.DrawString_EN(10, 34, "Humidity(%):", &Font16, BLACK, WHITE);
-		Paint.DrawNum(10, 51, humidity, &Font16, 4, BLACK, WHITE);
+		Paint.DrawNum(10, 51, hum, &Font16, 4, BLACK, WHITE);
 		Paint.DrawString_EN(10, 68, "Temp(C):", &Font16, BLACK, WHITE);
-		Paint.DrawNum(10, 85, temperature, &Font16, 4, BLACK, WHITE);
+		Paint.DrawNum(10, 85, tem, &Font16, 4, BLACK, WHITE);
 		
 		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light		
 		digitalValue = Sensor.readDigitalValue();
