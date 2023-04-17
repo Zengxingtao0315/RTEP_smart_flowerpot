@@ -12,12 +12,12 @@ int read_dht11_dat()
 	uint8_t cnt = 7;
 	uint8_t idx = 0;
 	float	f; 
- 
+ int i ;
 	dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
  
 	pinMode( DHTPIN, OUTPUT );
 	digitalWrite( DHTPIN, LOW );
-	delay( 20 );
+	delay( 35 );
 	digitalWrite( DHTPIN, HIGH );
 	delayMicroseconds( 40 );
 	pinMode( DHTPIN, INPUT );
@@ -57,6 +57,7 @@ int read_dht11_dat()
  
 	if  (dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF) ) 
 	{
+		
 		f = dht11_dat[2] * 9. / 5. + 32;
 		printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 			dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );

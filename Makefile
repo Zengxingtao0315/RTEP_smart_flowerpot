@@ -26,8 +26,8 @@ else ifeq ($(USELIB), USE_DEV_LIB)
 endif
 
 
-CXX = g++
-MSG = -g -O0 -Wall -pthread
+CXX = g++ -std=c++11
+MSG = -g -O0 -Wall -pthread 
 
 
 CXXFLAGS += $(MSG) $(DEBUG)

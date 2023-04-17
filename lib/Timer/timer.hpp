@@ -1,4 +1,17 @@
 #include <iostream>
+<<<<<<< HEAD
+#include <thread>
+#include <chrono>
+
+class Timer {
+	bool clear = false;
+
+public:
+	void setTimeout(auto function, int delay);
+	void setInterval(auto function, int interval);
+	void stop();
+
+=======
 #include <functional>
 #include <thread>
 #include <chrono>
@@ -39,4 +52,5 @@ private:
     bool running;
     std::mutex mutex;
     std::condition_variable condition;
+>>>>>>> a8684b4589533e7a54dacd86e0764595828524fb
 };
