@@ -65,15 +65,6 @@ const char* EmojiSelector(double temperature, double humidity, int digital, floa
 }
 
 
-void draw_humidity_temperature() {
-    Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
-    Paint.DrawString_EN(10, 20, "Temp(C):", &Font12, BLACK, WHITE);
-}
-void drawnum_humidity_temperature() {
-    Paint.DrawNum(59, 20, temperature, &Font12, 1, BLACK, WHITE);
-			
-	Paint.DrawNum(59, 32, humidity, &Font12, 1, BLACK, WHITE);
-}
 
 
 void Handler(int signo)
