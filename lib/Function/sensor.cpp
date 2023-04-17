@@ -102,7 +102,7 @@ DHTdata Sensor::readDHTdata() {
         loopCnt--;
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
     if (loopCnt == 0) {
-		std::cout<<"1dht read timeout"<<std::endl;
+	std::cout<<"1dht read timeout"<<std::endl;}
 
         
 
