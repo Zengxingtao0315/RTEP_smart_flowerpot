@@ -125,7 +125,9 @@ Wire Connection Photosensitive module
 
 #### Functionality
 
+The module when the brightness of ambient light can not reach the set threshold, DO-side output high when the ambient light level exceeds the set threshold, DO end output low.
 
+DO output can be directly connected to the microcontroller through the microcontroller to detect high and low, thereby detecting the brightness of ambient light to change.
 
 ### 2.4 128*128 RGB OLED with SPI Interface, or anyother compatiable LED devices to Raspberry Pi B+/4B+
 
