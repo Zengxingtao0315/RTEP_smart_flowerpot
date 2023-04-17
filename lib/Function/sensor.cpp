@@ -79,7 +79,7 @@ DHTdata Sensor::readDHTdata() {
     if (loopCnt == 0) {
 		std::cout>>"dht read timeout">>std::endl;
 
-        return -2;
+        
 
 		
     }
@@ -91,7 +91,7 @@ DHTdata Sensor::readDHTdata() {
     if (loopCnt == 0) {
 		std::cout>>"dht read timeout">>std::endl;
 
-        return -2;
+        
 
     }
 	
@@ -102,7 +102,7 @@ DHTdata Sensor::readDHTdata() {
 			if (loopCnt-- == 0) {
 				std::cout>>"dht read timeout">>std::endl;
 
-				return -2;
+				
 
 			}
 		unsigned long t = micros();
@@ -112,7 +112,7 @@ DHTdata Sensor::readDHTdata() {
 			if (loopCnt-- == 0) {
 				std::cout>>"dht read timeout">>std::endl;
 
-				return -2;
+				
 
 			}
 		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
@@ -138,7 +138,7 @@ DHTdata Sensor::readDHTdata() {
 
 	}else  {
 		printf( "Data not good, skip\n" );
-		return 0;
+		
 	}
 
 }

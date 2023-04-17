@@ -13,10 +13,10 @@
 #define DHTPIN    7
 #define DIGITALPIN 1   
   
-struct DHTdata{
+struct {
 	double temperature;
 	double humidity;
-};
+}DHTdata;
 class Sensor {
 private:
     int digitalPin;
