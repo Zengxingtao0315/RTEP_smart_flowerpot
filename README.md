@@ -52,7 +52,7 @@ Choose Interfacing Options -> SPI -> Yes  to enable SPI interface
 sudo raspi-config
 Choose Interfacing Options -> SSH -> Yes  to enable SSH interface
 ```
-Actually this step is up to you, out group don't have a HDMI screen. So we 
+Actually this step is up to you, our group don't have a HDMI screen. So we choose that way. 
 
 #### Install Libraries
 ```
