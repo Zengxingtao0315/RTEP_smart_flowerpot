@@ -191,7 +191,7 @@ int main()
 		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
 		
 		Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-		if(dht_temp != dht){
+		if(dht_temp.temperature != dht.temperature || dht_temp.humidity != dht.humidity){
 			dht = dht_temp;
 			Paint.DrawNum(59, 20, dht_temp.temperature, &Font12, 4, BLACK, WHITE);
 			Paint.DrawNum(59, 32, dht_temp.humidity, &Font12, 4, BLACK, WHITE);
