@@ -58,22 +58,6 @@ gpio -v
 # Run gpio -v and version 2.60 will appear. If it does not appear, it means that there is an installation error
 ```
 
-### 1.3 DHT11 Module
-#### Hardware connection
-|DHT	|Raspberry Pi|
-|  ----  | ----  |
-|VCC/+	|	3.3V-5V|
-|OUT/DATA/D| 7|
-|-/GND	|GND|
-
-### 1.4 Photosensitive Diode Sensor Configuration
-#### Hardware connection
-|PDC	|Raspberry Pi|
-|  ----  | ----  |
-|VCC	|	3.3V-5V|
-|DO| 11|
-|AO| NOT USED|
-|GND	|GND|
 
 ## 2. HardWare Build
 ### 2.1 Raspberry Pi B+/4B+
@@ -87,6 +71,9 @@ When connecting the Raspberry Pi, choose to use the 7PIN cable to connect, pleas
 |CS		|24|
 |DC	|	22|
 |RST	|	13|
+
+![Example Image](pic/600px-1.5inch_RGB_OLED_Module-树莓派.jpg)
+
 ### 2.2 DHT11 Module (Humidity & Temperautre)
 Wire Connection for DHT11 Module
 |DHT	|Raspberry Pi|
@@ -94,8 +81,16 @@ Wire Connection for DHT11 Module
 |VCC/+	|	3.3V-5V|
 |OUT/DATA/D| 7|
 |-/GND	|GND|
-![Example Image](pic/600px-1.5inch_RGB_OLED_Module-树莓派.jpg)
+
 ### 2.3 Photosensitive Diode Sensor
+Wire Connection Photosensitive module
+|PDC	|Raspberry Pi|
+|  ----  | ----  |
+|VCC	|	3.3V-5V|
+|DO| 11|
+|AO| NOT USED|
+|GND	|GND|
+
 ### 2.4 128*128 RGB OLED with SPI Interface, or anyother compatiable LED devices to Raspberry Pi B+/4B+
 ### 2.5 Plant pot that can accommodate the above-mentioned devices
 Here are two options: 
