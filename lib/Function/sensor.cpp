@@ -10,14 +10,15 @@
 using namespace std;
 void Sensor::readDHTdataLoop() {
 		while (true) {
-			DHTdata data = readDHTdata();
+			
 
 			// 确保线程安全
 			std::unique_lock<std::mutex> lock(dataMutex);
-
+			DHTdata data = readDHTdata();
 
 			temperature = data.temperature;
 			humidity = data.humidity;
+			lock.unlock();
 		
 		// 通知等待在条件变量上的线程，有新的数据可用
         dataCondVar.notify_all();
@@ -88,10 +89,10 @@ DHTdata Sensor::readDHTdata() {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-   std::this_thread::sleep_for(std::chrono::microseconds(23000));
+	std::this_thread::sleep_for(std::chrono::microseconds(23001));
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    std::this_thread::sleep_for(std::chrono::microseconds(40));
+    std::this_thread::sleep_for(std::chrono::microseconds(41));
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
 	pullUpDnControl(dhtPin, PUD_UP);
