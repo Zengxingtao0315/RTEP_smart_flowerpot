@@ -95,7 +95,7 @@ int main()
 	Paint Paint;
 	OLED OLED;
 	OLED.Init();
-	DEV.Delay_ms(1);	
+	DEV.Delay_ms(500);	
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -138,17 +138,17 @@ int main()
 	SunlightDurationRecorder duration;
 	double temp ;
 	double hum ;
-
+	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	
 	
     while (1) {
-		Sensor Sensor(DIGITALPIN,  DHTPIN);
+		
 		std::cout<<"painting the first page!"<<std::endl;
 		//time
 		Paint.DrawString_EN(10, 0, "Time", &Font16, BLACK, WHITE);
 		//display of internet status
 		connected = checker.CheckInternetConnection();
-		//connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
+		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
 		local_time = time.getLocalTime();
 		Paint.DrawTime(10, 17, &local_time, &Font16, BLACK, TIME_COLOR);
 		//Humidity and Temperature
@@ -175,7 +175,7 @@ int main()
 			Paint.DrawString_EN(10, 102, "Dark", &Font16, BLACK, WHITE);
 
 		}
-		//OLED.Display(BlackImage);
+		OLED.Display(BlackImage);
 		DEV.Delay_ms(5000);	
 		Paint.Clear(BLACK);	
 		/**********************************
@@ -189,9 +189,9 @@ int main()
 		
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
-		//Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
+		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
 		
-		//OLED.Display(BlackImage);
+		OLED.Display(BlackImage);
 		DEV.Delay_ms(5000);
 		Paint.Clear(BLACK);	
 
