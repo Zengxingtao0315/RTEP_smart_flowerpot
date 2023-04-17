@@ -12,7 +12,7 @@ void Sensor::readDHTdataLoop() {
 		while (true) {
 			
 			DHTdata data = readDHTdata();
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 			// 确保线程安全
 			std::unique_lock<std::mutex> lock(dataMutex);
 			
