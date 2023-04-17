@@ -18,7 +18,6 @@ void Sensor::readDHTdataLoop() {
 
 			temperature = data.temperature;
 			humidity = data.humidity;
-			lock.unlock();
 		
 		// 通知等待在条件变量上的线程，有新的数据可用
         dataCondVar.notify_all();
