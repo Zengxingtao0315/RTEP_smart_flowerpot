@@ -41,6 +41,6 @@ public:
 	double getHumidity();
     UWORD readDigitalValue();
     //UWORD readAnalogValue();
-    int readDHTdata(*temperature, *humidity);
+    int readDHTdata(double*temperature,double *humidity);
 };
 #endif
