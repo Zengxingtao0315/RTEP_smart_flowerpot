@@ -42,7 +42,7 @@ double Sensor::getTemperature() {
 double Sensor::getHumidity() {
     std::unique_lock<std::mutex> lock(dataMutex);
     // 等待新数据的到来，或者超时
-    dataCondVar.wait_for(lock, std::chrono::milliseconds(20), [this] {
+    dataCondVar.wait_for(lock, std::chrono::milliseconds(200), [this] {
         return humidity != lastHumidity;
     });
     // 更新最新的湿度值

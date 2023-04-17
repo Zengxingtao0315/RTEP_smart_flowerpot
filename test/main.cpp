@@ -33,7 +33,7 @@ extern "C" {
 
 using namespace std;
 extern DEV DEV;
-
+Sensor Sensor(DIGITALPIN,  DHTPIN);
 //expression plants emotion or status
 const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -138,7 +138,7 @@ int main()
 	SunlightDurationRecorder duration;
 	double temp ;
 	double hum ;
-	Sensor Sensor(DIGITALPIN,  DHTPIN);
+	
 	
 	
     while (1) {
@@ -161,7 +161,7 @@ int main()
 		Paint.DrawString_EN(10, 68, "Temperature(C)", &Font16, BLACK, WHITE);
 		Paint.DrawNum(10, 85, temp, &Font16, 1, BLACK, WHITE);
 		
-		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light		
+		//Digital reading of the light emitx`ing diode, 1 for almost no light, 0 for light		
 		digitalValue = Sensor.readDigitalValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
