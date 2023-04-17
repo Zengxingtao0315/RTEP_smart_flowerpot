@@ -84,7 +84,7 @@ DHTdata Sensor::readDHTdata() {
  
 	pinMode( DHTPIN, OUTPUT );
 	digitalWrite( DHTPIN, LOW );
-	delay( 18 );
+	delay( 19 );
 	digitalWrite( DHTPIN, HIGH );
 	delayMicroseconds( 40 );
 	pinMode( DHTPIN, INPUT );
