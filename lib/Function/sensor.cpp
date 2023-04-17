@@ -74,7 +74,7 @@ int Sensor::readDHTdata(double*temperature,double* humidity) {
 
     
 
-	int dht_data [5] = { 0, 0, 0, 0, 0 };
+	int dht11_dat [5] = { 0, 0, 0, 0, 0 };
 	uint8_t cnt = 7;
 	uint8_t idx = 0;
 	float	f; 
@@ -121,11 +121,11 @@ int Sensor::readDHTdata(double*temperature,double* humidity) {
 		else cnt--;
 	}
 	
-	if  (dht_data[4] == ( (dht_data[0]  + dht_data[2] ) & 0xFF) ) 
+	if  (dht11_dat[4] == (  (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)) 
 	{
 
-		*humidity = dht_data[0] + dht_data[1] * 0.1;
-		*temperature = dht_data[2] + dht_data[3] * 0.1;
+		*humidity = dht11_dat[0] + dht11_dat[1] * 0.1;
+		*temperature = dht11_dat[2] + dht11_dat[3] * 0.1;
 		f = dht11_dat[2] * 9. / 5. + 32;
 		printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 			dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
