@@ -38,7 +38,7 @@ Select according to operating system.
 After finishing the installment, choose os and storage.
 Our project deside raspberry pi os(31-BIT). Then remember we have to click on the advanced settings in the bottom right hand corner. We need to turn on the SSH function of the Raspberry Pi and we deliberately remote the session too. if you miss the part ,its fine.
 
-![Example Image](pic/raspberry_pi_imager (1).png)
+![Example Image](pic/raspberry_pi_imager_1.png)
 
 Click burn, then wait a lot of time for the burn to succeed and install the SD card into the card slot of the Raspberry Pi board, plug in the power, the Raspberry Pi initialization configuration is successful
 
@@ -102,6 +102,9 @@ Wire Connection for DHT11 Module
 |OUT/DATA/D| 7|
 |-/GND	|GND|
 
+#### 
+
+
 ### 2.3 Photosensitive Diode Sensor
 Wire Connection Photosensitive module
 |PDC	|Raspberry Pi|
@@ -126,6 +129,40 @@ Here are two options:
 ![Example Image](Pot_3D_Model/PlantFront.png)
 
 ## 3. Web Application Setup
+
+The purpose of creating a web page is that people and people under the same LAN can access the IP address of the Raspberry Pi via a browser to be able to check the status of the beloved little flower.
+
+### Install libraries
+```
+sudo apt-get install python3
+sudo apt-get install python3-pip
+sudo pip3 install --upgrade pip
+
+#  Note: If your Raspberry Pi already has Python 3 installed, you can upgrade to the latest version using the following command
+sudo apt-get upgrade python3
+```
+Our whole project was developed in C++, but it was quite difficult to develop a server as C++. Our initial aim was just to build a smart planter, building a website was not our original intention. So we chose BOTTLE, a q-lightweight application to build the webpage.
+
+```
+sudo pip install bottle
+
+```
+When the download is complete, we also need to download a dependency package Adafruit_DHT. 
+
+We use the Raspberry Pi in conjunction with the dht11, a temperature and humidity sensor, to easily obtain ambient temperature and humidity readings. 
+The dependency package is also the PYTHON version of the DHT11 library, which works very well and is very easy to build web pages with bottle.
+```
+git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+cd Adafruit_Python_DHT
+sudo python setup.py install
+
+#  Once installed, you can test that the Adafruit_DHT library is working properly by using the following command.
+#  This will display the sensor reading in the terminal (assuming you are using a DHT11 sensor and it is connected to the GPIO4 pin).
+cd examples
+sudo ./AdafruitDHT.py 11 4
+```
+In fact, the final web page is built by giving the html code file as a string to the variable html, which is then parsed by Bottle. 
+The web-specific variables are then read by Adafruit_DHT, which is a babysitting exercise!
 
 # Unit Test
 ### Install Google Test (gtest)
