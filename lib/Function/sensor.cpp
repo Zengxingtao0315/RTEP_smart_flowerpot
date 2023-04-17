@@ -45,9 +45,10 @@ UWORD Sensor::readAnalogValue() {
     }
 	*************************/
 	// get dht temperature and humidity
-double Sensor::readDHTdata() {
+DHTdata Sensor::readDHTdata() {
     
-	double humidity,temperature;
+	DHTdata dht;
+
 	UBYTE dht_data[5];
 	UBYTE cnt = 0;
 	UBYTE idx = 0;
@@ -127,13 +128,13 @@ double Sensor::readDHTdata() {
 	{
 		f = dht_data[2] * 9. / 5. + 32;
 
-		humidity = dht_data[0] + dht_data[1] * 0.1;
-		temperature = dht_data[2] + dht_data[3] * 0.1;
+		DHTdata.humidity = dht_data[0] + dht_data[1] * 0.1;
+		DHTdata.temperature = dht_data[2] + dht_data[3] * 0.1;
 
 		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
           << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
           << f << " F)" << std::endl;
-		  return humidity,temperature;
+		  return DHTdata;
 
 	}else  {
 		printf( "Data not good, skip\n" );

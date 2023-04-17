@@ -141,7 +141,8 @@ int main()
 	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	UWORD  digitalValue;
 	//UWORD  analogValue;
-	double temperature,humidity,temperature_temp,humidity_temp;
+	DHTdata dht;
+	DHTdata dht_temp;
 	float light_duration;
 	SunlightDurationRecorder duration;
 	Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
@@ -190,10 +191,10 @@ int main()
 		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
 		
 		Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-		if(temperature_temp,humidity_temp != temperature,humidity){
+		if(dht_temp.dhttemperature_temp,dht_temp.humidity != dht.temperature,dht.humidity){
 			 temperature,humidity = temperature_temp,humidity_temp;
-			Paint.DrawNum(59, 20, temperature, &Font12, 4, BLACK, WHITE);
-			Paint.DrawNum(59, 32, humidity, &Font12, 4, BLACK, WHITE);
+			Paint.DrawNum(59, 20, dht_temp.temperature, &Font12, 4, BLACK, WHITE);
+			Paint.DrawNum(59, 32, dht_temphumidity, &Font12, 4, BLACK, WHITE);
 			
 		}
 		if (digitalValue == 0){
@@ -206,10 +207,10 @@ int main()
 			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
 
 		}
-		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
+		Paint.GUI_ReadBmp_65K(EmojiSelector(dht_temp.temperature, dht_temp.humidity,digitalValue, light_duration), 32, 64);
 		
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(2000);
+		DEV.Delay_ms(4000);
 
 
 		

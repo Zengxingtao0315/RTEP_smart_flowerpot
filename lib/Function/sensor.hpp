@@ -13,7 +13,10 @@
 #define DHTPIN    7
 #define DIGITALPIN 1   
   
-
+struct DHTdata{
+	double temperatue;
+	double humidity;
+};
 class Sensor {
 private:
     int digitalPin;
@@ -24,6 +27,6 @@ public:
     Sensor(int digitalPin, int dhtPin);
     UWORD readDigitalValue();
     //UWORD readAnalogValue();
-    double readDHTdata();
+    DHTdata readDHTdata();
 };
 #endif
