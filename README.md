@@ -97,9 +97,40 @@ Wire Connection Photosensitive module
 
 ### 2.5 Plant pot that can accommodate the above-mentioned devices
 Here are two options: 
-1) DIY your handmade flower pot, make sure to wrap your wires and devices with waterproof materials to avoid water damage to the circuit.
+1. DIY your handmade flower pot, make sure to wrap your wires and devices with waterproof materials to avoid water damage to the circuit.
 
-![Example Image](pic/DIY pot.jpg)
+![Example Image](pic/DIY_pot.jpg)
 
-2) 3D print your flower pot, the code and images for 3D model can be found in "Pot 3D Model" folder at the github repository.
-![Example Image](Pot 3D Model/PlantFront.png)
+2. 3D print your flower pot, the modeling code (plant pot.obj) and images can be found in "Pot_3D_Model" folder at the github repository.
+
+![Example Image](Pot_3D_Model/PlantFront.png)
+
+## 3. Web Application Setup
+
+##
+### Install Google Test (gtest)
+```
+git clone https://github.com/google/googletest.git
+cd googletest
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+### Run Unit Tests
+```
+$ g++ RTEP_smart_flowerpot/unit_test/dht_test.cpp -o dht_test
+$ ./dht_test
+
+$ g++ RTEP_smart_flowerpot/unit_test/getTime_test.cpp -o getTime_test
+$ ./getTime_test
+
+$ g++ RTEP_smart_flowerpot/unit_test/sensor_test.cpp -o sensor_test
+$ ./sensor_test
+
+$ g++ RTEP_smart_flowerpot/unit_test/timer_test.cpp -o timer_test
+$ ./timer_test
+```
+
+
