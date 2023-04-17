@@ -12,7 +12,7 @@ void Sensor::readDHTdataLoop() {
 		while (true) {
 			
 			DHTdata data = readDHTdata();
-			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 			// 确保线程安全
 			std::unique_lock<std::mutex> lock(dataMutex);
 			
@@ -91,14 +91,14 @@ DHTdata Sensor::readDHTdata() {
 	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    std::this_thread::sleep_for(std::chrono::microseconds(20));
+    std::this_thread::sleep_for(std::chrono::microseconds(40));
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
 	pullUpDnControl(dhtPin, PUD_UP);
 
 	
 	// ACKNOWLEDGE or TIMEOUT
-	unsigned int loopCnt = 10000;
+	unsigned int loopCnt = 1000;
 	while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
         loopCnt--;
     if (loopCnt < 0) {
@@ -109,7 +109,7 @@ DHTdata Sensor::readDHTdata() {
 		
     }
 
-    loopCnt = 10000;
+    loopCnt = 1000;
     while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
         loopCnt--;
     }
@@ -122,7 +122,7 @@ DHTdata Sensor::readDHTdata() {
 	
 	for ( i = 0; i < 40; i++ )
 	{
-		loopCnt = 100000;
+		loopCnt = 1000;
 		while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
 			loopCnt--;
 		}
@@ -131,7 +131,7 @@ DHTdata Sensor::readDHTdata() {
 		}
 		unsigned long t = micros();
 
-		loopCnt = 100000;
+		loopCnt = 1000;
 		while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
 			loopCnt--;
 		}
