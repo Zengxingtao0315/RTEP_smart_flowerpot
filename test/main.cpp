@@ -95,7 +95,7 @@ int main()
 	Paint Paint;
 	OLED OLED;
 	OLED.Init();
-	DEV.Delay_ms(500);	
+	DEV.Delay_ms(1);	
 	
     // Create a new image cache
     UBYTE *BlackImage;
