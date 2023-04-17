@@ -76,7 +76,6 @@ html='''
 	</div>
 
 </body>
-</html>
 
 '''
 
