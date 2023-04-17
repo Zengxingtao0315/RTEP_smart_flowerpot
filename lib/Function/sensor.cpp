@@ -67,7 +67,7 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
     usleep(40);
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
-	pullUpDnControl(dhtPin, PUD_UP);
+	
 	
 	// ACKNOWLEDGE or TIMEOUT
 	unsigned int loopCnt = 10000;
@@ -75,7 +75,9 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
         loopCnt--;
     }
     if (loopCnt == 0) {
+		std::cout>>"dht read timeout">>std::endl;
         return TIMEOUT;
+		
     }
 
     loopCnt = 10000;
@@ -83,21 +85,27 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
         loopCnt--;
     }
     if (loopCnt == 0) {
+		std::cout>>"dht read timeout">>std::endl;
         return TIMEOUT;
+		
     }
 	
 	for ( i = 0; i < 40; i++ )
 	{
 		loopCnt = 10000;
 		while(digitalRead(dhtPin) == LOW)
-			if (loopCnt-- == 0) return TIMEOUT;
-
+			if (loopCnt-- == 0) {
+				std::cout>>"dht read timeout">>std::endl;
+				return TIMEOUT;
+			}
 		unsigned long t = micros();
 
 		loopCnt = 10000;
 		while(digitalRead(dhtPin) == HIGH)
-			if (loopCnt-- == 0) return TIMEOUT;
-
+			if (loopCnt-- == 0) {
+				std::cout>>"dht read timeout">>std::endl;
+				return TIMEOUT;
+			}
 		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
 		{

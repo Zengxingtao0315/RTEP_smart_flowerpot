@@ -33,8 +33,13 @@ extern "C" {
 
 using namespace std;
 extern DEV DEV;
+<<<<<<< HEAD
+Timer main_timer;
+DelayedTimer delay;
+=======
 
 
+>>>>>>> 65fe4b56e5da59ac2786097b2ddb10ab4283822b
 //expression plants emotion or status
 const char* EmojiSelector(float temperature, float humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -66,8 +71,15 @@ const char* EmojiSelector(float temperature, float humidity, int digital, float 
 }
 
 
-
-
+void draw_humidity_temperature() {
+    Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
+    Paint.DrawString_EN(10, 20, "Temp(C):", &Font12, BLACK, WHITE);
+}
+void drawnum_humidity_temperature() {
+    Paint.DrawNum(59, 20, temperature, &Font12, 1, BLACK, WHITE);
+			
+	Paint.DrawNum(59, 32, humidity, &Font12, 1, BLACK, WHITE);
+}
 
 
 void Handler(int signo)
@@ -96,13 +108,21 @@ int main()
     std::cout << "OLED Init..." << std::endl;
 	
 	wiringPiSetup();
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	Paint Paint;
 	OLED OLED;
  
+<<<<<<< HEAD
+	std::thread OLED_init_thd([&OLED]() {
+		OLED.Init();
+	});
+	OLED_init_thd.join();
+=======
     OLED.Init();
 
     DEV.Delay_ms(2000);
 
+>>>>>>> 65fe4b56e5da59ac2786097b2ddb10ab4283822b
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -119,7 +139,11 @@ int main()
     
 	//Select Image
     Paint.SelectImage(BlackImage);
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> 65fe4b56e5da59ac2786097b2ddb10ab4283822b
     Paint.Clear(BLACK);
 	DEV.Delay_ms(500);
     // initialise the whole display
@@ -144,11 +168,37 @@ int main()
 	double temperature, humidity;
 	float light_duration;
 	SunlightDurationRecorder duration;
-	Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
-	Paint.DrawString_EN(10, 20, "Temp(C):", &Font12, BLACK, WHITE);
+	
+	std::thread draw_hNt_thd(draw_humidity_temperature);
+	draw_hNt_thd.join();
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	std::cout<<"humidity and temperature loaded cache successful!"<<std::endl;
 	
     while (1) {
+<<<<<<< HEAD
+        
+		
+		std::thread draw_time_thd([&]() {
+				//Get local time
+				local_time = time.getLocalTime();
+				// display of time
+				Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
+				
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		});
+        
+		draw_time_thd.join();
+		
+        //display of internet status
+		std::thread Int_chk_thd([&]() {
+				connected = checker.CheckInternetConnection();
+				connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
+				
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		});
+        Int_chk_thd.join();
+		
+=======
         //Get local time
 		local_time = time.getLocalTime();
         // display of time
@@ -164,10 +214,28 @@ int main()
 
         DEV.Delay_ms(2000);
 
+>>>>>>> 65fe4b56e5da59ac2786097b2ddb10ab4283822b
 		
 		//display of plant information
 		//Read the temperature and humidity of the DHT sensor after approximately one second
+		std::thread dht_thd([&]() {
+				Sensor.readDHTdata(&temperature, &humidity);
+				std::cout << "Waiting for sensor data..." << std::endl;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		});
+		dht_thd.join();
+		
+		std::thread draw_tNh_thd([&]() {
+				Paint.DrawNum(59, 20, temperature, &Font12, 1, BLACK, WHITE);
+				Paint.DrawNum(59, 32, humidity, &Font12, 1, BLACK, WHITE);
 
+<<<<<<< HEAD
+				std::this_thread::sleep_for(std::chrono::milliseconds(1500);
+		});
+		draw_tNh_thd.join();
+		
+		
+=======
 		DEV.Delay_ms(1000);
 
 		DEV.Delay_ms(2000);
@@ -187,8 +255,10 @@ int main()
 			DEV.Delay_ms(500);
 
 		}
+>>>>>>> 65fe4b56e5da59ac2786097b2ddb10ab4283822b
 		
 		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light
+		
 		digitalValue = Sensor.readDigitalValue();
 
 		DEV.Delay_ms(500);
@@ -203,7 +273,6 @@ int main()
 			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
 			DEV.Delay_ms(500);
 		}
-		DEV.Delay_ms(1000);
 		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
@@ -217,6 +286,22 @@ int main()
 		}
 		**********************************/
 		
+<<<<<<< HEAD
+		
+		
+		//display of the plant emoji
+		std::thread GUI_load_thd([&]() {
+				Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
+				
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		});
+		
+		delay.setTimeout(OLED.Display, 5000, BlackImage);
+		std::unique_lock<std::mutex> lock(timer.mutex_);
+		delay.condition_.wait(lock, [&]() { return !timer.running_; });
+		delay.setTimeout(OLED.Clear, 100, BlackImage);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000);
+=======
 		//display of the plant emoji
 		Paint.GUI_ReadBmp_65K(EmojiSelector(temperature, humidity,digitalValue, light_duration), 32, 64);
 
@@ -228,6 +313,7 @@ int main()
 		
 		OLED.Clear();
 		DEV.Delay_ms(2000);
+>>>>>>> 65fe4b56e5da59ac2786097b2ddb10ab4283822b
 	}
 
 
