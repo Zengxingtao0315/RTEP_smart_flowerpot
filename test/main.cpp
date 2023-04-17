@@ -175,7 +175,7 @@ int main()
 
 		}
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(50);	
+		DEV.Delay_ms(200);	
 		Paint.Clear(BLACK);	
 		/**********************************
 		if(light_duration < 8.0){
@@ -191,7 +191,7 @@ int main()
 		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
 		
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(50);
+		DEV.Delay_ms(1000);
 		Paint.Clear(BLACK);	
 
 		
