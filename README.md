@@ -27,18 +27,33 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 Install Raspberry Pi Imager
 https://www.raspberrypi.com/software/
 
-Select according to operating system
+Select according to operating system.
+
+![Example Image](pic/raspberry_pi_imager.png)
 
 After finishing the installment, choose os and storage.
+Our project deside raspberry pi os(31-BIT). Then remember we have to click on the advanced settings in the bottom right hand corner. We need to turn on the SSH function of the Raspberry Pi and we deliberately remote the session too. if you miss the part ,its fine.
+
+![Example Image](pic/raspberry_pi_imager(1).png)
+
 Click burn, then wait a lot of time for the burn to succeed and install the SD card into the card slot of the Raspberry Pi board, plug in the power, the Raspberry Pi initialization configuration is successful
 
-#### Enable SPI
+
+#### Enable SPI 
 ```
 sudo raspi-config
 Choose Interfacing Options -> SPI -> Yes  to enable SPI interface
 ```
 
 ![Example Image](pic/RPI_open_spi.png)
+
+#### Enble SSH
+```
+sudo raspi-config
+Choose Interfacing Options -> SSH -> Yes  to enable SSH interface
+```
+Actually this step is up to you, our group don't have a HDMI screen. So we choose that way. 
+
 #### Install Libraries
 ```
 sudo apt-get install wiringpi
@@ -119,18 +134,26 @@ cmake ..
 make
 sudo make install
 ```
-### Run Unit Tests
+cmake is also not the default installation library for the Raspberry Pi and you may need to install it as well.
+
 ```
-$ g++ RTEP_smart_flowerpot/unit_test/dht_test.cpp -o dht_test
+sudo apt-get install cmake
+```
+
+### Run Unit Tests
+Every unit test compilation requires a library dependency.
+-lgtest -lgtest_main -pthread
+```
+$ g++ RTEP_smart_flowerpot/unit_test/dht_test.cpp -o dht_test -lgtest -lgtest_main -pthread
 $ ./dht_test
 
-$ g++ RTEP_smart_flowerpot/unit_test/getTime_test.cpp -o getTime_test
+$ g++ RTEP_smart_flowerpot/unit_test/getTime_test.cpp -o getTime_test -lgtest -lgtest_main -pthread
 $ ./getTime_test
 
-$ g++ RTEP_smart_flowerpot/unit_test/sensor_test.cpp -o sensor_test
+$ g++ RTEP_smart_flowerpot/unit_test/sensor_test.cpp -o sensor_test -lgtest -lgtest_main -pthread
 $ ./sensor_test
 
-$ g++ RTEP_smart_flowerpot/unit_test/timer_test.cpp -o timer_test
+$ g++ RTEP_smart_flowerpot/unit_test/timer_test.cpp -o timer_test -lgtest -lgtest_main -pthread
 $ ./timer_test
 ```
 
