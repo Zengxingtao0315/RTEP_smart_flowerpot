@@ -29,6 +29,8 @@ private:
 	std::thread dhtThread;  // 独立线程
     std::mutex dataMutex;   // 用于线程安全的互斥量
 	void readDHTdataLoop();
+	double lastTemperature = 0.0;
+    double lastHumidity = 0.0;
 public:
     Sensor(int digitalPin, int dhtPin);
 	~Sensor();
