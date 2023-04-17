@@ -27,7 +27,7 @@ endif
 
 
 CXX = g++
-MSG = -g -O0 -Wall 
+MSG = -g -O0 -Wall -pthread
 
 
 CXXFLAGS += $(MSG) $(DEBUG)

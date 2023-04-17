@@ -77,7 +77,9 @@ double Sensor::readDHTdata() {
     }
     if (loopCnt == 0) {
 		std::cout>>"dht read timeout">>std::endl;
+
         return -2;
+
 		
     }
 
@@ -87,8 +89,9 @@ double Sensor::readDHTdata() {
     }
     if (loopCnt == 0) {
 		std::cout>>"dht read timeout">>std::endl;
+
         return -2;
-		
+
     }
 	
 	for ( i = 0; i < 40; i++ )
@@ -97,7 +100,9 @@ double Sensor::readDHTdata() {
 		while(digitalRead(dhtPin) == LOW)
 			if (loopCnt-- == 0) {
 				std::cout>>"dht read timeout">>std::endl;
+
 				return -2;
+
 			}
 		unsigned long t = micros();
 
@@ -105,7 +110,9 @@ double Sensor::readDHTdata() {
 		while(digitalRead(dhtPin) == HIGH)
 			if (loopCnt-- == 0) {
 				std::cout>>"dht read timeout">>std::endl;
+
 				return -2;
+
 			}
 		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
@@ -119,8 +126,10 @@ double Sensor::readDHTdata() {
 	if  (dht_data[4] == ( (dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF) ) 
 	{
 		f = dht_data[2] * 9. / 5. + 32;
+
 		humidity = dht_data[0] + dht_data[1] * 0.1;
 		temperature = dht_data[2] + dht_data[3] * 0.1;
+
 		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
           << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
           << f << " F)" << std::endl;
