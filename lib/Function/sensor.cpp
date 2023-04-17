@@ -11,11 +11,12 @@ using namespace std;
 void Sensor::readDHTdataLoop() {
 		while (true) {
 			
-			readDHTdata();
+			DHTdata data = readDHTdata();
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 			// 确保线程安全
 			std::unique_lock<std::mutex> lock(dataMutex);
-			
+			temperature = data->temperature;
+			humidity = data->humidity;
 
 
 		
@@ -70,9 +71,9 @@ UWORD Sensor::readDigitalValue() {
         return value;
     }
 	
-int Sensor::readDHTdata() {
+DHTdata Sensor::readDHTdata() {
 
-    
+    DHTdata data;
 
 	int dht11_dat [5] = { 0, 0, 0, 0, 0 };
 	uint8_t cnt = 7;
@@ -90,12 +91,12 @@ int Sensor::readDHTdata() {
 	// ACKNOWLEDGE or TIMEOUT
 	unsigned int loopCnt = 10000;
 	while(digitalRead(DHTPIN) == LOW)
-		if (loopCnt-- == 0) return -2;
+		if (loopCnt-- == 0) ;
 
 
 	loopCnt = 10000;
 	while(digitalRead(DHTPIN) == HIGH)
-		if (loopCnt-- == 0) return -2;
+		if (loopCnt-- == 0) ;
 	
 	
 	
@@ -104,13 +105,13 @@ int Sensor::readDHTdata() {
 	{
 		loopCnt = 10000;
 		while(digitalRead(DHTPIN) == LOW)
-			if (loopCnt-- == 0) return -2;
+			if (loopCnt-- == 0) ;
 
 		unsigned long t = micros();
 
 		loopCnt = 10000;
 		while(digitalRead(DHTPIN) == HIGH)
-			if (loopCnt-- == 0) return -2;
+			if (loopCnt-- == 0) ;
 
 		if ((micros() - t) > 40) dht11_dat[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
@@ -123,12 +124,13 @@ int Sensor::readDHTdata() {
 	
 	if  (dht11_dat[4] == (  (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)) 
 	{
-
+		datah.umidity = dht11_dat[0];
+		datat.temperature = dht11_dat[2] + dht11_dat[3] * 0.1;
 	
 		f = dht11_dat[2] * 9. / 5. + 32;
 		printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 			dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
-		return 0;
+		return data;
 	}else  {
 		printf( "Data not good, skip\n" );
 		
