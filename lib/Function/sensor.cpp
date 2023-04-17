@@ -73,72 +73,48 @@ UWORD Sensor::readDigitalValue() {
 	
 DHTdata Sensor::readDHTdata() {
     
-	double temperature ;
-    double humidity ;
+	double temperature;
+    double humidity;
 
-
-	int dht_data[5];
-	UBYTE cnt = 0;
-	UBYTE idx = 0;
-	int i ;
-	
-	for(i=0;i<5;i++)
-        dht_data[i]=0;
-	
-    // pull pin down for 20 milliseconds
-	pinMode(dhtPin, OUTPUT);
-    digitalWrite(dhtPin, LOW);
-	std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	// then pull it up for 40 microseconds 
-    digitalWrite(dhtPin, HIGH);
-    std::this_thread::sleep_for(std::chrono::microseconds(40));
-	// prepare to read the pin 
-    pinMode(dhtPin, INPUT);
-	pullUpDnControl(dhtPin, PUD_UP);
-
-	
+	int dht11_dat [5] = { 0, 0, 0, 0, 0 };
+	uint8_t cnt = 7;
+	uint8_t idx = 0;
+	float	f; 
+ int i ;
+	dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
+ 
+	pinMode( DHTPIN, OUTPUT );
+	digitalWrite( DHTPIN, LOW );
+	delay( 35 );
+	digitalWrite( DHTPIN, HIGH );
+	delayMicroseconds( 40 );
+	pinMode( DHTPIN, INPUT );
 	// ACKNOWLEDGE or TIMEOUT
-	unsigned int loopCnt = 1000;
-	while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
-        loopCnt--;
-    if (loopCnt < 0) {
-	std::cout<<"1dht read timeout"<<std::endl;}
+	unsigned int loopCnt = 10000;
+	while(digitalRead(DHTPIN) == LOW)
+		if (loopCnt-- == 0) return -2;
 
-        
 
-		
-    }
-
-    loopCnt = 1000;
-    while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
-        loopCnt--;
-    }
-    if (loopCnt < 0) {
-		std::cout<<"2dht read timeout"<<std::endl;
-
-        
-
-    }
+	loopCnt = 10000;
+	while(digitalRead(DHTPIN) == HIGH)
+		if (loopCnt-- == 0) return -2;
+	
+	
+	
 	
 	for ( i = 0; i < 40; i++ )
 	{
-		loopCnt = 1000;
-		while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
-			loopCnt--;
-		}
-		if (loopCnt < 0) {
-			std::cout<<"3dht read timeout"<<std::endl;
-		}
+		loopCnt = 10000;
+		while(digitalRead(DHTPIN) == LOW)
+			if (loopCnt-- == 0) return -2;
+
 		unsigned long t = micros();
 
-		loopCnt = 1000;
-		while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
-			loopCnt--;
-		}
-		if (loopCnt < 0) {
-			std::cout<<"4dht read timeout"<<std::endl;
-		}
-		if ((micros() - t) >= 40) dht_data[idx] |= (1 << cnt);
+		loopCnt = 10000;
+		while(digitalRead(DHTPIN) == HIGH)
+			if (loopCnt-- == 0) return -2;
+
+		if ((micros() - t) > 40) dht11_dat[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
 		{
 			cnt = 7;    // restart at MSB
@@ -146,13 +122,15 @@ DHTdata Sensor::readDHTdata() {
 		}
 		else cnt--;
 	}
-	std::this_thread::sleep_for(std::chrono::microseconds(1));
+	
 	if  (dht_data[4] == ( (dht_data[0]  + dht_data[2] ) & 0xFF) ) 
 	{
 
 		humidity = dht_data[0] + dht_data[1] * 0.1;
 		temperature = dht_data[2] + dht_data[3] * 0.1;
-
+		f = dht11_dat[2] * 9. / 5. + 32;
+		printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
+			dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
 		return DHTdata{temperature, humidity};
 	}else  {
 		printf( "Data not good, skip\n" );
