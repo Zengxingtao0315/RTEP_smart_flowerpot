@@ -136,7 +136,6 @@ DHTdata Sensor::readDHTdata() {
 		loopCnt = 10000;
 		while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
 			loopCnt--;
-			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 		if (loopCnt == 0) {
 			std::cout<<"4dht read timeout"<<std::endl;
