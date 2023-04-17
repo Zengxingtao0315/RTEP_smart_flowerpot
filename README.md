@@ -38,7 +38,7 @@ Select according to operating system.
 After finishing the installment, choose os and storage.
 Our project deside raspberry pi os(31-BIT). Then remember we have to click on the advanced settings in the bottom right hand corner. We need to turn on the SSH function of the Raspberry Pi and we deliberately remote the session too. if you miss the part ,its fine.
 
-![Example Image](pic/raspberry_pi_imager (1).png)
+![Example Image](pic/raspberry_pi_imager_1.png)
 
 Click burn, then wait a lot of time for the burn to succeed and install the SD card into the card slot of the Raspberry Pi board, plug in the power, the Raspberry Pi initialization configuration is successful
 
@@ -126,6 +126,23 @@ Here are two options:
 ![Example Image](Pot_3D_Model/PlantFront.png)
 
 ## 3. Web Application Setup
+
+The purpose of creating a web page is that people and people under the same LAN can access the IP address of the Raspberry Pi via a browser to be able to check the status of the beloved little flower.
+
+### Install libraries
+```
+sudo apt-get install python3
+sudo apt-get install python3-pip
+sudo pip3 install --upgrade pip
+sudo pip3 install numpy pandas matplotlib
+
+
+```
+
+
+
+
+
 
 # Unit Test
 ### Install Google Test (gtest)
