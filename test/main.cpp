@@ -177,8 +177,8 @@ int main()
 
 		}
 		OLED.Display(BlackImage);
-		DEV_Delay_ms(2000);	
-		Paint_Clear(BLACK);	
+		DEV.Delay_ms(2000);	
+		Paint.Clear(BLACK);	
 		/**********************************
 		if(light_duration < 8.0){
 			Paint.DrawString_EN(10, 40, "need more light", &Font12, BLACK, WHITE);
@@ -194,7 +194,7 @@ int main()
 		
 		OLED.Display(BlackImage);
 		DEV.Delay_ms(2000);
-		Paint_Clear(BLACK);	
+		Paint.Clear(BLACK);	
 
 		
 		OLED.Clear();
