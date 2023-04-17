@@ -3,6 +3,8 @@ The project about ENG5220: Real Time Embedded Programming (2022-23)
 
 Group 27
 
+![Example Image](pic/final_work.png)
+
 ## Description
 The intelligent flowerpot is designed to help you to ensure the plants optimal growth. With sensors, it can monitor your plants’ temperature, humidity and light level. It features a built-in screen that expresses the mood of your plants through emoji and real-time statistics to remind you what you should do to take good care of your lovely plant. Meanwhile, we have built a website interface to monitor and observe real-time condition of your plant remotely.
  
@@ -21,7 +23,7 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 | Qidi Wang  | 2724200w | Web Application Engineer| 
 
 # Video Demo Link
-The video will introduce key features and real-time responses to enviroment changes
+The video will introduce key features and real-time responses to enviroment changes, please watch the video for an intuitive view of the interesting project
 https://drive.google.com/drive/folders/11dj5n3dzrHT3IjsJquE8c0qLd-phn4Rf?usp=sharing
 
 # Guide
@@ -38,7 +40,7 @@ Select according to operating system.
 After finishing the installment, choose os and storage.
 Our project deside raspberry pi os(31-BIT). Then remember we have to click on the advanced settings in the bottom right hand corner. We need to turn on the SSH function of the Raspberry Pi and we deliberately remote the session too. if you miss the part ,its fine.
 
-![Example Image](pic/raspberry_pi_imager_1.png)
+![Example Image](pic/raspberry_pi_imager (1).png)
 
 Click burn, then wait a lot of time for the burn to succeed and install the SD card into the card slot of the Raspberry Pi board, plug in the power, the Raspberry Pi initialization configuration is successful
 
@@ -127,23 +129,6 @@ Here are two options:
 
 ## 3. Web Application Setup
 
-The purpose of creating a web page is that people and people under the same LAN can access the IP address of the Raspberry Pi via a browser to be able to check the status of the beloved little flower.
-
-### Install libraries
-```
-sudo apt-get install python3
-sudo apt-get install python3-pip
-sudo pip3 install --upgrade pip
-sudo pip3 install numpy pandas matplotlib
-
-
-```
-
-
-
-
-
-
 # Unit Test
 ### Install Google Test (gtest)
 ```
@@ -198,9 +183,20 @@ We documented our weekly plan and progress in the Gantt Chart
 Our future plan for the intelligent flowerpot involves developing and implementing more advanced sensors and technologies to enhance its ability to monitor and regulate plant growth. We also plan to expand our product line to include various sizes and designs to cater to different customer needs. In addition, we aim to collaborate with botanical experts to incorporate their insights and recommendations for optimal plant growth. In terms of the marking value of our product, we will conduct market research and analysis to determine a competitive and fair price at around £50. We will emphasize the unique features and benefits of the intelligent flowerpot, such as real-time monitoring, mood expression, and remote access through a website interface. To increase brand awareness and engagement, we will utilize social media and influencer marketing. Furthermore, we will offer customer support and resources, such as tutorials and FAQs, to ensure a positive user experience and increase customer satisfaction.
 
 # Social media
-Instagram: https://www.instagram.com/rtepsmartflowerpot9/
+Note that some platforms require you to log in in order to browse their content.
 
-Facebook: https://www.facebook.com/profile.php?id=100092231731079
+## Instagram: 
+https://www.instagram.com/rtepsmartflowerpot9/
+
+## Facebook: 
+https://www.facebook.com/profile.php?id=100092231731079
+
+## Twitter:
+https://twitter.com/RSmartFlowerpot
+
+## YouTube:
+
+
 
 
 
