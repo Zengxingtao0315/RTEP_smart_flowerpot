@@ -102,6 +102,9 @@ Wire Connection for DHT11 Module
 |OUT/DATA/D| 7|
 |-/GND	|GND|
 
+#### 
+
+
 ### 2.3 Photosensitive Diode Sensor
 Wire Connection Photosensitive module
 |PDC	|Raspberry Pi|
