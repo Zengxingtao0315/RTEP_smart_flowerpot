@@ -34,7 +34,7 @@ Select according to operating system.
 After finishing the installment, choose os and storage.
 Our project deside raspberry pi os(31-BIT). Then remember we have to click on the advanced settings in the bottom right hand corner. We need to turn on the SSH function of the Raspberry Pi and we deliberately remote the session too. if you miss the part ,its fine.
 
-![Example Image](pic/raspberry_pi_imager(1).png)
+![Example Image](pic/raspberry_pi_imager (1).png)
 
 Click burn, then wait a lot of time for the burn to succeed and install the SD card into the card slot of the Raspberry Pi board, plug in the power, the Raspberry Pi initialization configuration is successful
 
