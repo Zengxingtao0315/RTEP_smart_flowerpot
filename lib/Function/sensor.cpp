@@ -77,7 +77,7 @@ DHTdata Sensor::readDHTdata() {
     double humidity ;
 
 
-	UBYTE dht_data[5];
+	int dht_data[5];
 	UBYTE cnt = 0;
 	UBYTE idx = 0;
 	int i ;
