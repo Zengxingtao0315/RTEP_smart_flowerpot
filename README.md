@@ -102,7 +102,16 @@ Wire Connection for DHT11 Module
 |OUT/DATA/D| 7|
 |-/GND	|GND|
 
-#### 
+#### Functionality
+The DHT11 digital temperature and humidity sensor is a temperature and humidity compound sensor containing a calibrated digital signal output
+
+Acquisition range: temperature 0-50°±2°, humidity: 20-90%RH.
+
+Using a single bus bi-directional serial communication protocol, each acquisition is initiated by the microcontroller with a start signal, the DHT11 then sends a response to the microcontroller and starts transmitting a 40-bit data frame with the high bit first. The data format is: 8bit humidity integer data + 8bit humidity decimal data + 8bit temperature integer data + 8bit temperature decimal data + 8bit check bits, the temperature and humidity decimal part is 0 by default, i.e. the data collected by the microcontroller are all integers, the check bits are the 4 bytes of data summed up to take the low 8 bits of the result as the checksum.
+
+![Example Image](pic/DHT11–Temperature-Sensor-Working-waveform.png)
+
+The duration of each host signal is explained in the DHT11 datasheet, with neat steps and illustrative timing diagrams.
 
 
 ### 2.3 Photosensitive Diode Sensor
@@ -113,6 +122,10 @@ Wire Connection Photosensitive module
 |DO| 11|
 |AO| NOT USED|
 |GND	|GND|
+
+#### Functionality
+
+
 
 ### 2.4 128*128 RGB OLED with SPI Interface, or anyother compatiable LED devices to Raspberry Pi B+/4B+
 
