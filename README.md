@@ -92,6 +92,8 @@ Wire Connection Photosensitive module
 |GND	|GND|
 
 ### 2.4 128*128 RGB OLED with SPI Interface, or anyother compatiable LED devices to Raspberry Pi B+/4B+
+![Example Image](pic/hardwares.jpg)
+
 ### 2.5 Plant pot that can accommodate the above-mentioned devices
 Here are two options: 
 1) DIY your handmade flower pot, make sure to wrap your wires and devices with waterproof materials to avoid water damage to the circuit.
