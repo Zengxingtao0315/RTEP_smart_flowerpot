@@ -88,7 +88,7 @@ void DEV::Delay_ms(UDOUBLE xms)
 #elif USE_DEV_LIB
     UDOUBLE i;
     for(i=0; i < xms; i++){
-        usleep(1000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(xms));
     }
 #endif
 }
