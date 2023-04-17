@@ -17,7 +17,7 @@ int read_dht11_dat()
  
 	pinMode( DHTPIN, OUTPUT );
 	digitalWrite( DHTPIN, LOW );
-	delayMicroseconds( 18055 );
+	delay( 35 );
 	digitalWrite( DHTPIN, HIGH );
 	delayMicroseconds( 40 );
 	pinMode( DHTPIN, INPUT );
