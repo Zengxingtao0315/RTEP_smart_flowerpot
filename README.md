@@ -98,4 +98,8 @@ Wire Connection Photosensitive module
 ### 2.5 Plant pot that can accommodate the above-mentioned devices
 Here are two options: 
 1) DIY your handmade flower pot, make sure to wrap your wires and devices with waterproof materials to avoid water damage to the circuit.
+
+![Example Image](pic/DIY pot.jpg)
+
 2) 3D print your flower pot, the code and images for 3D model can be found in "Pot 3D Model" folder at the github repository.
+![Example Image](Pot 3D Model/PlantFront.png)
