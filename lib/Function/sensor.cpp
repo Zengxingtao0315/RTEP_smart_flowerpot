@@ -11,10 +11,10 @@ using namespace std;
 void Sensor::readDHTdataLoop() {
 		while (true) {
 			
-
+			DHTdata data = readDHTdata();
 			// 确保线程安全
 			std::unique_lock<std::mutex> lock(dataMutex);
-			DHTdata data = readDHTdata();
+			
 
 			temperature = data.temperature;
 			humidity = data.humidity;
@@ -23,7 +23,7 @@ void Sensor::readDHTdataLoop() {
         dataCondVar.notify_all();
 
         // 等待一段时间再进行下一次读取
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		}
 	}
 	
