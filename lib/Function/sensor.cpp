@@ -23,7 +23,7 @@ void Sensor::readDHTdataLoop() {
         dataCondVar.notify_all();
 
         // 等待一段时间再进行下一次读取
-        dataCondVar.wait_for(lock, std::chrono::milliseconds(2000));
+        std::this_thread::sleep_for(2s);
 		}
 	}
 	
@@ -49,12 +49,14 @@ double Sensor::getHumidity() {
     return humidity;
 }
 
-Sensor::Sensor(int digitalPin, int dhtPin) {
-        this->digitalPin = DIGITALPIN;
-        //this->analogPin = ANALOGPIN;
-		this->dhtPin = DHTPIN;
-		dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
+Sensor::Sensor(int digitalPin, int dhtPin)
+    : digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0) {
+    if (wiringPiSetup() == -1) {
+        std::cerr << "Error initializing wiringPi" << std::endl;
+        exit(1);
     }
+    dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
+}
 Sensor::~Sensor(){
         // 等待线程结束
         if (dhtThread.joinable()) {
@@ -78,9 +80,6 @@ DHTdata Sensor::readDHTdata() {
 	UBYTE cnt = 0;
 	UBYTE idx = 0;
 	int i ;
-	float	f;
-	if ( wiringPiSetup() == -1 )
-    exit( 1 );
 	
 	for(i=0;i<5;i++)
         dht_data[i]=0;
@@ -88,7 +87,7 @@ DHTdata Sensor::readDHTdata() {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-	std::this_thread::sleep_for(std::chrono::microseconds(23001));
+	std::this_thread::sleep_for(23ms);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
     std::this_thread::sleep_for(std::chrono::microseconds(41));
