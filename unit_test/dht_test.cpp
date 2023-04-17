@@ -12,7 +12,7 @@ int read_dht11_dat()
 	uint8_t cnt = 7;
 	uint8_t idx = 0;
 	float	f; 
- 
+ int i ;
 	dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
  
 	pinMode( DHTPIN, OUTPUT );

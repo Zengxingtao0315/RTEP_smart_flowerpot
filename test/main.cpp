@@ -154,13 +154,11 @@ int main()
 		
 		temp = Sensor.getTemperature();
         hum = Sensor.getHumidity();
-		std::cout << "Temperature: " << temp << "°C" << std::endl;
-        std::cout << "Humidity: " << hum << "%" << std::endl;
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		Paint.DrawString_EN(10, 34, "Humidity(%):", &Font16, BLACK, WHITE);
-		Paint.DrawNum(10, 51, hum, &Font16, 4, BLACK, WHITE);
-		Paint.DrawString_EN(10, 68, "Temp(C):", &Font16, BLACK, WHITE);
-		Paint.DrawNum(10, 85, tem, &Font16, 4, BLACK, WHITE);
+		Paint.DrawString_EN(10, 34, "Humidity(%)", &Font16, BLACK, WHITE);
+		Paint.DrawNum(10, 51, hum, &Font16, 1, BLACK, WHITE);
+		Paint.DrawString_EN(10, 68, "Temperature(C)", &Font16, BLACK, WHITE);
+		Paint.DrawNum(10, 85, temp, &Font16, 1, BLACK, WHITE);
 		
 		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light		
 		digitalValue = Sensor.readDigitalValue();
@@ -168,12 +166,12 @@ int main()
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
 		if (digitalValue == 0){
 
-			Paint.DrawString_EN(10, 44, "light", &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 102, "light", &Font16, BLACK, WHITE);
 			std::cout<<"light"<<std::endl;
 
 		}else{
 			std::cout<<"dark"<<std::endl;
-			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
+			Paint.DrawString_EN(10, 102, "Dark", &Font16, BLACK, WHITE);
 
 		}
 		OLED.Display(BlackImage);
