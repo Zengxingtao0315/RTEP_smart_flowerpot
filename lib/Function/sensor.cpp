@@ -8,46 +8,53 @@
 #include "sensor.hpp"
 
 using namespace std;
+void Sensor::readDHTdataLoop() {
+		while (true) {
+			DHTdata data = readDHTdata();
 
+			// 确保线程安全
+			std::lock_guard<std::mutex> lock(dataMutex);
+			temperature = data.temperature;
+			humidity = data.humidity;
 
-int waitForPinStatus(int status, int timeout)
-{
-    int t = 0;
-    while (digitalRead(DHTPIN) != status) {
-        if (t >= timeout) {
-            return -1;
-        }
-        delayMicroseconds(1);
-        t++;
-    }
-    return 0;
-}
-
-
+			// 等待一段时间再进行下一次读取
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		}
+	}
 
 Sensor::Sensor(int digitalPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
         //this->analogPin = ANALOGPIN;
 		this->dhtPin = DHTPIN;
+		dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
     }
-	
+~Sensor::Sensor(){
+        // 等待线程结束
+        if (dhtThread.joinable()) {
+            dhtThread.join();
+        }
+    }
+
+double Sensor::getTemperature(){
+	std::lock_guard<std::mutex> lock(dataMutex);
+	return temperature;
+}	
+
+double Sensor::getHumidity(){
+	std::lock_guard<std::mutex> lock(dataMutex);
+	return humidity;
+}	
 	// get light digital value
 UWORD Sensor::readDigitalValue() {
         UWORD value = digitalRead(digitalPin);
         return value;
     }
 	
-	// get light analogue value
-	/*************************
-UWORD Sensor::readAnalogValue() {
-        UWORD value = analogRead(analogPin);
-        return value;
-    }
-	*************************/
-	// get dht temperature and humidity
 DHTdata Sensor::readDHTdata() {
     
-	DHTdata dht;
+	double temperature = /* 读取温度值 */;
+    double humidity = /* 读取湿度值 */;
+
 
 	UBYTE dht_data[5];
 	UBYTE cnt = 0;
@@ -128,14 +135,10 @@ DHTdata Sensor::readDHTdata() {
 	{
 		f = dht_data[2] * 9. / 5. + 32;
 
-		dht.humidity = dht_data[0] + dht_data[1] * 0.1;
-		dht.temperature = dht_data[2] + dht_data[3] * 0.1;
+		humidity = dht_data[0] + dht_data[1] * 0.1;
+		temperature = dht_data[2] + dht_data[3] * 0.1;
 
-		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
-          << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
-          << f << " F)" << std::endl;
-		  return dht;
-
+		return DHTdata{temperature, humidity};
 	}else  {
 		printf( "Data not good, skip\n" );
 		
