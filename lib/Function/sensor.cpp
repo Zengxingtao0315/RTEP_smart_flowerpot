@@ -87,10 +87,10 @@ DHTdata Sensor::readDHTdata() {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-	std::this_thread::sleep_for(std::chrono::microseconds(23001));
+	std::this_thread::sleep_for(std::chrono::millisecond(20));
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    std::this_thread::sleep_for(std::chrono::microseconds(41));
+    std::this_thread::sleep_for(std::chrono::microseconds(20));
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
 	pullUpDnControl(dhtPin, PUD_UP);
