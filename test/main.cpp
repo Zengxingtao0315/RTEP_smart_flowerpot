@@ -33,7 +33,7 @@ extern "C" {
 
 using namespace std;
 extern DEV DEV;
-
+Sensor Sensor(DIGITALPIN,  DHTPIN);
 //expression plants emotion or status
 const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -84,8 +84,7 @@ int main()
     if (DEV.ModuleInit() != 0) {
         return -1;
     }
-
-    if (0) {
+    if (USE_IIC) {
         std::cout << "Only USE_SPI, Please revise DEV_Config.h !!!" << std::endl;
         return -1;
     }
@@ -93,14 +92,10 @@ int main()
     std::cout << "OLED Init..." << std::endl;
 	
 	wiringPiSetup();
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	Paint Paint;
 	OLED OLED;
-
-	std::thread OLED_init_thd([&OLED]() {
-		OLED.Init();
-	});
-	OLED_init_thd.join();
+	OLED.Init();
+	DEV.Delay_ms(500);	
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -132,50 +127,56 @@ int main()
 	// init time funciton, get local time.
 	Time time;
 	PAINT_TIME local_time;
-	
 	//init InternetConnectionChecker
 	InternetConnectionChecker checker;
-	bool connected; //Determining network connection status
-	
+	bool connected ; //Determining network connection status
 	//init Sensors pin
-	Sensor Sensor(DIGITALPIN,  DHTPIN);
+	
 	UWORD  digitalValue;
 	//UWORD  analogValue;
-	DHTdata dht;
-	DHTdata dht_temp;
 	float light_duration;
 	SunlightDurationRecorder duration;
-	Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
-	Paint.DrawString_EN(10, 20, "Temp(C):", &Font12, BLACK, WHITE);
-
-	std::cout<<"humidity and temperature loaded cache successful!"<<std::endl;
+	double temp ;
+	double hum ;
+	
+	
 	
     while (1) {
-
-        //Get local time
-		local_time = time.getLocalTime();
-
-
-				
-        //display of internet status
+		std::cout<<"painting the first page!"<<std::endl;
+		//time
+		Paint.DrawString_EN(10, 0, "Time", &Font16, BLACK, WHITE);
+		//display of internet status
 		connected = checker.CheckInternetConnection();
-        
-
-		// display of time
-  	//display of plant information
-		//display of plant information
-
+		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
+		local_time = time.getLocalTime();
+		Paint.DrawTime(10, 17, &local_time, &Font16, BLACK, TIME_COLOR);
+		//Humidity and Temperature
 		
-		dht = Sensor.readDHTdata();
+		temp = Sensor.getTemperature();
+        hum = Sensor.getHumidity();
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		Paint.DrawString_EN(10, 34, "Humidity(%)", &Font12, BLACK, WHITE);
+		Paint.DrawNum(10, 51,hum, &Font12, 1,  WHITE, BLACK);
+		Paint.DrawString_EN(10, 68, "Temperature(C)", &Font12, BLACK, WHITE);
+		Paint.DrawNum(10, 85, temp, &Font12, 1,  WHITE, BLACK);
 		
-		//Digital reading of the light emitting diode, 1 for almost no light, 0 for light
-		
+		//Digital reading of the light emitx`ing diode, 1 for almost no light, 0 for light		
 		digitalValue = Sensor.readDigitalValue();
-
-		//analogValue = Sensor.readAnalogValue();
 		//Calculate the duration of the reading at 0, which is also the duration of daylight
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
-		DEV.Delay_ms(500);
+		if (digitalValue == 0){
+
+			Paint.DrawString_EN(10, 102, "light", &Font16, BLACK, WHITE);
+			std::cout<<"light"<<std::endl;
+
+		}else{
+			std::cout<<"dark"<<std::endl;
+			Paint.DrawString_EN(10, 102, "Dark", &Font16, BLACK, WHITE);
+
+		}
+		OLED.Display(BlackImage);
+		DEV.Delay_ms(10000);	
+		Paint.Clear(BLACK);	
 		/**********************************
 		if(light_duration < 8.0){
 			Paint.DrawString_EN(10, 40, "need more light", &Font12, BLACK, WHITE);
@@ -185,33 +186,13 @@ int main()
 		}
 		**********************************/
 		
-
 		//display of the plant emoji
-		
-		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
-		
-		Paint.DrawTime(10, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-		if(dht_temp.temperature != dht.temperature || dht_temp.humidity != dht.humidity){
-			dht = dht_temp;
-			Paint.DrawNum(59, 20, dht_temp.temperature, &Font12, 4, BLACK, WHITE);
-			Paint.DrawNum(59, 32, dht_temp.humidity, &Font12, 4, BLACK, WHITE);
-			
-		}
-		if (digitalValue == 0){
-
-			Paint.DrawString_EN(10, 44, "light", &Font12, BLACK, WHITE);
-			std::cout<<"light"<<std::endl;
-
-		}else{
-			std::cout<<"dark"<<std::endl;
-			Paint.DrawString_EN(10, 44, "Dark", &Font12, BLACK, WHITE);
-
-		}
-		Paint.GUI_ReadBmp_65K(EmojiSelector(dht_temp.temperature, dht_temp.humidity,digitalValue, light_duration), 32, 64);
+		std::cout<<"painting the emoji page!"<<std::endl;
+		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
 		
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(4000);
-
+		DEV.Delay_ms(10000);
+		Paint.Clear(BLACK);	
 
 		
 		OLED.Clear();
