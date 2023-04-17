@@ -157,7 +157,7 @@ int main()
         hum = Sensor.getHumidity();
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		Paint.DrawString_EN(10, 34, "Humidity(%)", &Font12, BLACK, WHITE);
-		Paint.DrawNum(10, 51, zxt, &Font12, 1, BLACK, WHITE);
+		Paint.DrawNum(10, 51, 123456, &Font12, 1, BLACK, WHITE);
 		Paint.DrawString_EN(10, 68, "Temperature(C)", &Font12, BLACK, WHITE);
 		Paint.DrawNum(10, 85, temp, &Font12, 1, BLACK, WHITE);
 		
