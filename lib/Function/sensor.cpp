@@ -16,11 +16,35 @@ void Sensor::readDHTdataLoop() {
 			std::lock_guard<std::mutex> lock(dataMutex);
 			temperature = data.temperature;
 			humidity = data.humidity;
+		
+		// 通知等待在条件变量上的线程，有新的数据可用
+        dataCondVar.notify_all();
 
-			// 等待一段时间再进行下一次读取
-			std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+        // 等待一段时间再进行下一次读取
+        dataCondVar.wait_for(lock, std::chrono::milliseconds(10000));
 		}
 	}
+double Sensor::getTemperature() {
+    std::unique_lock<std::mutex> lock(dataMutex);
+    // 等待新数据的到来，或者超时
+    dataCondVar.wait_for(lock, std::chrono::milliseconds(10000), [this] {
+        return temperature != lastTemperature;
+    });
+    // 更新最新的温度值
+    lastTemperature = temperature;
+    return temperature;
+}
+
+double Sensor::getHumidity() {
+    std::unique_lock<std::mutex> lock(dataMutex);
+    // 等待新数据的到来，或者超时
+    dataCondVar.wait_for(lock, std::chrono::milliseconds(10000), [this] {
+        return humidity != lastHumidity;
+    });
+    // 更新最新的湿度值
+    lastHumidity = humidity;
+    return humidity;
+}
 
 Sensor::Sensor(int digitalPin, int dhtPin) {
         this->digitalPin = DIGITALPIN;
@@ -35,15 +59,6 @@ Sensor::~Sensor(){
         }
     }
 
-double Sensor::getTemperature(){
-	std::lock_guard<std::mutex> lock(dataMutex);
-	return temperature;
-}	
-
-double Sensor::getHumidity(){
-	std::lock_guard<std::mutex> lock(dataMutex);
-	return humidity;
-}	
 	// get light digital value
 UWORD Sensor::readDigitalValue() {
         UWORD value = digitalRead(digitalPin);
@@ -70,7 +85,7 @@ DHTdata Sensor::readDHTdata() {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-    delayMicroseconds(20055);
+    delayMicroseconds(19055);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
     delayMicroseconds(40);
