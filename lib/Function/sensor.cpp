@@ -128,13 +128,13 @@ DHTdata Sensor::readDHTdata() {
 	{
 		f = dht_data[2] * 9. / 5. + 32;
 
-		DHTdata.humidity = dht_data[0] + dht_data[1] * 0.1;
-		DHTdata.temperature = dht_data[2] + dht_data[3] * 0.1;
+		dht.humidity = dht_data[0] + dht_data[1] * 0.1;
+		dht.temperature = dht_data[2] + dht_data[3] * 0.1;
 
 		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
           << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
           << f << " F)" << std::endl;
-		  return DHTdata;
+		  return dht;
 
 	}else  {
 		printf( "Data not good, skip\n" );
