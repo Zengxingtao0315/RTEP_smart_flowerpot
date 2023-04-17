@@ -24,6 +24,7 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 
 # Video Demo Link
 The video will introduce key features and real-time responses to enviroment changes, please watch the video for an intuitive view of the interesting project
+
 https://drive.google.com/drive/folders/11dj5n3dzrHT3IjsJquE8c0qLd-phn4Rf?usp=sharing
 
 # Guide
