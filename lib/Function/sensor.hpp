@@ -11,14 +11,8 @@
 
 #define MAXTIMINGS  85
 #define DHTPIN    7
-#define DIGITALPIN 0   
+#define DIGITALPIN 1   
   
-
-enum dhtSTAT{
-	TIMEOUT,
-	FAIL,
-	SUCCESS
-};
 
 class Sensor {
 private:
@@ -30,6 +24,6 @@ public:
     Sensor(int digitalPin, int dhtPin);
     UWORD readDigitalValue();
     //UWORD readAnalogValue();
-    dhtSTAT readDHTdata(double* temperature, double* humidity);
+    double readDHTdata();
 };
 #endif

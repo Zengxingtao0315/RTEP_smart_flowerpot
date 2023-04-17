@@ -45,8 +45,9 @@ UWORD Sensor::readAnalogValue() {
     }
 	*************************/
 	// get dht temperature and humidity
-dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
+double Sensor::readDHTdata() {
     
+	double humidity,temperature;
 	UBYTE dht_data[5];
 	UBYTE cnt = 0;
 	UBYTE idx = 0;
@@ -61,13 +62,13 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
     // pull pin down for 20 milliseconds
 	pinMode(dhtPin, OUTPUT);
     digitalWrite(dhtPin, LOW);
-    usleep(18055);
+    delayMicroseconds(18055);
 	// then pull it up for 40 microseconds 
     digitalWrite(dhtPin, HIGH);
-    usleep(40);
+    delayMicroseconds(40);
 	// prepare to read the pin 
     pinMode(dhtPin, INPUT);
-	pullUpDnControl(dhtPin, PUD_UP);
+	
 	
 	// ACKNOWLEDGE or TIMEOUT
 	unsigned int loopCnt = 10000;
@@ -75,7 +76,9 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
         loopCnt--;
     }
     if (loopCnt == 0) {
-        return TIMEOUT;
+		std::cout>>"dht read timeout">>std::endl;
+        return -2;
+		
     }
 
     loopCnt = 10000;
@@ -83,21 +86,27 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
         loopCnt--;
     }
     if (loopCnt == 0) {
-        return TIMEOUT;
+		std::cout>>"dht read timeout">>std::endl;
+        return -2;
+		
     }
 	
 	for ( i = 0; i < 40; i++ )
 	{
 		loopCnt = 10000;
 		while(digitalRead(dhtPin) == LOW)
-			if (loopCnt-- == 0) return TIMEOUT;
-
+			if (loopCnt-- == 0) {
+				std::cout>>"dht read timeout">>std::endl;
+				return -2;
+			}
 		unsigned long t = micros();
 
 		loopCnt = 10000;
 		while(digitalRead(dhtPin) == HIGH)
-			if (loopCnt-- == 0) return TIMEOUT;
-
+			if (loopCnt-- == 0) {
+				std::cout>>"dht read timeout">>std::endl;
+				return -2;
+			}
 		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
 		{
@@ -110,16 +119,16 @@ dhtSTAT Sensor::readDHTdata(double* temperature, double* humidity) {
 	if  (dht_data[4] == ( (dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF) ) 
 	{
 		f = dht_data[2] * 9. / 5. + 32;
-		humidity* = dht_data[0] + dht_data[1] * 0.1;
-		temperature* = dht_data[2] + dht_data[3] * 0.1;
+		humidity = dht_data[0] + dht_data[1] * 0.1;
+		temperature = dht_data[2] + dht_data[3] * 0.1;
 		std::cout << "Humidity = " << dht_data[0] << "." << dht_data[1] << " % "
           << "Temperature = " << dht_data[2] << "." << dht_data[3] << " C ("
           << f << " F)" << std::endl;
-		  return SUCCESS;
+		  return humidity,temperature;
 
 	}else  {
 		printf( "Data not good, skip\n" );
-		return FAIL;
+		return 0;
 	}
 
 }
