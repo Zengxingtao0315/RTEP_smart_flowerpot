@@ -23,7 +23,7 @@ void Sensor::readDHTdataLoop() {
         dataCondVar.notify_all();
 
         // 等待一段时间再进行下一次读取
-        std::this_thread::sleep_for(2s);
+        std::this_thread::sleep_for(std::chrono::milliseconds(23001));
 		}
 	}
 	
