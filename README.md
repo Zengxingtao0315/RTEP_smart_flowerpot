@@ -3,6 +3,8 @@ The project about ENG5220: Real Time Embedded Programming (2022-23)
 
 Group 27
 
+![Example Image](pic/final_work.png)
+
 ## Description
 The intelligent flowerpot is designed to help you to ensure the plants optimal growth. With sensors, it can monitor your plants’ temperature, humidity and light level. It features a built-in screen that expresses the mood of your plants through emoji and real-time statistics to remind you what you should do to take good care of your lovely plant. Meanwhile, we have built a website interface to monitor and observe real-time condition of your plant remotely.
  
@@ -21,7 +23,7 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 | Qidi Wang  | 2724200w | Web Application Engineer| 
 
 # Video Demo Link
-The video will introduce key features and real-time responses to enviroment changes
+The video will introduce key features and real-time responses to enviroment changes, please watch the video for an intuitive view of the interesting project
 https://drive.google.com/drive/folders/11dj5n3dzrHT3IjsJquE8c0qLd-phn4Rf?usp=sharing
 
 # Guide
@@ -218,9 +220,16 @@ We documented our weekly plan and progress in the Gantt Chart
 Our future plan for the intelligent flowerpot involves developing and implementing more advanced sensors and technologies to enhance its ability to monitor and regulate plant growth. We also plan to expand our product line to include various sizes and designs to cater to different customer needs. In addition, we aim to collaborate with botanical experts to incorporate their insights and recommendations for optimal plant growth. In terms of the marking value of our product, we will conduct market research and analysis to determine a competitive and fair price at around £50. We will emphasize the unique features and benefits of the intelligent flowerpot, such as real-time monitoring, mood expression, and remote access through a website interface. To increase brand awareness and engagement, we will utilize social media and influencer marketing. Furthermore, we will offer customer support and resources, such as tutorials and FAQs, to ensure a positive user experience and increase customer satisfaction.
 
 # Social media
-Instagram: https://www.instagram.com/rtepsmartflowerpot9/
+## Instagram: 
+https://www.instagram.com/rtepsmartflowerpot9/
 
-Facebook: https://www.facebook.com/profile.php?id=100092231731079
+## Facebook: 
+https://www.facebook.com/profile.php?id=100092231731079
 
+## Twitter: 
+https://twitter.com/RSmartFlowerpot
+
+## YouTube:
+https://www.youtube.com/@RtepSmartFlowerpot/featured
 
 
