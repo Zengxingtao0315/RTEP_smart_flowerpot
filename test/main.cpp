@@ -152,8 +152,8 @@ int main()
 		Paint.DrawTime(10, 17, &local_time, &Font16, BLACK, TIME_COLOR);
 		//Humidity and Temperature
 		
-		double temperature = sensor.getTemperature();
-        double humidity = sensor.getHumidity();
+		temp = Sensor.getTemperature();
+        hum = Sensor.getHumidity();
 		std::cout << "Temperature: " << temperature << "°C" << std::endl;
         std::cout << "Humidity: " << humidity << "%" << std::endl;
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -190,7 +190,7 @@ int main()
 		
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
-		Paint.GUI_ReadBmp_65K(EmojiSelector(dht_temp.temperature, dht_temp.humidity,digitalValue, light_duration), 32, 32);
+		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
 		
 		OLED.Display(BlackImage);
 		DEV.Delay_ms(2000);

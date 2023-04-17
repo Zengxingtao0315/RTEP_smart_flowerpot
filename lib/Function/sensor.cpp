@@ -28,7 +28,7 @@ Sensor::Sensor(int digitalPin, int dhtPin) {
 		this->dhtPin = DHTPIN;
 		dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
     }
-~Sensor::Sensor(){
+Sensor::~Sensor(){
         // 等待线程结束
         if (dhtThread.joinable()) {
             dhtThread.join();
@@ -84,7 +84,7 @@ DHTdata Sensor::readDHTdata() {
         loopCnt--;
     }
     if (loopCnt == 0) {
-		std::cout>>"dht read timeout">>std::endl;
+		std::cout<<"dht read timeout"<<std::endl;
 
         
 
@@ -96,7 +96,7 @@ DHTdata Sensor::readDHTdata() {
         loopCnt--;
     }
     if (loopCnt == 0) {
-		std::cout>>"dht read timeout">>std::endl;
+		std::cout<<"dht read timeout"<<std::endl;
 
         
 
@@ -107,7 +107,7 @@ DHTdata Sensor::readDHTdata() {
 		loopCnt = 10000;
 		while(digitalRead(dhtPin) == LOW)
 			if (loopCnt-- == 0) {
-				std::cout>>"dht read timeout">>std::endl;
+				std::cout<<"dht read timeout"<<std::endl;
 
 				
 
@@ -117,7 +117,7 @@ DHTdata Sensor::readDHTdata() {
 		loopCnt = 10000;
 		while(digitalRead(dhtPin) == HIGH)
 			if (loopCnt-- == 0) {
-				std::cout>>"dht read timeout">>std::endl;
+				std::cout<<"dht read timeout"<<std::endl;
 
 				
 
