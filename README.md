@@ -1,21 +1,16 @@
 # Smart Flowerpot
 The project about ENG5220: Real Time Embedded Programming (2022-23)
+Group 27
 
 ## Description
-The intelligent flowerpot is designed to help you to ensure the plants optimal growth. With sensors, it can monitor your plants’ temperature, humidity and light level. It features a built-in screen that expresses the mood of your plants through emoji to remind you what you should do next.
+The intelligent flowerpot is designed to help you to ensure the plants optimal growth. With sensors, it can monitor your plants’ temperature, humidity and light level. It features a built-in screen that expresses the mood of your plants through emoji and real-time statistics to remind you what you should do to take good care of your lovely plant. Meanwhile, we have built a website interface to monitor and observe real-time condition of your plant remotely.
  
 ## Features
-1) expression of plants' mood
-2) Simutanoues remote monitor
+1) Visual expression of plants' mood
+2) Real-time and remote monitor on web server
 3) Connect to your smart device
 4) Immediate feedback of environment figures
-5) Intuitive screen display
-
-## Hardwares
-1) Raspberry Pi B+/4B+
-2) DHT11 Module
-3) Photosensitive Diode Sensor
-4) 128*128 RGB OLED with SPI Interface
+5) Intuitive screen display of plants' emojis
 
 ## Contributors
 |  Name   | ID  |
@@ -26,7 +21,7 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 
 # Guide
 
-## 1.System Build
+## 1. Software Installation and Enviroment Setup
 ### 1.1 Raspberry Configuration
 Install Raspberry Pi Imager
 https://www.raspberrypi.com/software/
@@ -35,20 +30,7 @@ Select according to operating system
 
 After finishing the installment, choose os and storage.
 Click burn, then wait a lot of time for the burn to succeed and install the SD card into the card slot of the Raspberry Pi board, plug in the power, the Raspberry Pi initialization configuration is successful
-### 1.2 OLED Configuration
-#### Hardware connection
-When connecting the Raspberry Pi, choose to use the 7PIN cable to connect, please refer to the pin correspondence table below.
-|OLED	|Raspberry Pi|
-|  ----  | ----  |
-|VCC	|	3.3V|
-|GND	|GND|
-|DIN	|	19 / 3|
-|CLK		|23 / 5|
-|CS		|24|
-|DC	|	22|
-|RST	|	13|
 
-![Example Image](pic/600px-1.5inch_RGB_OLED_Module-树莓派.jpg)
 #### Enable SPI
 ```
 sudo raspi-config
@@ -76,16 +58,32 @@ gpio -v
 # Run gpio -v and version 2.60 will appear. If it does not appear, it means that there is an installation error
 ```
 
-### 1.3 DHT11 Module
-#### Hardware connection
+
+## 2. HardWare Build
+### 2.1 Raspberry Pi B+/4B+
+When connecting the Raspberry Pi, choose to use the 7PIN cable to connect, please refer to the pin correspondence table below.
+|OLED	|Raspberry Pi|
+|  ----  | ----  |
+|VCC	|	3.3V|
+|GND	|GND|
+|DIN	|	19 / 3|
+|CLK		|23 / 5|
+|CS		|24|
+|DC	|	22|
+|RST	|	13|
+
+![Example Image](pic/600px-1.5inch_RGB_OLED_Module-树莓派.jpg)
+
+### 2.2 DHT11 Module (Humidity & Temperautre)
+Wire Connection for DHT11 Module
 |DHT	|Raspberry Pi|
 |  ----  | ----  |
 |VCC/+	|	3.3V-5V|
 |OUT/DATA/D| 7|
 |-/GND	|GND|
 
-### 1.4 Photosensitive Diode Sensor Configuration
-#### Hardware connection
+### 2.3 Photosensitive Diode Sensor
+Wire Connection Photosensitive module
 |PDC	|Raspberry Pi|
 |  ----  | ----  |
 |VCC	|	3.3V-5V|
@@ -93,4 +91,46 @@ gpio -v
 |AO| NOT USED|
 |GND	|GND|
 
-## 
+### 2.4 128*128 RGB OLED with SPI Interface, or anyother compatiable LED devices to Raspberry Pi B+/4B+
+
+![Example Image](pic/hardwares.jpg)
+
+### 2.5 Plant pot that can accommodate the above-mentioned devices
+Here are two options: 
+1. DIY your handmade flower pot, make sure to wrap your wires and devices with waterproof materials to avoid water damage to the circuit.
+
+![Example Image](pic/DIY_pot.jpg)
+
+2. 3D print your flower pot, the modeling code (plant pot.obj) and images can be found in "Pot_3D_Model" folder at the github repository.
+
+![Example Image](Pot_3D_Model/PlantFront.png)
+
+## 3. Web Application Setup
+
+##
+### Install Google Test (gtest)
+```
+git clone https://github.com/google/googletest.git
+cd googletest
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+### Run Unit Tests
+```
+$ g++ RTEP_smart_flowerpot/unit_test/dht_test.cpp -o dht_test
+$ ./dht_test
+
+$ g++ RTEP_smart_flowerpot/unit_test/getTime_test.cpp -o getTime_test
+$ ./getTime_test
+
+$ g++ RTEP_smart_flowerpot/unit_test/sensor_test.cpp -o sensor_test
+$ ./sensor_test
+
+$ g++ RTEP_smart_flowerpot/unit_test/timer_test.cpp -o timer_test
+$ ./timer_test
+```
+
+
