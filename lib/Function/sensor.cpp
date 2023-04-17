@@ -121,7 +121,7 @@ DHTdata Sensor::readDHTdata() {
 	
 	for ( i = 0; i < 40; i++ )
 	{
-		loopCnt = 10000;
+		loopCnt = 100000;
 		while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
 			loopCnt--;
 		}
@@ -130,7 +130,7 @@ DHTdata Sensor::readDHTdata() {
 		}
 		unsigned long t = micros();
 
-		loopCnt = 10000;
+		loopCnt = 100000;
 		while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
 			loopCnt--;
 		}
