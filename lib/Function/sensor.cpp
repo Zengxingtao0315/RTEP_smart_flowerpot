@@ -52,8 +52,8 @@ UWORD Sensor::readDigitalValue() {
 	
 DHTdata Sensor::readDHTdata() {
     
-	double temperature = /* 读取温度值 */;
-    double humidity = /* 读取湿度值 */;
+	double temperature ;
+    double humidity ;
 
 
 	UBYTE dht_data[5];
