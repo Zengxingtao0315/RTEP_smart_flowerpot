@@ -97,15 +97,10 @@ int main()
 	Paint Paint;
 	OLED OLED;
 
-    thread t1(OLED.Init);
-	t1.join();
-	
-
-
 	std::thread OLED_init_thd([&OLED]() {
 		OLED.Init();
 	});
-	OLED_init_thd.join()
+	OLED_init_thd.join();
 	
     // Create a new image cache
     UBYTE *BlackImage;
@@ -149,10 +144,9 @@ int main()
 	double temperature,humidity,temperature_temp,humidity_temp;
 	float light_duration;
 	SunlightDurationRecorder duration;
-	
-	std::thread draw_hNt_thd(draw_humidity_temperature);
-	draw_hNt_thd.join();
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	Paint.DrawString_EN(10, 32, "Hum(%):", &Font12, BLACK, WHITE);
+	Paint.DrawString_EN(10, 20, "Temp(C):", &Font12, BLACK, WHITE);
+
 	std::cout<<"humidity and temperature loaded cache successful!"<<std::endl;
 	
     while (1) {
