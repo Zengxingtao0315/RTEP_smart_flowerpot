@@ -20,7 +20,7 @@ The intelligent flowerpot is designed to help you to ensure the plants optimal g
 | Wenbo Yang  | 2727018y | Hardware and 3D Model Engineer | 
 | Qidi Wang  | 2724200w | Web Application Engineer| 
 
-#Video Demo Link
+# Video Demo Link
 The video will introduce key features and real-time responses to enviroment changes
 https://drive.google.com/drive/folders/11dj5n3dzrHT3IjsJquE8c0qLd-phn4Rf?usp=sharing
 
@@ -182,6 +182,7 @@ Our future plan for the intelligent flowerpot involves developing and implementi
 
 # Social media
 Instagram: https://www.instagram.com/rtepsmartflowerpot9/
+
 Facebook: https://www.facebook.com/profile.php?id=100092231731079
 
 
