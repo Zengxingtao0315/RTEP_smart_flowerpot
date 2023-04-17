@@ -11,8 +11,8 @@ using namespace std;
 void Sensor::readDHTdataLoop() {
 		while (true) {
 			
-			readDHTdata(&temperature,&humidity);
-			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+			readDHTdata();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 			// 确保线程安全
 			std::unique_lock<std::mutex> lock(dataMutex);
 			
@@ -70,7 +70,7 @@ UWORD Sensor::readDigitalValue() {
         return value;
     }
 	
-int Sensor::readDHTdata(double*temperature,double* humidity) {
+int Sensor::readDHTdata() {
 
     
 
@@ -124,8 +124,7 @@ int Sensor::readDHTdata(double*temperature,double* humidity) {
 	if  (dht11_dat[4] == (  (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)) 
 	{
 
-		*humidity = dht11_dat[0] + dht11_dat[1] * 0.1;
-		*temperature = dht11_dat[2] + dht11_dat[3] * 0.1;
+	
 		f = dht11_dat[2] * 9. / 5. + 32;
 		printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 			dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
