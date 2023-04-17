@@ -103,7 +103,7 @@ DHTdata Sensor::readDHTdata() {
         loopCnt--;
     }
     if (loopCnt == 0) {
-		std::cout<<"dht read timeout"<<std::endl;
+		std::cout<<"1dht read timeout"<<std::endl;
 
         
 
@@ -115,7 +115,7 @@ DHTdata Sensor::readDHTdata() {
         loopCnt--;
     }
     if (loopCnt == 0) {
-		std::cout<<"dht read timeout"<<std::endl;
+		std::cout<<"2dht read timeout"<<std::endl;
 
         
 
@@ -124,19 +124,21 @@ DHTdata Sensor::readDHTdata() {
 	for ( i = 0; i < 40; i++ )
 	{
 		loopCnt = 10000;
-		while(digitalRead(dhtPin) == LOW)
-			if (loopCnt-- == 0) {
-				std::cout<<"dht read timeout"<<std::endl;
-
-			}
+		while (digitalRead(dhtPin) == LOW && loopCnt > 0) {
+			loopCnt--;
+		}
+		if (loopCnt == 0) {
+			std::cout<<"3dht read timeout"<<std::endl;
+		}
 		unsigned long t = micros();
 
 		loopCnt = 10000;
-		while(digitalRead(dhtPin) == HIGH)
-			if (loopCnt-- == 0) {
-				std::cout<<"dht read timeout"<<std::endl;
-
-			}
+		while (digitalRead(dhtPin) == HIGH && loopCnt > 0) {
+			loopCnt--;
+		}
+		if (loopCnt == 0) {
+			std::cout<<"3dht read timeout"<<std::endl;
+		}
 		if ((micros() - t) > 40) dht_data[idx] |= (1 << cnt);
 		if (cnt == 0)   // next byte?
 		{
