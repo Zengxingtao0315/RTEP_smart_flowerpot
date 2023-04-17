@@ -14,7 +14,7 @@
 #define DIGITALPIN 1   
   
 struct DHTdata{
-	double temperatue;
+	double temperature;
 	double humidity;
 };
 class Sensor {
