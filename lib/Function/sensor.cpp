@@ -147,7 +147,7 @@ DHTdata Sensor::readDHTdata() {
 		else cnt--;
 	}
 	std::this_thread::sleep_for(std::chrono::microseconds(1));
-	if  (dht_data[4] == ( (dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF) ) 
+	if  (dht_data[4] == ( (dht_data[0]  + dht_data[2] ) & 0xFF) ) 
 	{
 
 		humidity = dht_data[0] + dht_data[1] * 0.1;
