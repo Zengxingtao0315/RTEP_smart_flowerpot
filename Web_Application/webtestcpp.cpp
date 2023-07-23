@@ -16,7 +16,7 @@ void on_message( websocketpp::connection_hdl hdl, websocketpp::server<websocketp
 int main() {
     server srv;
     srv.set_message_handler([&srv](websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr msg){
-		on_message[hdl, msg);
+		on_message(hdl, msg);
 	});
 
     // 这里设置服务器的端口号
