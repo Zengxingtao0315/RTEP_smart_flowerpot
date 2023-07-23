@@ -10,7 +10,6 @@
 #ifndef __FONTS_HPP_
 #define __FONTS_HPP_
 
-/*×î´ó×ÖÌåÎ¢ÈíÑÅºÚ24 (32x41) */
 #define MAX_HEIGHT_FONT         41
 #define MAX_WIDTH_FONT          32
 #define OFFSET_BITMAP           

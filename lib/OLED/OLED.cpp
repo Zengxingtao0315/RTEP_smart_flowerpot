@@ -184,20 +184,20 @@ function:   Updates memory to OLED
 ********************************************************************************/
 void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 {
-    uint16_t width = x2 - x1 + 1; // 计算显示窗口的宽度
-    uint16_t height = y2 - y1 + 1; // 计算显示窗口的高度
+    uint16_t width = x2 - x1 + 1; 
+    uint16_t height = y2 - y1 + 1; 
 
-    WriteReg(0x15); // 设置列地址 (X)
-    WriteData(x1); // 起始列
-    WriteData(x2); // 结束列
+    WriteReg(0x15); 
+    WriteData(x1); 
+    WriteData(x2); 
 
-    WriteReg(0x75); // 设置行地址 (Y)
-    WriteData(y1); // 起始行
-    WriteData(y2); // 结束行
+    WriteReg(0x75); 
+    WriteData(y1); 
+    WriteData(y2); 
 
-    WriteReg(0x5C); // 写入RAM
+    WriteReg(0x5C); 
 
-    // 将图像数据写入OLED显示屏
+  
     for (uint16_t i = 0; i < width * height; i++)
     {
         WriteData(Image[i]);

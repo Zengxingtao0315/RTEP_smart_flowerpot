@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Data Display</title>
+</head>
+<body>
+    <h1>Real-time Data Display</h1>
+    <p id="data"></p>
+
+    <script>
+        // 创建WebSocket连接
+        var socket = new WebSocket("ws://your_pi_ip:9002");
+
+        // 接收数据并显示在网页上
+        socket.onmessage = function(event) {
+            var data = event.data;
+            document.getElementById("data").innerText = "Received data: " + data;
+        };
+    </script>
+</body>
+</html>
