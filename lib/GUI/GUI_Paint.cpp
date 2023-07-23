@@ -37,13 +37,14 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWOR
     paint.WidthMemory = Width;
     paint.HeightMemory = Height;
     paint.Color = Color;    
-	paint.Scale = 65;
+	paint.Scale = 2;
 		
     paint.WidthByte = (Width % 8 == 0)? (Width / 8 ): (Width / 8 + 1);
     paint.HeightByte = Height;    
 //    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
 //    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
+
 	paint.Width = Height;
 	paint.Height = Width;
 
@@ -62,7 +63,16 @@ void Paint::SelectImage(UBYTE *image)
 
 void Paint::SetScale(UBYTE scale)
 {
-    if(scale ==65) {
+    if(scale == 2){
+        paint.Scale = scale;
+        paint.WidthByte = (paint.WidthMemory % 8 == 0)? (paint.WidthMemory / 8 ): (paint.WidthMemory / 8 + 1);
+    }else if(scale == 4){
+        paint.Scale = scale;
+        paint.WidthByte = (paint.WidthMemory % 4 == 0)? (paint.WidthMemory / 4 ): (paint.WidthMemory / 4 + 1);
+    }else if(scale ==16) {
+        paint.Scale = scale;
+        paint.WidthByte = (paint.WidthMemory%2==0) ? (paint.WidthMemory/2) : (paint.WidthMemory/2+1); 
+    }else if(scale ==65) {
         paint.Scale = scale;
        paint.WidthByte = paint.WidthMemory*2; 
     }else{
@@ -86,13 +96,34 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         return;
     }      
     UWORD X, Y;
- 
+
+
     if(X > paint.WidthMemory || Y > paint.HeightMemory){
         Debug("Exceeding display boundaries\r\n");
         return;
     }
     
-   if(paint.Scale == 65) {
+    if(paint.Scale == 2){
+        UDOUBLE Addr = X / 8 + Y * paint.WidthByte;
+        UBYTE Rdata = paint.Image[Addr];
+        if(Color == BLACK)
+            paint.Image[Addr] = Rdata & ~(0x80 >> (X % 8));
+        else
+            paint.Image[Addr] = Rdata | (0x80 >> (X % 8));
+    }else if(paint.Scale == 4){
+        UDOUBLE Addr = X / 4 + Y * paint.WidthByte;
+        Color = Color % 4;//Guaranteed color scale is 4  --- 0~3
+        UBYTE Rdata = paint.Image[Addr];
+        
+        Rdata = Rdata & (~(0xC0 >> ((X % 4)*2)));
+        paint.Image[Addr] = Rdata | ((Color << 6) >> ((X % 4)*2));
+    }else if(paint.Scale == 16) {
+        UDOUBLE Addr = X / 2 + Y * paint.WidthByte;
+        UBYTE Rdata = paint.Image[Addr];
+        Color = Color % 16;
+        Rdata = Rdata & (~(0xf0 >> ((X % 2)*4)));
+        paint.Image[Addr] = Rdata | ((Color << 4) >> ((X % 2)*4));
+    }else if(paint.Scale == 65) {
         UDOUBLE Addr = X*2 + Y*paint.WidthByte;
         paint.Image[Addr] = 0xff & (Color>>8);
         paint.Image[Addr+1] = 0xff & Color;
@@ -107,7 +138,22 @@ parameter:
 ******************************************************************************/
 void Paint::Clear(UWORD Color)
 {
-    if(paint.Scale == 65) {
+    if(paint.Scale == 2 || paint.Scale == 4) {
+        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
+            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
+                UDOUBLE Addr = X + Y*paint.WidthByte;
+                paint.Image[Addr] = Color;
+            }
+        }
+    }else if(paint.Scale == 16) {
+        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
+            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
+                UDOUBLE Addr = X + Y*paint.WidthByte;
+                Color = Color & 0x0f;
+                paint.Image[Addr] = (Color<<4) | Color;
+            }
+        }
+    }else if(paint.Scale == 65) {
         for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
             for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
                 UDOUBLE Addr = X*2 + Y*paint.WidthByte;
@@ -118,24 +164,6 @@ void Paint::Clear(UWORD Color)
     }
 }
 
-/******************************************************************************
-function: Clear the color of a window
-parameter:
-    Xstart : x starting point
-    Ystart : Y starting point
-    Xend   : x end point
-    Yend   : y end point
-    Color  : Painted colors
-******************************************************************************/
-void Paint::ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color)
-{
-    UWORD X, Y;
-    for (Y = Ystart; Y < Yend; Y++) {
-        for (X = Xstart; X < Xend; X++) {//8 pixel =  1 byte
-            SetPixel(X, Y, Color);
-        }
-    }
-}
 
 /******************************************************************************
 function: Draw Point(Xpoint, Ypoint) Fill the color
@@ -366,7 +394,6 @@ info:
     Use a computer to convert the image into a corresponding array,
     and then embed the array directly into Imagedata.cpp as a .c file.
 ******************************************************************************/
-
 UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 {
 	FILE *fp;                     //Define a file pointer
