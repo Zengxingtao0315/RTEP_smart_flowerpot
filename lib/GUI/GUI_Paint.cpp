@@ -96,7 +96,14 @@ void Paint::Clear(UWORD Color)
     std::memset(image, lowByte, imageByteSize);
     std::memset(image + 1, highByte, imageByteSize);
 }
-
+void Paint::ClearArea(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend)
+{
+    for (UWORD Y = Ystart; Y < Yend; Y++) {
+        for (UWORD X = Xstart; X < Xend; X++) {
+            SetPixel(X, Y, Color_Background);
+        }
+    }
+}
 
 /******************************************************************************
 function: Show English characters
@@ -119,6 +126,9 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
     const unsigned char *ptr = &Font->table[Char_Offset];
 
+    // 清除显示区域的内容
+    ClearArea(Xpoint, Ypoint, Xpoint + Font->Width, Ypoint + Font->Height);
+
     for (UWORD Page = 0; Page < Font->Height; Page++) {
         for (UWORD Column = 0; Column < Font->Width; Column++) {
             bool drawForeground = *ptr & (0x80 >> (Column % 8));
@@ -133,7 +143,6 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
             ptr++;
     }
 }
-
 
 /******************************************************************************
 function:	Display the string

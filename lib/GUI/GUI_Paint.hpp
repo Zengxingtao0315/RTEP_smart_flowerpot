@@ -117,7 +117,7 @@ public:
 
 
 	void Clear(UWORD Color);
-
+	void ClearArea(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend);
 	//Display string
 	void DrawChar(UWORD Xstart, UWORD Ystart, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 	void DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
