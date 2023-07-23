@@ -19,7 +19,7 @@ using namespace std;
 
 void DEV::Digt_Write(UWORD Pin, UBYTE Value)
 {
-
+#ifdef USE_DEV_LIB
     GPIO.SYSFS_GPIO_Write(Pin, Value);
     
 #endif
