@@ -151,38 +151,25 @@ parameter:
     Color_Foreground : Select the foreground color
     Color_Background : Select the background color
 ******************************************************************************/
-void Paint::DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
+void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char *pString,
                          sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     UWORD Xpoint = Xstart;
     UWORD Ypoint = Ystart;
 
-    if (Xstart > paint.Width || Ystart > paint.Height) {
-        Debug("Paint_DrawString_EN Input exceeds the normal display range\r\n");
-        return;
-    }
-
-    while (* pString != '\0') {
-        //if X direction filled , reposition to(Xstart,Ypoint),Ypoint is Y direction plus the Height of the character
-        if ((Xpoint + Font->Width ) > paint.Width ) {
+    for (; *pString != '\0'; pString++) {
+        if (Xpoint + Font->Width > paint.Width) {
             Xpoint = Xstart;
             Ypoint += Font->Height;
         }
-
-        // If the Y direction is full, reposition to(Xstart, Ystart)
-        if ((Ypoint  + Font->Height ) > paint.Height ) {
-            Xpoint = Xstart;
-            Ypoint = Ystart;
+        if (Ypoint + Font->Height > paint.Height) {
+            break; // if the showearea is full, so break
         }
-        DrawChar(Xpoint, Ypoint, * pString, Font, Color_Background, Color_Foreground);
-
-        //The next character of the address
-        pString ++;
-
-        //The next word of the abscissa increases the font of the broadband
+        DrawChar(Xpoint, Ypoint, *pString, Font, Color_Background, Color_Foreground);
         Xpoint += Font->Width;
     }
 }
+
 
 
 /******************************************************************************
@@ -197,6 +184,7 @@ parameter:
     Color_Background : Select the background color
 ******************************************************************************/
 #define  ARRAY_LEN 255
+/******
 void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
                    sFONT* Font, UWORD Digit,UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -243,7 +231,15 @@ void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
     }
 
     //show
-    DrawString_EN(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
+    DrawString(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
+}
+****/
+void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Number,
+                   sFONT* Font, UWORD Digit, UWORD Color_Foreground, UWORD Color_Background)
+{
+    char str[ARRAY_LEN];
+    snprintf(str, ARRAY_LEN, "%.*f", Digit, Number);
+    DrawString(Xpoint, Ypoint, str, Font, Color_Background, Color_Foreground);
 }
 
 /******************************************************************************
