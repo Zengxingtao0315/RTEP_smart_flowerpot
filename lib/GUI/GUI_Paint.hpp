@@ -58,21 +58,12 @@ typedef struct {
     UWORD WidthMemory;
     UWORD HeightMemory;
     UWORD Color;
-    UWORD Rotate;
-    UWORD Mirror;
     UWORD WidthByte;
     UWORD HeightByte;
     UWORD Scale;
 } PAINT;
 extern PAINT paint;
 
-/**
- * Display rotate
-**/
-#define ROTATE_0            0
-#define ROTATE_90           90
-#define ROTATE_180          180
-#define ROTATE_270          270
 
 /**
  * Display Flip

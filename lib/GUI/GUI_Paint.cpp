@@ -37,23 +37,16 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWOR
     paint.WidthMemory = Width;
     paint.HeightMemory = Height;
     paint.Color = Color;    
-	paint.Scale = 2;
+	paint.Scale = 65;
 		
     paint.WidthByte = (Width % 8 == 0)? (Width / 8 ): (Width / 8 + 1);
     paint.HeightByte = Height;    
 //    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
 //    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-    paint.Rotate = Rotate;
-    paint.Mirror = MIRROR_NONE;
-    
-    if(Rotate == ROTATE_0 || Rotate == ROTATE_180) {
-        paint.Width = Width;
-        paint.Height = Height;
-    } else {
-        paint.Width = Height;
-        paint.Height = Width;
-    }
+	paint.Width = Height;
+	paint.Height = Width;
+
 }
 
 /******************************************************************************
@@ -66,33 +59,10 @@ void Paint::SelectImage(UBYTE *image)
     paint.Image = image;
 }
 
-/******************************************************************************
-function: Select Image Rotate
-parameter:
-    Rotate : 0,90,180,270
-******************************************************************************/
-void Paint::SetRotate(UWORD Rotate)
-{
-    if(Rotate == ROTATE_0 || Rotate == ROTATE_90 || Rotate == ROTATE_180 || Rotate == ROTATE_270) {
-        Debug("Set image Rotate %d\r\n", Rotate);
-        paint.Rotate = Rotate;
-    } else {
-        Debug("rotate = 0, 90, 180, 270\r\n");
-    }
-}
 
 void Paint::SetScale(UBYTE scale)
 {
-    if(scale == 2){
-        paint.Scale = scale;
-        paint.WidthByte = (paint.WidthMemory % 8 == 0)? (paint.WidthMemory / 8 ): (paint.WidthMemory / 8 + 1);
-    }else if(scale == 4){
-        paint.Scale = scale;
-        paint.WidthByte = (paint.WidthMemory % 4 == 0)? (paint.WidthMemory / 4 ): (paint.WidthMemory / 4 + 1);
-    }else if(scale ==16) {
-        paint.Scale = scale;
-        paint.WidthByte = (paint.WidthMemory%2==0) ? (paint.WidthMemory/2) : (paint.WidthMemory/2+1); 
-    }else if(scale ==65) {
+    if(scale ==65) {
         paint.Scale = scale;
        paint.WidthByte = paint.WidthMemory*2; 
     }else{
@@ -101,22 +71,6 @@ void Paint::SetScale(UBYTE scale)
     }
 }
 
-/******************************************************************************
-function:	Select Image mirror
-parameter:
-    mirror   :Not mirror,Horizontal mirror,Vertical mirror,Origin mirror
-******************************************************************************/
-void Paint::SetMirroring(UBYTE mirror)
-{
-    if(mirror == MIRROR_NONE || mirror == MIRROR_HORIZONTAL || 
-        mirror == MIRROR_VERTICAL || mirror == MIRROR_ORIGIN) {
-        Debug("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
-        paint.Mirror = mirror;
-    } else {
-        Debug("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
-        MIRROR_VERTICAL or MIRROR_ORIGIN\r\n");
-    }    
-}
 
 /******************************************************************************
 function: Draw Pixels
@@ -132,71 +86,13 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         return;
     }      
     UWORD X, Y;
-
-    switch(paint.Rotate) {
-    case 0:
-        X = Xpoint;
-        Y = Ypoint;  
-        break;
-    case 90:
-        X = paint.WidthMemory - Ypoint - 1;
-        Y = Xpoint;
-        break;
-    case 180:
-        X = paint.WidthMemory - Xpoint - 1;
-        Y = paint.HeightMemory - Ypoint - 1;
-        break;
-    case 270:
-        X = Ypoint;
-        Y = paint.HeightMemory - Xpoint - 1;
-        break;
-    default:
-        return;
-    }
-    
-    switch(paint.Mirror) {
-    case MIRROR_NONE:
-        break;
-    case MIRROR_HORIZONTAL:
-        X = paint.WidthMemory - X - 1;
-        break;
-    case MIRROR_VERTICAL:
-        Y = paint.HeightMemory - Y - 1;
-        break;
-    case MIRROR_ORIGIN:
-        X = paint.WidthMemory - X - 1;
-        Y = paint.HeightMemory - Y - 1;
-        break;
-    default:
-        return;
-    }
-
+ 
     if(X > paint.WidthMemory || Y > paint.HeightMemory){
         Debug("Exceeding display boundaries\r\n");
         return;
     }
     
-    if(paint.Scale == 2){
-        UDOUBLE Addr = X / 8 + Y * paint.WidthByte;
-        UBYTE Rdata = paint.Image[Addr];
-        if(Color == BLACK)
-            paint.Image[Addr] = Rdata & ~(0x80 >> (X % 8));
-        else
-            paint.Image[Addr] = Rdata | (0x80 >> (X % 8));
-    }else if(paint.Scale == 4){
-        UDOUBLE Addr = X / 4 + Y * paint.WidthByte;
-        Color = Color % 4;//Guaranteed color scale is 4  --- 0~3
-        UBYTE Rdata = paint.Image[Addr];
-        
-        Rdata = Rdata & (~(0xC0 >> ((X % 4)*2)));
-        paint.Image[Addr] = Rdata | ((Color << 6) >> ((X % 4)*2));
-    }else if(paint.Scale == 16) {
-        UDOUBLE Addr = X / 2 + Y * paint.WidthByte;
-        UBYTE Rdata = paint.Image[Addr];
-        Color = Color % 16;
-        Rdata = Rdata & (~(0xf0 >> ((X % 2)*4)));
-        paint.Image[Addr] = Rdata | ((Color << 4) >> ((X % 2)*4));
-    }else if(paint.Scale == 65) {
+   if(paint.Scale == 65) {
         UDOUBLE Addr = X*2 + Y*paint.WidthByte;
         paint.Image[Addr] = 0xff & (Color>>8);
         paint.Image[Addr+1] = 0xff & Color;
@@ -211,22 +107,7 @@ parameter:
 ******************************************************************************/
 void Paint::Clear(UWORD Color)
 {
-    if(paint.Scale == 2 || paint.Scale == 4) {
-        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
-            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X + Y*paint.WidthByte;
-                paint.Image[Addr] = Color;
-            }
-        }
-    }else if(paint.Scale == 16) {
-        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
-            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X + Y*paint.WidthByte;
-                Color = Color & 0x0f;
-                paint.Image[Addr] = (Color<<4) | Color;
-            }
-        }
-    }else if(paint.Scale == 65) {
+    if(paint.Scale == 65) {
         for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
             for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
                 UDOUBLE Addr = X*2 + Y*paint.WidthByte;
@@ -485,31 +366,6 @@ info:
     Use a computer to convert the image into a corresponding array,
     and then embed the array directly into Imagedata.cpp as a .c file.
 ******************************************************************************/
-void Paint::DrawBitMap(const unsigned char* image_buffer)
-{
-    UWORD x, y;
-    UDOUBLE Addr = 0;
-
-    for (y = 0; y < paint.HeightByte; y++) {
-        for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
-            Addr = x + y * paint.WidthByte;
-            paint.Image[Addr] = (unsigned char)image_buffer[Addr];
-        }
-    }
-}
-
-void Paint::DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region)
-{
-    UWORD x, y;
-    UDOUBLE Addr = 0;
-		for (y = 0; y < paint.HeightByte; y++) {
-				for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
-						Addr = x + y * paint.WidthByte ;
-						paint.Image[Addr] = \
-						(unsigned char)image_buffer[Addr+ (paint.HeightByte)*paint.WidthByte*(Region - 1)];
-				}
-		}
-}
 
 UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 {
