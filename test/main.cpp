@@ -106,8 +106,7 @@ int main()
     }
     std::cout << "Paint_NewImage" << std::endl;
 	
-    Paint.NewImage(BlackImage, OLED_WIDTH, OLED_HEIGHT, 0, BLACK);
-    Paint.SetScale(65);
+    Paint.NewImage(BlackImage, OLED_WIDTH, OLED_HEIGHT, BLACK);
     std::cout << "Drawing" << std::endl;
     
 	//Select Image

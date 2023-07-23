@@ -60,7 +60,6 @@ typedef struct {
     UWORD Color;
     UWORD WidthByte;
     UWORD HeightByte;
-    UWORD Scale;
 } PAINT;
 extern PAINT paint;
 
@@ -145,13 +144,10 @@ public:
 
 	void NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD Color);
 	void SelectImage(UBYTE *image);
-	void SetRotate(UWORD Rotate);
-	void SetMirroring(UBYTE mirror);
 	void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
-	void SetScale(UBYTE scale);
+
 
 	void Clear(UWORD Color);
-	void ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color);
 
 	//Display string
 	void DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style);
@@ -161,8 +157,6 @@ public:
 	void DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 
 	//pic
-	void DrawBitMap(const unsigned char* image_buffer);
-	void DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region);
 	UBYTE GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart);
 
 };
