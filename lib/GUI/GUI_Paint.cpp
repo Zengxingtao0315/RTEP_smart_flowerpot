@@ -44,11 +44,12 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWOR
 //    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
 //    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-
-	paint.Width = Height;
-	paint.Height = Width;
-
-}
+    paint.Rotate = Rotate;
+    paint.Mirror = MIRROR_NONE;
+    
+	paint.Width = Width;
+	paint.Height = Height;
+    
 
 /******************************************************************************
 function: Select Image
@@ -59,7 +60,6 @@ void Paint::SelectImage(UBYTE *image)
 {
     paint.Image = image;
 }
-
 
 void Paint::SetScale(UBYTE scale)
 {
@@ -81,6 +81,22 @@ void Paint::SetScale(UBYTE scale)
     }
 }
 
+/******************************************************************************
+function:	Select Image mirror
+parameter:
+    mirror   :Not mirror,Horizontal mirror,Vertical mirror,Origin mirror
+******************************************************************************/
+void Paint::SetMirroring(UBYTE mirror)
+{
+    if(mirror == MIRROR_NONE || mirror == MIRROR_HORIZONTAL || 
+        mirror == MIRROR_VERTICAL || mirror == MIRROR_ORIGIN) {
+        Debug("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
+        paint.Mirror = mirror;
+    } else {
+        Debug("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
+        MIRROR_VERTICAL or MIRROR_ORIGIN\r\n");
+    }    
+}
 
 /******************************************************************************
 function: Draw Pixels
@@ -96,7 +112,6 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         return;
     }      
     UWORD X, Y;
-
 
     if(X > paint.WidthMemory || Y > paint.HeightMemory){
         Debug("Exceeding display boundaries\r\n");
@@ -164,6 +179,24 @@ void Paint::Clear(UWORD Color)
     }
 }
 
+/******************************************************************************
+function: Clear the color of a window
+parameter:
+    Xstart : x starting point
+    Ystart : Y starting point
+    Xend   : x end point
+    Yend   : y end point
+    Color  : Painted colors
+******************************************************************************/
+void Paint::ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color)
+{
+    UWORD X, Y;
+    for (Y = Ystart; Y < Yend; Y++) {
+        for (X = Xstart; X < Xend; X++) {//8 pixel =  1 byte
+            SetPixel(X, Y, Color);
+        }
+    }
+}
 
 /******************************************************************************
 function: Draw Point(Xpoint, Ypoint) Fill the color
@@ -394,6 +427,32 @@ info:
     Use a computer to convert the image into a corresponding array,
     and then embed the array directly into Imagedata.cpp as a .c file.
 ******************************************************************************/
+void Paint::DrawBitMap(const unsigned char* image_buffer)
+{
+    UWORD x, y;
+    UDOUBLE Addr = 0;
+
+    for (y = 0; y < paint.HeightByte; y++) {
+        for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
+            Addr = x + y * paint.WidthByte;
+            paint.Image[Addr] = (unsigned char)image_buffer[Addr];
+        }
+    }
+}
+
+void Paint::DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region)
+{
+    UWORD x, y;
+    UDOUBLE Addr = 0;
+		for (y = 0; y < paint.HeightByte; y++) {
+				for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
+						Addr = x + y * paint.WidthByte ;
+						paint.Image[Addr] = \
+						(unsigned char)image_buffer[Addr+ (paint.HeightByte)*paint.WidthByte*(Region - 1)];
+				}
+		}
+}
+
 UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 {
 	FILE *fp;                     //Define a file pointer
