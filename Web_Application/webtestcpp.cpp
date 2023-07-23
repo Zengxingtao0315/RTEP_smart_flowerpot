@@ -8,9 +8,13 @@ void on_message( websocketpp::connection_hdl hdl, websocketpp::server<websocketp
     // 这里处理接收到的消息，可以是数据采集程序发送过来的数据
     std::string data = msg->get_payload();
     std::cout << "Received data: " << data << std::endl;
-
+	websocketpp::server<websocketpp::config::asio>* s = nullptr;
     // 这里可以将接收到的数据发送给其他客户端
-    s->send(hdl, data, websocketpp::frame::opcode::TEXT);
+    
+	if(s){
+		std::string data = "hello";
+	s->send(hdl, data, websocketpp::frame::opcode::TEXT);
+	}
 }
 
 int main() {
