@@ -44,13 +44,12 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWOR
 //    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
 //    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-    paint.Rotate = Rotate;
-    paint.Mirror = MIRROR_NONE;
+
     
 	paint.Width = Width;
 	paint.Height = Height;
     
-
+}
 /******************************************************************************
 function: Select Image
 parameter:
