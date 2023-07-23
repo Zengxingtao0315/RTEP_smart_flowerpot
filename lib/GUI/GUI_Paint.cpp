@@ -127,7 +127,7 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     const unsigned char *ptr = &Font->table[Char_Offset];
 
     // 清除显示区域的内容
-    ClearArea(Xpoint, Ypoint, Xpoint + Font->Width, Ypoint + Font->Height);
+    ClearArea(0, 0, 127, 127);
 
     for (UWORD Page = 0; Page < Font->Height; Page++) {
         for (UWORD Column = 0; Column < Font->Width; Column++) {
