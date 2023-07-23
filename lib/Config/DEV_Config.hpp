@@ -6,13 +6,7 @@
 			|\\\					Hardware interface							///|
 			------------------------------------------------------------------------
 ***********************************************************************************************************************/
-#ifdef USE_BCM2835_LIB
-    #include <bcm2835.h>
-#elif USE_WIRINGPI_LIB
-    #include <wiringPi.h>
-    #include <wiringPiSPI.h>
-	#include <wiringPiI2C.h>
-#elif USE_DEV_LIB
+#if USE_DEV_LIB
     #include "RPI_sysfs_gpio.hpp"
     #include "dev_hardware_SPI.hpp"
     #include "dev_hardware_i2c.hpp"   
