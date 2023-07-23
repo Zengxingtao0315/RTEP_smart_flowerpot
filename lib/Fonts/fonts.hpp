@@ -31,17 +31,6 @@ typedef struct _tFont
 } sFONT;
 
 
-
-typedef struct
-{    
-  const CH_CN *table;
-  uint16_t size;
-  uint16_t ASCII_Width;
-  uint16_t Width;
-  uint16_t Height;
-  
-}cFONT;
-
 extern sFONT Font12;
 
 #ifdef __cplusplus
