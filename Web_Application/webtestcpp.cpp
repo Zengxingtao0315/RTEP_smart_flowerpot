@@ -4,7 +4,7 @@
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
-void on_message(server* s, websocketpp::connection_hdl hdl, server::message_ptr msg) {
+void on_message( websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr msg) {
     // 这里处理接收到的消息，可以是数据采集程序发送过来的数据
     std::string data = msg->get_payload();
     std::cout << "Received data: " << data << std::endl;
@@ -15,7 +15,7 @@ void on_message(server* s, websocketpp::connection_hdl hdl, server::message_ptr 
 
 int main() {
     server srv;
-    srv.set_message_handler([&srv](websocketpp::connection_hdl hdl, websocketpp::server<socketpp::config::asio>::message_ptr msg){
+    srv.set_message_handler([&srv](websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr msg){
 		on_message[hdl, msg);
 	});
 
