@@ -298,7 +298,12 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
     memset(Image, 0xFF, Image_Width_Byte * bmpInfoHeader.biHeight);
 
     fseek(fp, bmpFileHeader.bOffset, SEEK_SET);
-    fread(Image, sizeof(UBYTE), Image_Width_Byte * bmpInfoHeader.biHeight, fp);  // 读取图像数据
+
+    // 从底部行开始逐行读取图像数据
+    for (int y = bmpInfoHeader.biHeight - 1; y >= 0; y--) {
+        fread(Image + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte, sizeof(UBYTE), Image_Width_Byte, fp);
+    }
+
     fclose(fp);
 
     UWORD color;
