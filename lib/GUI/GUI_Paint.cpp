@@ -96,14 +96,7 @@ void Paint::Clear(UWORD Color)
     std::memset(image, lowByte, imageByteSize);
     std::memset(image + 1, highByte, imageByteSize);
 }
-void Paint::ClearArea(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend)
-{
-    for (UWORD Y = Ystart; Y < Yend; Y++) {
-        for (UWORD X = Xstart; X < Xend; X++) {
-            SetPixel(X, Y, BLACK);
-        }
-    }
-}
+
 
 /******************************************************************************
 function: Show English characters
@@ -116,33 +109,37 @@ parameter:
     Color_Background : Select the background color
 ******************************************************************************/
 void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
-                    sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
+                     sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
         Debug("Paint_DrawChar: 输入超出正常显示范围\r\n");
         return;
     }
 
+    // 计算字符在字库表中的偏移量
     uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
-    const unsigned char *ptr = &Font->table[Char_Offset];
+    const unsigned char* ptr = &Font->table[Char_Offset];
 
-    // 清除显示区域的内容
-    ClearArea(0, 0, 127, 127);
-
+    // 逐行绘制字符
     for (UWORD Page = 0; Page < Font->Height; Page++) {
+        // 逐列处理像素数据
         for (UWORD Column = 0; Column < Font->Width; Column++) {
+            // 判断当前像素是否为前景色像素
             bool drawForeground = *ptr & (0x80 >> (Column % 8));
             UWORD color = drawForeground ? Color_Foreground : Color_Background;
             SetPixel(Xpoint + Column, Ypoint + Page, color);
 
+            // 每个像素占用1位，所以每8列处理一个字节
             if (Column % 8 == 7)
                 ptr++;
         }
 
+        // 考虑到每个像素占用1位，不是8的整数倍的情况
         if (Font->Width % 8 != 0)
             ptr++;
     }
 }
+
 
 /******************************************************************************
 function:	Display the string
