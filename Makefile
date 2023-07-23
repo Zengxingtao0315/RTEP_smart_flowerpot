@@ -35,7 +35,7 @@ CXXFLAGS += $(MSG) $(DEBUG)
 ${TARGET}:${OBJ_CPP}
 	$(CXX) $(CXXFLAGS) $(OBJ_CPP) -o $@ $(LIB)
 	
-${DIR_BIN}/%.o:$(DIR_TEST)/%.cpp
+${DIR_BIN}/%.o:$(DIR_MAIN)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -I $(DIR_Config) -I $(DIR_GUI) -I $(DIR_OLED) -I $(DIR_Function)
 
 ${DIR_BIN}/%.o:$(DIR_OLED)/%.cpp
