@@ -261,7 +261,7 @@ void Paint::DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME* pTime, sFONT* Font,
     snprintf(timeStr, sizeof(timeStr), "%02d:%02d:%02d", pTime->Hour, pTime->Min, pTime->Sec);
 
     // Draw the time string using DrawString function
-    DrawString(Xstart, Ystart, timeStr, Font, Color_Background, Color_Foreground);
+    DrawString(Xstart, Ystart, timeStr, Font, Color_Foreground, Color_Background);
 }
 
 
