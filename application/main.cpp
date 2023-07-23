@@ -118,7 +118,7 @@ int main()
     Paint.Clear(BLACK);
 
     // initialise the whole display
-    //GUI_ReadBmp_65K("./pic/OLED.bmp", 0, 0);
+    //GUI_ReadBmp("./pic/OLED.bmp", 0, 0);
     // Show image on page
     //OLED_Display(BlackImage);
     //DEV_Delay_ms(500);
@@ -147,7 +147,7 @@ int main()
 		Paint.DrawString(10, 0, "Time", &Font16, BLACK, WHITE);
 		//display of internet status
 		connected = checker.CheckInternetConnection();
-		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
+		connected ? Paint.GUI_ReadBmp("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp("./pic/internet_down.bmp", 100, 0);
 		local_time = time.getLocalTime();
 		Paint.DrawTime(10, 17, &local_time, &Font16, BLACK, TIME_COLOR);
 		//Humidity and Temperature
@@ -188,7 +188,7 @@ int main()
 		
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
-		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
+		Paint.GUI_ReadBmp(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
 		
 		OLED.Display(BlackImage);
 		DEV.Delay_ms(10000);
