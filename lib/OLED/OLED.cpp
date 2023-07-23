@@ -20,11 +20,11 @@ using namespace std;
 
 void OLED::Reset(void)
 {
-	DEV.Digital_Write(OLED_RST,1);
+	DEV.Digt_Write(OLED_RST,1);
     DEV.Delay_ms(100);
-	DEV.Digital_Write(OLED_RST,0);
+	DEV.Digt_Write(OLED_RST,0);
     DEV.Delay_ms(100);
-	DEV.Digital_Write(OLED_RST,1);
+	DEV.Digt_Write(OLED_RST,1);
     DEV.Delay_ms(100);
 }
 
@@ -35,7 +35,7 @@ function:
 void OLED::WriteReg(uint8_t Reg)
 {
 #if USE_SPI
-    DEV.Digital_Write(OLED_DC,0);
+    DEV.Digt_Write(OLED_DC,0);
     DEV.SPI_WriteByte(Reg);
 #endif
 }
@@ -43,7 +43,7 @@ void OLED::WriteReg(uint8_t Reg)
 void OLED::WriteData(uint8_t Data)
 {   
 #if USE_SPI
-    DEV.Digital_Write(OLED_DC,1);
+    DEV.Digt_Write(OLED_DC,1);
     DEV.SPI_WriteByte(Data);
 #endif
 }
