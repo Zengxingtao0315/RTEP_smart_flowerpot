@@ -44,12 +44,12 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWOR
 //    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
 //    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-
     
-	paint.Width = Width;
-	paint.Height = Height;
+    paint.Width = Width;
+    paint.Height = Height;
     
 }
+
 /******************************************************************************
 function: Select Image
 parameter:
@@ -59,6 +59,12 @@ void Paint::SelectImage(UBYTE *image)
 {
     paint.Image = image;
 }
+
+/******************************************************************************
+function: Select Image Rotate
+parameter:
+    Rotate : 0,90,180,270
+******************************************************************************/
 
 void Paint::SetScale(UBYTE scale)
 {
@@ -95,6 +101,12 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         return;
     }      
     UWORD X, Y;
+
+	X = Xpoint;
+	Y = Ypoint;  
+
+    
+
 
     if(X > paint.WidthMemory || Y > paint.HeightMemory){
         Debug("Exceeding display boundaries\r\n");

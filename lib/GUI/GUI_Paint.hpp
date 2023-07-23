@@ -64,8 +64,6 @@ typedef struct {
 } PAINT;
 extern PAINT paint;
 
-
-
 /**
  * image color
 **/
