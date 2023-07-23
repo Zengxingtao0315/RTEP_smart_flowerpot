@@ -142,7 +142,7 @@ extern PAINT_TIME sPaint_time;
 class Paint {
 public:
 
-	void NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD Color);
+	void NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Color);
 	void SelectImage(UBYTE *image);
 	void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
 
