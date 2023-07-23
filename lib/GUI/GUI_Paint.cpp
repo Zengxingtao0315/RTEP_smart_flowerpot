@@ -60,16 +60,8 @@ void Paint::SelectImage(UBYTE *image)
 
 void Paint::SetScale(UBYTE scale)
 {
-    if(scale == 2){
-        paint.Scale = scale;
-        paint.WidthByte = (paint.WidthMemory % 8 == 0)? (paint.WidthMemory / 8 ): (paint.WidthMemory / 8 + 1);
-    }else if(scale == 4){
-        paint.Scale = scale;
-        paint.WidthByte = (paint.WidthMemory % 4 == 0)? (paint.WidthMemory / 4 ): (paint.WidthMemory / 4 + 1);
-    }else if(scale ==16) {
-        paint.Scale = scale;
-        paint.WidthByte = (paint.WidthMemory%2==0) ? (paint.WidthMemory/2) : (paint.WidthMemory/2+1); 
-    }else if(scale ==65) {
+    
+    if(scale ==65) {
         paint.Scale = scale;
        paint.WidthByte = paint.WidthMemory*2; 
     }else{
@@ -86,7 +78,7 @@ parameter:
     Ypoint : At point Y
     Color  : Painted colors
 ******************************************************************************/
-/******
+
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
     if(Xpoint > paint.Width || Ypoint > paint.Height){
@@ -101,72 +93,18 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         return;
     }
     
-    if(paint.Scale == 2){
-        UDOUBLE Addr = X / 8 + Y * paint.WidthByte;
-        UBYTE Rdata = paint.Image[Addr];
-        if(Color == BLACK)
-            paint.Image[Addr] = Rdata & ~(0x80 >> (X % 8));
-        else
-            paint.Image[Addr] = Rdata | (0x80 >> (X % 8));
-    }else if(paint.Scale == 4){
-        UDOUBLE Addr = X / 4 + Y * paint.WidthByte;
-        Color = Color % 4;//Guaranteed color scale is 4  --- 0~3
-        UBYTE Rdata = paint.Image[Addr];
-        
-        Rdata = Rdata & (~(0xC0 >> ((X % 4)*2)));
-        paint.Image[Addr] = Rdata | ((Color << 6) >> ((X % 4)*2));
-    }else if(paint.Scale == 16) {
-        UDOUBLE Addr = X / 2 + Y * paint.WidthByte;
-        UBYTE Rdata = paint.Image[Addr];
-        Color = Color % 16;
-        Rdata = Rdata & (~(0xf0 >> ((X % 2)*4)));
-        paint.Image[Addr] = Rdata | ((Color << 4) >> ((X % 2)*4));
-    }else if(paint.Scale == 65) {
+    if(paint.Scale == 65) {
         UDOUBLE Addr = X*2 + Y*paint.WidthByte;
         paint.Image[Addr] = 0xff & (Color>>8);
         paint.Image[Addr+1] = 0xff & Color;
     }
+	else
+	{
+		Debug("Scale mistake!\r\n");
+	}
 
 }
-********/
-void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
-{
-    if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
-        Debug("Exceeding display boundaries\r\n");
-        return;
-    }
 
-    if (Xpoint >= paint.WidthMemory || Ypoint >= paint.HeightMemory) {
-        Debug("Exceeding display boundaries\r\n");
-        return;
-    }
-
-    UDOUBLE Addr = Xpoint / (8 / paint.Scale) + Ypoint * paint.WidthByte;
-    UBYTE Rdata = paint.Image[Addr];
-
-    if (paint.Scale == 2) {
-        UBYTE BitPos = 7 - (Xpoint % 8);
-        if (Color == BLACK)
-            Rdata &= ~(0x01 << BitPos);
-        else
-            Rdata |= (0x01 << BitPos);
-    } else if (paint.Scale == 4) {
-        UBYTE BitPos = 2 * (Xpoint % 4);
-        Color = Color % 4; // Guaranteed color scale is 4 (0~3)
-        Rdata &= ~(0x03 << BitPos);
-        Rdata |= (Color << BitPos);
-    } else if (paint.Scale == 16) {
-        UBYTE BitPos = 4 * (Xpoint % 2);
-        Color = Color % 16;
-        Rdata &= ~(0x0F << BitPos);
-        Rdata |= (Color << BitPos);
-    } else if (paint.Scale == 65) {
-        paint.Image[Addr] = Color >> 8;
-        paint.Image[Addr + 1] = Color & 0xFF;
-    }
-
-    paint.Image[Addr] = Rdata;
-}
 
 /******************************************************************************
 function: Clear the color of the picture
@@ -175,22 +113,7 @@ parameter:
 ******************************************************************************/
 void Paint::Clear(UWORD Color)
 {
-    if(paint.Scale == 2 || paint.Scale == 4) {
-        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
-            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X + Y*paint.WidthByte;
-                paint.Image[Addr] = Color;
-            }
-        }
-    }else if(paint.Scale == 16) {
-        for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
-            for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
-                UDOUBLE Addr = X + Y*paint.WidthByte;
-                Color = Color & 0x0f;
-                paint.Image[Addr] = (Color<<4) | Color;
-            }
-        }
-    }else if(paint.Scale == 65) {
+    if(paint.Scale == 65) {
         for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
             for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
                 UDOUBLE Addr = X*2 + Y*paint.WidthByte;
@@ -199,6 +122,9 @@ void Paint::Clear(UWORD Color)
             }
         }
     }
+	else{
+		Debug("Scale mistake!\r\n");
+	}
 }
 
 
