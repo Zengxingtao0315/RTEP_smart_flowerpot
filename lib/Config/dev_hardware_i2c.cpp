@@ -1,6 +1,6 @@
 /*****************************************************************************
 * | File        :   dev_hardware_i2c.cpp
-* | Author      :   Xingtao Zeng
+* | Author      :   reference
 * | Function    :   Read and write /dev/i2C,  hardware I2C
 * | Info        :
 
@@ -27,7 +27,7 @@ Info:   /dev/i2c-*
 void DEV_I2C::DEV_HARDWARE_I2C_begin(char *i2c_device)
 {
     //device
-    if((hardware_i2c.fd = open(i2c_device, O_RDWR)) < 0)  { //打开I2C 
+    if((hardware_i2c.fd = open(i2c_device, O_RDWR)) < 0)  { //Turn on I2C
         std::cerr << "Failed to open i2c device." << std::endl;
         std::cout << "Failed to open i2c device" << std::endl;
         std::exit(1); 

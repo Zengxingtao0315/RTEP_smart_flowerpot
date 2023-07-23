@@ -1,6 +1,6 @@
 /*****************************************************************************
 * | File        :   dev_hardware_SPI.c
-* | Author      :   Xingtao Zeng
+* | Author      :   reference
 * | Function    :   Read and write /dev/SPI,  hardware SPI
 * | Info        :
 

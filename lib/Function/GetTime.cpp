@@ -19,7 +19,7 @@ PAINT_TIME Time::getLocalTime() {
     std::time(&now);
     local = std::localtime(&now);
 
-    // 提取需要的时间信息
+    // Extract the required time information
     time.Hour = local->tm_hour;
     time.Min = local->tm_min;
 	time.Sec = local->tm_sec;
@@ -31,13 +31,13 @@ PAINT_TIME Time::getLocalTime() {
 float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue) {
 	auto now = std::chrono::system_clock::now();
 	if (!initialized_) {
-		// 第一次调用函数，初始化记录信息
+		// First call to the function to initialize logging information
 		start_time_ = now;
 		duration_0_ = std::chrono::duration<int, std::ratio<1, 1>>(0);
 		last_reset_time_ = now;
 		initialized_ = true;
 	} else {
-		// 检查是否到达新的一天，如果是则重置时长记录
+		// Check to see if a new day has been reached, and if so reset the duration record
 		auto time_since_last_reset = now - last_reset_time_;
 		if (time_since_last_reset >= std::chrono::hours(24)) {
 			duration_0_ = std::chrono::duration<int, std::ratio<1, 1>>{0};
@@ -45,7 +45,7 @@ float SunlightDurationRecorder::getSunlightDurationInHours(bool digitalValue) {
 		}
 	}
 
-	// 根据 digital 记录时长
+	// Record duration according to digital
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start_time_);
 	if (digitalValue == 0) {
 		duration_0_ += duration;

@@ -31,13 +31,6 @@ typedef struct _tFont
 } sFONT;
 
 
-//GB2312
-typedef struct                                          // 汉字字模数据结构
-{
-  const  char index[2];                               // 汉字内码索引
-  const  char matrix[MAX_HEIGHT_FONT*MAX_WIDTH_FONT/8+2];  // 点阵码数据
-}CH_CN;
-
 
 typedef struct
 {    
@@ -49,14 +42,8 @@ typedef struct
   
 }cFONT;
 
-extern sFONT Font24;
-extern sFONT Font20;
-extern sFONT Font16;
 extern sFONT Font12;
-extern sFONT Font8;
 
-extern cFONT Font12CN;
-extern cFONT Font24CN;
 #ifdef __cplusplus
 
 #endif

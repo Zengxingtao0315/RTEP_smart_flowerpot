@@ -116,25 +116,25 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
         return;
     }
 
-    // 计算字符在字库表中的偏移量
+    // Calculate the character offset in the font table
     uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
     const unsigned char* ptr = &Font->table[Char_Offset];
 
-    // 逐行绘制字符
+    // Draw characters line by line
     for (UWORD Page = 0; Page < Font->Height; Page++) {
-        // 逐列处理像素数据
+        // Pixel-by-pixel data processing
         for (UWORD Column = 0; Column < Font->Width; Column++) {
-            // 判断当前像素是否为前景色像素
+            // Determine if the current pixel is a foreground color pixel
             bool drawForeground = *ptr & (0x80 >> (Column % 8));
             UWORD color = drawForeground ? Color_Foreground : Color_Background;
             SetPixel(Xpoint + Column, Ypoint + Page, color);
 
-            // 每个像素占用1位，所以每8列处理一个字节
+            // Each pixel occupies 1 bit, so one byte is processed per 8 columns
             if (Column % 8 == 7)
                 ptr++;
         }
 
-        // 考虑到每个像素占用1位，不是8的整数倍的情况
+        // Consider the case where each pixel occupies 1 bit and is not an integer multiple of 8
         if (Font->Width % 8 != 0)
             ptr++;
     }
@@ -184,56 +184,7 @@ parameter:
     Color_Background : Select the background color
 ******************************************************************************/
 #define  ARRAY_LEN 255
-/******
-void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
-                   sFONT* Font, UWORD Digit,UWORD Color_Foreground, UWORD Color_Background)
-{
-    int16_t Num_Bit = 0, Str_Bit = 0;
-    uint8_t Str_Array[ARRAY_LEN] = {0}, Num_Array[ARRAY_LEN] = {0};
-    uint8_t *pStr = Str_Array;
-	int temp = Nummber;
-	float decimals;
-	uint8_t i;
-    if (Xpoint > paint.Width || Ypoint > paint.Height) {
-        Debug("Paint_DisNum Input exceeds the normal display range\r\n");
-        return;
-    }
 
-	if(Digit > 0) {		
-		decimals = Nummber - temp;
-		for(i=Digit; i > 0; i--) {
-			decimals*=10;
-		}
-		temp = decimals;
-		//Converts a number to a string
-		for(i=Digit; i>0; i--) {
-			Num_Array[Num_Bit] = temp % 10 + '0';
-			Num_Bit++;
-			temp /= 10;						
-		}	
-		Num_Array[Num_Bit] = '.';
-		Num_Bit++;
-	}
-
-	temp = Nummber;
-    //Converts a number to a string
-    while (temp) {
-        Num_Array[Num_Bit] = temp % 10 + '0';
-        Num_Bit++;
-        temp /= 10;
-    }
-		
-    //The string is inverted
-    while (Num_Bit > 0) {
-        Str_Array[Str_Bit] = Num_Array[Num_Bit - 1];
-        Str_Bit ++;
-        Num_Bit --;
-    }
-
-    //show
-    DrawString(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
-}
-****/
 void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Number,
                    sFONT* Font, UWORD Digit, UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -276,7 +227,7 @@ info:
 
 UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 {
-    FILE *fp = fopen(path, "rb");  // 打开BMP文件
+    FILE *fp = fopen(path, "rb");  
     if (!fp) {
         Debug("Cann't open the file!\n");
         return 1;
@@ -284,8 +235,8 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 
     BMPFILEHEADER bmpFileHeader;
     BMPINFOHEADER bmpInfoHeader;
-    fread(&bmpFileHeader, sizeof(BMPFILEHEADER), 1, fp);  // 读取BMP文件头
-    fread(&bmpInfoHeader, sizeof(BMPINFOHEADER), 1, fp);  // 读取BMP信息头
+    fread(&bmpFileHeader, sizeof(BMPFILEHEADER), 1, fp);  // Read BMP file header
+    fread(&bmpInfoHeader, sizeof(BMPINFOHEADER), 1, fp);  // Read the BMP message header
 
     if (bmpInfoHeader.biBitCount != 16) {
         Debug("Bmp image is not a 65K-color bitmap!\n");
@@ -299,7 +250,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 
     fseek(fp, bmpFileHeader.bOffset, SEEK_SET);
 
-    // 从底部行开始逐行读取图像数据
+    // Read image data line by line starting from the bottom line
     for (int y = bmpInfoHeader.biHeight - 1; y >= 0; y--) {
         fread(Image + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte, sizeof(UBYTE), Image_Width_Byte, fp);
     }
@@ -314,7 +265,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
             }
             color = Image[x * 2 + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte];
             color |= Image[x * 2 + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte + 1] << 8;
-            SetPixel(Xstart + x, Ystart + y, color);  // 刷新图像到显示缓冲区
+            SetPixel(Xstart + x, Ystart + y, color);  // Refresh image to display buffer
         }
     }
     return 0;

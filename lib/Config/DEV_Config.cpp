@@ -1,6 +1,6 @@
 /*****************************************************************************
 * | File      	:   DEV_Config.cpp
-* | Author      :   Xingtao Zeng
+* | Author      :   reference
 * | Function    :   Hardware underlying interface
 * | Info        :
 

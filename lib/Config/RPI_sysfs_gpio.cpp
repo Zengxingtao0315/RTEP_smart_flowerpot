@@ -1,6 +1,6 @@
 /*****************************************************************************
 * | File        :   SYSFS_GPIO.c
-* | Author      :   Xingtao Zeng
+* | Author      :   reference
 * | Function    :   Drive SYSFS_ GPIO
 * | Info        :   Read and write /sys/class/gpio
 
