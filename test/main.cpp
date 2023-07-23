@@ -117,7 +117,7 @@ int main()
     Paint.Clear(BLACK);
 
     // initialise the whole display
-    //GUI_ReadBmp_65K("./pic/OLED.bmp", 0, 0);
+    //GUI_ReadBmp("./pic/OLED.bmp", 0, 0);
     // Show image on page
     //OLED_Display(BlackImage);
     //DEV_Delay_ms(500);
@@ -144,7 +144,7 @@ int main()
 		std::cout<<"painting the first page!"<<std::endl;
 		//display of internet status
 		connected = checker.CheckInternetConnection();
-		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
+		connected ? Paint.GUI_ReadBmp("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp("./pic/internet_down.bmp", 100, 0);
 		local_time = time.getLocalTime();
 		Paint.DrawTime(5, 0, &local_time, &Font12, BLACK, TIME_COLOR);
 		//Humidity and Temperature
