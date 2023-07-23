@@ -291,38 +291,30 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     }// Write all
 }
 *///
+bool Paint::GetBit(unsigned char byte, int n) {
+    return (byte >> n) & 1;
+}
 void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
                      sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
-    // Ensure the character is within the font's ASCII range
-    if (Acsii_Char < Font->StartChar || Acsii_Char > Font->EndChar) {
-        Debug("Paint_DrawChar Character is out of font range\r\n");
+    if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
+        Debug("Paint_DrawChar Input exceeds the normal display range\r\n");
         return;
     }
 
-    // Get the character index in the font table
-    uint16_t Char_Index = Acsii_Char - Font->StartChar;
-
-    // Calculate the starting address of the character's bitmap in the font table
-    const uint8_t* Char_Bitmap = &Font->table[Char_Index * Font->CharBytes];
+    uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * ((Font->Width + 7) / 8);
+    const unsigned char* ptr = &Font->table[Char_Offset];
 
     for (UWORD Page = 0; Page < Font->Height; Page++) {
         for (UWORD Column = 0; Column < Font->Width; Column++) {
-            // Get the byte containing the pixel data for the current column
-            uint8_t pixelByte = Char_Bitmap[Column + (Page * ((Font->Width + 7) / 8))];
+            int bitPos = 7 - (Column % 8); // The bit position within the current byte
+            bool isSet = GetBit(*ptr, bitPos);
 
-            // Check each bit of the byte to determine the pixel color
-            for (int8_t bit = 7; bit >= 0; bit--) {
-                UWORD X = Xpoint + Column * 8 + (7 - bit);
-                UWORD Y = Ypoint + Page;
-
-                if ((pixelByte >> bit) & 0x01) {
-                    SetPixel(X, Y, Color_Foreground);
-                } else {
-                    SetPixel(X, Y, Color_Background);
-                }
-            }
+            UWORD color = isSet ? Color_Foreground : Color_Background;
+            SetPixel(Xpoint + Column, Ypoint + Page, color);
         }
+
+        ptr += (Font->Width + 7) / 8; // Move to the next row in the character bitmap
     }
 }
 

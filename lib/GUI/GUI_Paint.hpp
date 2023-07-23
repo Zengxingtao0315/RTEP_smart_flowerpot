@@ -160,13 +160,15 @@ public:
 
 	//Display string
 	void DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style);
+	bool GetBit(unsigned char byte, int n);
+}
 	void DrawChar(UWORD Xstart, UWORD Ystart, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 	void DrawString(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 	void DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber, sFONT* Font, UWORD Digit,UWORD Color_Foreground, UWORD Color_Background);
 	void DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 
 	//pic
-	UBYTE GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart);
+	UBYTE GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart);
 
 };
 

@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <iostream>
+#include <iomanip>
 #include "../Config/DEV_Config.hpp"
 #include <thread>
 #include <mutex>
