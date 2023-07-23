@@ -69,26 +69,16 @@ parameter:
 ******************************************************************************/
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
-    if(Xpoint > paint.Width || Ypoint > paint.Height){
-        Debug("Exceeding display boundaries\r\n");
-        return;
-    }      
-    UWORD X, Y;
-
-	X = Xpoint;
-	Y = Ypoint;  
-
-    if(X > paint.WidthMemory || Y > paint.HeightMemory){
+    if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
         Debug("Exceeding display boundaries\r\n");
         return;
     }
-    
-   
-	UDOUBLE Addr = X*2 + Y*paint.WidthByte;
-	paint.Image[Addr] = 0xff & (Color>>8);
-	paint.Image[Addr+1] = 0xff & Color;
 
+    UDOUBLE Addr = Xpoint * 2 + Ypoint * paint.WidthByte;
+    paint.Image[Addr] = 0xFF & (Color >> 8);
+    paint.Image[Addr + 1] = 0xFF & Color;
 }
+
 
 /******************************************************************************
 function: Clear the color of the picture
@@ -97,14 +87,16 @@ parameter:
 ******************************************************************************/
 void Paint::Clear(UWORD Color)
 {
-	for (UWORD Y = 0; Y < paint.HeightByte; Y++) {
-		for (UWORD X = 0; X < paint.WidthByte; X++ ) {//8 pixel =  1 byte
-			UDOUBLE Addr = X*2 + Y*paint.WidthByte;
-			paint.Image[Addr] = 0x0f & (Color>>8);
-			paint.Image[Addr+1] = 0x0f & Color;
-		}
-	}
+    UBYTE lowByte = 0x0F & Color;
+    UBYTE highByte = 0x0F & (Color >> 8);
+
+    UBYTE* image = paint.Image;
+    UWORD imageByteSize = paint.WidthByte * paint.HeightByte * 2;
+
+    std::memset(image, lowByte, imageByteSize);
+    std::memset(image + 1, highByte, imageByteSize);
 }
+
 
 /******************************************************************************
 function: Show English characters

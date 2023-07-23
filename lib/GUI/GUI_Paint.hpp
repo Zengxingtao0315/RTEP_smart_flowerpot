@@ -14,7 +14,6 @@
 #include "../Config/DEV_Config.hpp"
 #include "../Fonts/fonts.hpp"
 
-
 /*Bitmap file header   14bit*/
 typedef struct BMP_FILE_HEADER {
     UWORD bType;        //File identifier
