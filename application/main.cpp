@@ -144,7 +144,7 @@ int main()
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
 		//time
-		Paint.DrawString_EN(10, 0, "Time", &Font16, BLACK, WHITE);
+		Paint.DrawString(10, 0, "Time", &Font16, BLACK, WHITE);
 		//display of internet status
 		connected = checker.CheckInternetConnection();
 		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
@@ -155,9 +155,9 @@ int main()
 		temp = Sensor.getTemperature();
         hum = Sensor.getHumidity();
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		Paint.DrawString_EN(10, 34, "Humidity(%)", &Font12, BLACK, WHITE);
+		Paint.DrawString(10, 34, "Humidity(%)", &Font12, BLACK, WHITE);
 		Paint.DrawNum(10, 51,hum, &Font12, 1,  WHITE, BLACK);
-		Paint.DrawString_EN(10, 68, "Temperature(C)", &Font12, BLACK, WHITE);
+		Paint.DrawString(10, 68, "Temperature(C)", &Font12, BLACK, WHITE);
 		Paint.DrawNum(10, 85, temp, &Font12, 1,  WHITE, BLACK);
 		
 		//Digital reading of the light emitx`ing diode, 1 for almost no light, 0 for light		
@@ -166,12 +166,12 @@ int main()
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
 		if (digitalValue == 0){
 
-			Paint.DrawString_EN(10, 102, "light", &Font16, BLACK, WHITE);
+			Paint.DrawString(10, 102, "light", &Font16, BLACK, WHITE);
 			std::cout<<"light"<<std::endl;
 
 		}else{
 			std::cout<<"dark"<<std::endl;
-			Paint.DrawString_EN(10, 102, "Dark", &Font16, BLACK, WHITE);
+			Paint.DrawString(10, 102, "Dark", &Font16, BLACK, WHITE);
 
 		}
 		OLED.Display(BlackImage);
@@ -179,10 +179,10 @@ int main()
 		Paint.Clear(BLACK);	
 		/**********************************
 		if(light_duration < 8.0){
-			Paint.DrawString_EN(10, 40, "need more light", &Font12, BLACK, WHITE);
+			Paint.DrawString(10, 40, "need more light", &Font12, BLACK, WHITE);
 		}
 		else{
-			Paint.DrawString_EN(10, 40, "light sufficient", &Font12, BLACK, WHITE);
+			Paint.DrawString(10, 40, "light sufficient", &Font12, BLACK, WHITE);
 		}
 		**********************************/
 		
