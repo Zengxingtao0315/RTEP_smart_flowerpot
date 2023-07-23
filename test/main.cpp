@@ -172,7 +172,6 @@ int main()
 
 		}
 		OLED.Display(BlackImage);
-		DEV.Delay_ms(10000);	
 		Paint.Clear(BLACK);	
 		/**********************************
 		if(light_duration < 8.0){
