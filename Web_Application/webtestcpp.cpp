@@ -15,7 +15,9 @@ void on_message(server* s, websocketpp::connection_hdl hdl, server::message_ptr 
 
 int main() {
     server srv;
-    srv.set_message_handler(&on_message);
+    srv.set_message_handler([&srv](websocketpp::connection_hdl hdl, websocketpp::server<socketpp::config::asio>::message_ptr msg){
+		on_message[hdl, msg);
+	});
 
     // 这里设置服务器的端口号
     int port = 9002;
