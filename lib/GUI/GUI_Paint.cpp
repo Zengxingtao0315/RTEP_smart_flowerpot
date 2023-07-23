@@ -100,7 +100,7 @@ void Paint::ClearArea(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend)
 {
     for (UWORD Y = Ystart; Y < Yend; Y++) {
         for (UWORD X = Xstart; X < Xend; X++) {
-            SetPixel(X, Y, Color_Background);
+            SetPixel(X, Y, BLACK);
         }
     }
 }
