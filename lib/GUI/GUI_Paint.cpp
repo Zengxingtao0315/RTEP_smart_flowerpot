@@ -107,45 +107,6 @@ void Paint::Clear(UWORD Color)
 }
 
 /******************************************************************************
-function: Draw Point(Xpoint, Ypoint) Fill the color
-parameter:
-    Xpoint		: The Xpoint coordinate of the point
-    Ypoint		: The Ypoint coordinate of the point
-    Color		: Painted color
-    Dot_Pixel	: point size
-    Dot_Style	: point Style
-******************************************************************************/
-void Paint::DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,
-                     DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style)
-{
-    if (Xpoint > paint.Width || Ypoint > paint.Height) {
-        Debug("Paint_DrawPoint Input exceeds the normal display range\r\n");
-				std::cout << "Xpoint = " << Xpoint << " , paint.Width = " << paint.Width << std::endl;
-				std::cout << "Ypoint = " << Ypoint << " , paint.Height = " << paint.Height << std::endl;
-        return;
-    }
-
-    int16_t XDir_Num , YDir_Num;
-    if (Dot_Style == DOT_FILL_AROUND) {
-        for (XDir_Num = 0; XDir_Num < 2 * Dot_Pixel - 1; XDir_Num++) {
-            for (YDir_Num = 0; YDir_Num < 2 * Dot_Pixel - 1; YDir_Num++) {
-                if(Xpoint + XDir_Num - Dot_Pixel < 0 || Ypoint + YDir_Num - Dot_Pixel < 0)
-                    break;
-                // printf("x = %d, y = %d\r\n", Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel);
-                SetPixel(Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel, Color);
-            }
-        }
-    } else {
-        for (XDir_Num = 0; XDir_Num <  Dot_Pixel; XDir_Num++) {
-            for (YDir_Num = 0; YDir_Num <  Dot_Pixel; YDir_Num++) {
-                SetPixel(Xpoint + XDir_Num - 1, Ypoint + YDir_Num - 1, Color);
-            }
-        }
-    }
-}
-
-
-/******************************************************************************
 function: Show English characters
 parameter:
     Xpoint           ：X coordinate
@@ -175,14 +136,14 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
             if (FONT_BACKGROUND == Color_Background) { //this process is to speed up the scan
                 if (*ptr & (0x80 >> (Column % 8)))
                     SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
-                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+                   
             } else {
                 if (*ptr & (0x80 >> (Column % 8))) {
                     SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
-                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+                    
                 } else {
                     SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
-                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+               
                 }
             }
             //One pixel is 8 bits
