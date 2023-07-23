@@ -143,21 +143,21 @@ int main()
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
 		//time
-		Paint.DrawString_EN(10, 0, "Time", &Font16, BLACK, WHITE);
+		Paint.DrawString_EN(10, 0, "Time", &Font8, BLACK, WHITE);
 		//display of internet status
 		connected = checker.CheckInternetConnection();
 		connected ? Paint.GUI_ReadBmp_65K("./pic/internet_up.bmp", 100, 0) : Paint.GUI_ReadBmp_65K("./pic/internet_down.bmp", 100, 0);
 		local_time = time.getLocalTime();
-		Paint.DrawTime(10, 17, &local_time, &Font16, BLACK, TIME_COLOR);
+		Paint.DrawTime(10, 9, &local_time, &Font8, BLACK, TIME_COLOR);
 		//Humidity and Temperature
 		
 		temp = Sensor.getTemperature();
         hum = Sensor.getHumidity();
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		Paint.DrawString_EN(10, 34, "Humidity(%)", &Font12, BLACK, WHITE);
-		Paint.DrawNum(10, 51,hum, &Font12, 1,  WHITE, BLACK);
-		Paint.DrawString_EN(10, 68, "Temperature(C)", &Font12, BLACK, WHITE);
-		Paint.DrawNum(10, 85, temp, &Font12, 1,  WHITE, BLACK);
+		Paint.DrawString_EN(10, 17, "Humidity(%)", &Font8, BLACK, WHITE);
+		Paint.DrawNum(10, 25,hum, &Font8, 1,  WHITE, BLACK);
+		Paint.DrawString_EN(10, 33, "Temperature(C)", &Font8, BLACK, WHITE);
+		Paint.DrawNum(10, 41, temp, &Font12, 1,  WHITE, BLACK);
 		
 		//Digital reading of the light emitx`ing diode, 1 for almost no light, 0 for light		
 		digitalValue = Sensor.readDigitalValue();
@@ -165,12 +165,12 @@ int main()
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
 		if (digitalValue == 0){
 
-			Paint.DrawString_EN(10, 102, "light", &Font16, BLACK, WHITE);
+			Paint.DrawString_EN(10, 49, "light", &Font8, BLACK, WHITE);
 			std::cout<<"light"<<std::endl;
 
 		}else{
 			std::cout<<"dark"<<std::endl;
-			Paint.DrawString_EN(10, 102, "Dark", &Font16, BLACK, WHITE);
+			Paint.DrawString_EN(10, 49, "Dark", &Font8, BLACK, WHITE);
 
 		}
 		OLED.Display(BlackImage);
@@ -187,7 +187,7 @@ int main()
 		
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
-		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 32);
+		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 64);
 		
 		OLED.Display(BlackImage);
 		DEV.Delay_ms(10000);
