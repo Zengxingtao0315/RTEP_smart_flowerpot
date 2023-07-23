@@ -13,45 +13,45 @@ void Sensor::readDHTdataLoop() {
 			
 			DHTdata data = readDHTdata();
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-			// 确保线程安全
+			// ensure thread safe
 			std::unique_lock<std::mutex> lock(dataMutex);
 			temperature = data.temperature;
 			humidity = data.humidity;
 
 
 		
-		// 通知等待在条件变量上的线程，有新的数据可用
+		// Notify threads waiting on condition variables that new data is available
         dataCondVar.notify_all();
 
-        // 等待一段时间再进行下一次读取
+        // Wait a while before doing the next read
         
 		}
 	}
 	
 double Sensor::getTemperature() {
     std::unique_lock<std::mutex> lock(dataMutex);
-    // 等待新数据的到来，或者超时
+    // Wait for new data to arrive, or time out
     dataCondVar.wait_for(lock, std::chrono::milliseconds(200), [this] {
         return temperature != lastTemperature;
     });
-    // 更新最新的温度值
+    // Update the latest temperature values
     lastTemperature = temperature;
     return temperature;
 }
 
 double Sensor::getHumidity() {
     std::unique_lock<std::mutex> lock(dataMutex);
-    // 等待新数据的到来，或者超时
+    //  Wait for new data to arrive, or time out
     dataCondVar.wait_for(lock, std::chrono::milliseconds(200), [this] {
         return humidity != lastHumidity;
     });
-    // 更新最新的湿度值
+    // update latest temperature
     lastHumidity = humidity;
     return humidity;
 }
 
 Sensor::Sensor(int digitalPin, int dhtPin)
-    : digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0) {
+    std:: digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0) {
     if (wiringPiSetup() == -1) {
         std::cerr << "Error initializing wiringPi" << std::endl;
         exit(1);
@@ -59,7 +59,7 @@ Sensor::Sensor(int digitalPin, int dhtPin)
     dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
 }
 Sensor::~Sensor(){
-        // 等待线程结束
+        
         if (dhtThread.joinable()) {
             dhtThread.join();
         }

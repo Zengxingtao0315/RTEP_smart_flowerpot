@@ -1,6 +1,6 @@
 /******************************************************************************
-* | File      	:   GUI_mc
-* | Author      :   Xingtao Zeng
+* | File      	:   GUI
+* | Author      :   reference from 
 * | Function    :	Achieve drawing: draw points, lines, boxes, circles and
 *                   their size, solid dotted line, solid rectangle hollow
 *                   rectangle, solid circle hollow circle.
@@ -41,19 +41,9 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Rotate, UWOR
 		
     paint.WidthByte = (Width % 8 == 0)? (Width / 8 ): (Width / 8 + 1);
     paint.HeightByte = Height;    
-//    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
-//    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-    paint.Rotate = Rotate;
-    paint.Mirror = MIRROR_NONE;
-    
-    if(Rotate == ROTATE_0 || Rotate == ROTATE_180) {
-        paint.Width = Width;
-        paint.Height = Height;
-    } else {
-        paint.Width = Height;
-        paint.Height = Width;
-    }
+    paint.Width = Height;
+    paint.Height = Width;
 }
 
 /******************************************************************************
@@ -66,20 +56,7 @@ void Paint::SelectImage(UBYTE *image)
     paint.Image = image;
 }
 
-/******************************************************************************
-function: Select Image Rotate
-parameter:
-    Rotate : 0,90,180,270
-******************************************************************************/
-void Paint::SetRotate(UWORD Rotate)
-{
-    if(Rotate == ROTATE_0 || Rotate == ROTATE_90 || Rotate == ROTATE_180 || Rotate == ROTATE_270) {
-        Debug("Set image Rotate %d\r\n", Rotate);
-        paint.Rotate = Rotate;
-    } else {
-        Debug("rotate = 0, 90, 180, 270\r\n");
-    }
-}
+
 
 void Paint::SetScale(UBYTE scale)
 {
@@ -101,22 +78,6 @@ void Paint::SetScale(UBYTE scale)
     }
 }
 
-/******************************************************************************
-function:	Select Image mirror
-parameter:
-    mirror   :Not mirror,Horizontal mirror,Vertical mirror,Origin mirror
-******************************************************************************/
-void Paint::SetMirroring(UBYTE mirror)
-{
-    if(mirror == MIRROR_NONE || mirror == MIRROR_HORIZONTAL || 
-        mirror == MIRROR_VERTICAL || mirror == MIRROR_ORIGIN) {
-        Debug("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
-        paint.Mirror = mirror;
-    } else {
-        Debug("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
-        MIRROR_VERTICAL or MIRROR_ORIGIN\r\n");
-    }    
-}
 
 /******************************************************************************
 function: Draw Pixels
@@ -125,6 +86,7 @@ parameter:
     Ypoint : At point Y
     Color  : Painted colors
 ******************************************************************************/
+/******
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
     if(Xpoint > paint.Width || Ypoint > paint.Height){
@@ -133,43 +95,6 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
     }      
     UWORD X, Y;
 
-    switch(paint.Rotate) {
-    case 0:
-        X = Xpoint;
-        Y = Ypoint;  
-        break;
-    case 90:
-        X = paint.WidthMemory - Ypoint - 1;
-        Y = Xpoint;
-        break;
-    case 180:
-        X = paint.WidthMemory - Xpoint - 1;
-        Y = paint.HeightMemory - Ypoint - 1;
-        break;
-    case 270:
-        X = Ypoint;
-        Y = paint.HeightMemory - Xpoint - 1;
-        break;
-    default:
-        return;
-    }
-    
-    switch(paint.Mirror) {
-    case MIRROR_NONE:
-        break;
-    case MIRROR_HORIZONTAL:
-        X = paint.WidthMemory - X - 1;
-        break;
-    case MIRROR_VERTICAL:
-        Y = paint.HeightMemory - Y - 1;
-        break;
-    case MIRROR_ORIGIN:
-        X = paint.WidthMemory - X - 1;
-        Y = paint.HeightMemory - Y - 1;
-        break;
-    default:
-        return;
-    }
 
     if(X > paint.WidthMemory || Y > paint.HeightMemory){
         Debug("Exceeding display boundaries\r\n");
@@ -202,6 +127,45 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         paint.Image[Addr+1] = 0xff & Color;
     }
 
+}
+********/
+void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
+{
+    if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
+        Debug("Exceeding display boundaries\r\n");
+        return;
+    }
+
+    if (Xpoint >= paint.WidthMemory || Ypoint >= paint.HeightMemory) {
+        Debug("Exceeding display boundaries\r\n");
+        return;
+    }
+
+    UDOUBLE Addr = Xpoint / (8 / paint.Scale) + Ypoint * paint.WidthByte;
+    UBYTE Rdata = paint.Image[Addr];
+
+    if (paint.Scale == 2) {
+        UBYTE BitPos = 7 - (Xpoint % 8);
+        if (Color == BLACK)
+            Rdata &= ~(0x01 << BitPos);
+        else
+            Rdata |= (0x01 << BitPos);
+    } else if (paint.Scale == 4) {
+        UBYTE BitPos = 2 * (Xpoint % 4);
+        Color = Color % 4; // Guaranteed color scale is 4 (0~3)
+        Rdata &= ~(0x03 << BitPos);
+        Rdata |= (Color << BitPos);
+    } else if (paint.Scale == 16) {
+        UBYTE BitPos = 4 * (Xpoint % 2);
+        Color = Color % 16;
+        Rdata &= ~(0x0F << BitPos);
+        Rdata |= (Color << BitPos);
+    } else if (paint.Scale == 65) {
+        paint.Image[Addr] = Color >> 8;
+        paint.Image[Addr + 1] = Color & 0xFF;
+    }
+
+    paint.Image[Addr] = Rdata;
 }
 
 /******************************************************************************
@@ -237,24 +201,6 @@ void Paint::Clear(UWORD Color)
     }
 }
 
-/******************************************************************************
-function: Clear the color of a window
-parameter:
-    Xstart : x starting point
-    Ystart : Y starting point
-    Xend   : x end point
-    Yend   : y end point
-    Color  : Painted colors
-******************************************************************************/
-void Paint::ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color)
-{
-    UWORD X, Y;
-    for (Y = Ystart; Y < Yend; Y++) {
-        for (X = Xstart; X < Xend; X++) {//8 pixel =  1 byte
-            SetPixel(X, Y, Color);
-        }
-    }
-}
 
 /******************************************************************************
 function: Draw Point(Xpoint, Ypoint) Fill the color
@@ -305,6 +251,7 @@ parameter:
     Color_Foreground : Select the foreground color
     Color_Background : Select the background color
 ******************************************************************************/
+/**
 void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
                     sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -343,6 +290,41 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
             ptr++;
     }// Write all
 }
+*///
+void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
+                     sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
+{
+    // Ensure the character is within the font's ASCII range
+    if (Acsii_Char < Font->StartChar || Acsii_Char > Font->EndChar) {
+        Debug("Paint_DrawChar Character is out of font range\r\n");
+        return;
+    }
+
+    // Get the character index in the font table
+    uint16_t Char_Index = Acsii_Char - Font->StartChar;
+
+    // Calculate the starting address of the character's bitmap in the font table
+    const uint8_t* Char_Bitmap = &Font->table[Char_Index * Font->CharBytes];
+
+    for (UWORD Page = 0; Page < Font->Height; Page++) {
+        for (UWORD Column = 0; Column < Font->Width; Column++) {
+            // Get the byte containing the pixel data for the current column
+            uint8_t pixelByte = Char_Bitmap[Column + (Page * ((Font->Width + 7) / 8))];
+
+            // Check each bit of the byte to determine the pixel color
+            for (int8_t bit = 7; bit >= 0; bit--) {
+                UWORD X = Xpoint + Column * 8 + (7 - bit);
+                UWORD Y = Ypoint + Page;
+
+                if ((pixelByte >> bit) & 0x01) {
+                    SetPixel(X, Y, Color_Foreground);
+                } else {
+                    SetPixel(X, Y, Color_Background);
+                }
+            }
+        }
+    }
+}
 
 /******************************************************************************
 function:	Display the string
@@ -354,14 +336,14 @@ parameter:
     Color_Foreground : Select the foreground color
     Color_Background : Select the background color
 ******************************************************************************/
-void Paint::DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
+void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char * pString,
                          sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     UWORD Xpoint = Xstart;
     UWORD Ypoint = Ystart;
 
     if (Xstart > paint.Width || Ystart > paint.Height) {
-        Debug("Paint_DrawString_EN Input exceeds the normal display range\r\n");
+        Debug("Paint_DrawString Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -400,6 +382,7 @@ parameter:
     Color_Background : Select the background color
 ******************************************************************************/
 #define  ARRAY_LEN 255
+/********
 void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
                    sFONT* Font, UWORD Digit,UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -446,8 +429,37 @@ void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Nummber,
     }
 
     //show
-    DrawString_EN(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
+    DrawString(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
 }
+******/
+
+
+void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Number,
+                    sFONT* Font, UWORD Digit, UWORD Color_Foreground, UWORD Color_Background)
+{
+    if (Xpoint > paint.Width || Ypoint > paint.Height) {
+        Debug("Paint_DisNum Input exceeds the normal display range\r\n");
+        return;
+    }
+
+    std::string strNum = std::to_string(Number);
+
+    // Find the decimal point position
+    size_t decimalPos = strNum.find(".");
+    if (decimalPos == std::string::npos) {
+        decimalPos = strNum.length();
+    }
+
+    // Limit the number of digits after the decimal point
+    size_t numDigits = strNum.length() - decimalPos - 1;
+    if (Digit < numDigits) {
+        strNum = strNum.substr(0, decimalPos + Digit + 1);
+    }
+
+    // Show the formatted number
+    DrawString(Xpoint, Ypoint, strNum.c_str(), Font, Color_Background, Color_Foreground);
+}
+
 
 /******************************************************************************
 function:	Display time
@@ -459,6 +471,7 @@ parameter:
     Color_Foreground : Select the foreground color
     Color_Background : Select the background color
 ******************************************************************************/
+/*******
 void Paint::DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font,
                     UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -476,6 +489,35 @@ void Paint::DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font,
     DrawChar(Xstart + Dx * 5                  , Ystart, value[pTime->Sec / 10] , Font, Color_Background, Color_Foreground);
     DrawChar(Xstart + Dx * 6                  , Ystart, value[pTime->Sec % 10] , Font, Color_Background, Color_Foreground);
 }
+*****/
+void Paint::DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME* pTime, sFONT* Font,
+                     UWORD Color_Foreground, UWORD Color_Background)
+{
+    if (Xstart > paint.Width || Ystart > paint.Height) {
+        Debug("Paint_DrawTime Input exceeds the normal display range\r\n");
+        return;
+    }
+
+    std::ostringstream oss;
+    oss << std::setfill('0') << std::setw(2) << pTime->Hour << ":"
+        << std::setfill('0') << std::setw(2) << pTime->Min << ":"
+        << std::setfill('0') << std::setw(2) << pTime->Sec;
+
+    std::string timeStr = oss.str();
+
+    UWORD Dx = Font->Width;
+    UWORD Xpoint = Xstart;
+    UWORD Ypoint = Ystart;
+
+    for (size_t i = 0; i < timeStr.length(); i++) {
+        char currentChar = timeStr[i];
+        DrawChar(Xpoint, Ypoint, currentChar, Font, Color_Background, Color_Foreground);
+        Xpoint += Dx;
+        if (currentChar == ':') {
+            Xpoint += Dx / 4 + Dx / 2;
+        }
+    }
+}
 
 /******************************************************************************
 function:	Display monochrome bitmap
@@ -485,33 +527,8 @@ info:
     Use a computer to convert the image into a corresponding array,
     and then embed the array directly into Imagedata.cpp as a .c file.
 ******************************************************************************/
-void Paint::DrawBitMap(const unsigned char* image_buffer)
-{
-    UWORD x, y;
-    UDOUBLE Addr = 0;
-
-    for (y = 0; y < paint.HeightByte; y++) {
-        for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
-            Addr = x + y * paint.WidthByte;
-            paint.Image[Addr] = (unsigned char)image_buffer[Addr];
-        }
-    }
-}
-
-void Paint::DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region)
-{
-    UWORD x, y;
-    UDOUBLE Addr = 0;
-		for (y = 0; y < paint.HeightByte; y++) {
-				for (x = 0; x < paint.WidthByte; x++) {//8 pixel =  1 byte
-						Addr = x + y * paint.WidthByte ;
-						paint.Image[Addr] = \
-						(unsigned char)image_buffer[Addr+ (paint.HeightByte)*paint.WidthByte*(Region - 1)];
-				}
-		}
-}
-
-UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
+/********
+UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 {
 	FILE *fp;                     //Define a file pointer
 	BMPFILEHEADER bmpFileHeader;  //Define a bmp file header structure
@@ -573,4 +590,57 @@ UBYTE Paint::GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart)
 		}
 	}
 	return 0;
+}
+*******/
+
+UBYTE Paint::GUI_ReadBmp(const char* path, UWORD Xstart, UWORD Ystart)
+{
+    std::ifstream file(path, std::ios::binary); // Define an input file stream
+
+    if (!file.is_open()) {
+        Debug("Cannot open the file!\n");
+        return 1;
+    }
+
+    BMPFILEHEADER bmpFileHeader; // Define a bmp file header structure
+    BMPINFOHEADER bmpInfoHeader; // Define a bmp info header structure
+
+    // Read the bmp file header and info header
+    file.read(reinterpret_cast<char*>(&bmpFileHeader), sizeof(BMPFILEHEADER));
+    file.read(reinterpret_cast<char*>(&bmpInfoHeader), sizeof(BMPINFOHEADER));
+
+    std::cout << "pixel = " << bmpInfoHeader.biWidth << " * " << bmpInfoHeader.biHeight << std::endl;
+
+    if (bmpInfoHeader.biBitCount != 16) {
+        Debug("Bmp image is not a 65K-color bitmap!\n");
+        return 2;
+    }
+
+    UWORD Image_Width_Byte = bmpInfoHeader.biWidth * 2;
+    UWORD Bmp_Width_Byte = bmpInfoHeader.biWidth * 2;
+    std::vector<UBYTE> Image(Image_Width_Byte * bmpInfoHeader.biHeight, 0xFF);
+
+    // Read image data into the cache
+    file.seekg(bmpFileHeader.bOffset, std::ios::beg);
+
+    for (UWORD y = 0; y < bmpInfoHeader.biHeight; y++) { // Total display column
+        file.read(reinterpret_cast<char*>(Image.data() + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte), Bmp_Width_Byte);
+    }
+
+    // Refresh the image to the display buffer based on the displayed orientation
+    UWORD color;
+    for (UWORD y = 0; y < bmpInfoHeader.biHeight; y++) {
+        for (UWORD x = 0; x < bmpInfoHeader.biWidth; x++) {
+            if (x > paint.Width || y > paint.Height) {
+                break;
+            }
+
+            color = 0;
+            color |= Image[x * 2 + y * bmpInfoHeader.biWidth * 2];
+            color |= Image[x * 2 + y * bmpInfoHeader.biWidth * 2 + 1] << 8;
+            SetPixel(Xstart + x, Ystart + y, color);
+        }
+    }
+
+    return 0;
 }

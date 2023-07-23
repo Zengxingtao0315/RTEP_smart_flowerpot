@@ -1,5 +1,5 @@
 /*****************************************************************************
-* | File        :   dev_hardware_SPI.c
+* | File        :   dev_hardware_SPI.cpp
 * | Author      :   Xingtao Zeng
 * | Function    :   Read and write /dev/SPI,  hardware SPI
 * | Info        :

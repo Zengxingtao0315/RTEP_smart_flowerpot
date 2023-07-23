@@ -1,18 +1,6 @@
 #ifndef _DEV_CONFIG_HPP_
 #define _DEV_CONFIG_HPP_
-/***********************************************************************************************************************
-			------------------------------------------------------------------------
-			|\\\																///|
-			|\\\					Hardware interface							///|
-			------------------------------------------------------------------------
-***********************************************************************************************************************/
-#ifdef USE_BCM2835_LIB
-    #include <bcm2835.h>
-#elif USE_WIRINGPI_LIB
-    #include <wiringPi.h>
-    #include <wiringPiSPI.h>
-	#include <wiringPiI2C.h>
-#elif USE_DEV_LIB
+#ifdef USE_DEV_LIB
     #include "RPI_sysfs_gpio.hpp"
     #include "dev_hardware_SPI.hpp"
     #include "dev_hardware_i2c.hpp"   
@@ -30,8 +18,8 @@ extern "C" {
 
 #include "Debug.hpp"
 
-#define USE_SPI 1
-#define USE_IIC 0
+#define USE_SPI 		1
+#define USE_IIC 		0
 #define IIC_CMD        0X00
 #define IIC_RAM        0X40
 
@@ -57,8 +45,8 @@ class DEV {
 
 		void GPIO_Mode(UWORD Pin, UWORD Mode);
 		void GPIO_Init(void);
-		void Digital_Write(UWORD Pin, UBYTE Value);
-		UBYTE Digital_Read(UWORD Pin);
+		void Digt_Write(UWORD Pin, UBYTE Value);
+		UBYTE Digt_Read(UWORD Pin);
 		void Delay_ms(UDOUBLE xms);
 
 		void I2C_Write_Byte(uint8_t value, uint8_t Cmd);

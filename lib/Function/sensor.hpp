@@ -27,8 +27,8 @@ private:
     int dhtPin;
 	double temperature = 0.0;
 	double humidity = 0.0;
-	std::thread dhtThread;  // 独立线程
-    std::mutex dataMutex;   // 用于线程安全的互斥量
+	std::thread dhtThread;  
+    std::mutex dataMutex;   
 	void readDHTdataLoop();
 	double lastTemperature = 0.0;
     double lastHumidity = 0.0;
@@ -40,7 +40,6 @@ public:
 
 	double getHumidity();
     UWORD readDigitalValue();
-    //UWORD readAnalogValue();
     DHTdata readDHTdata();
 };
 #endif
