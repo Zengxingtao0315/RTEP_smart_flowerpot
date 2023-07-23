@@ -22,7 +22,10 @@ void Sensor::readDHTdataLoop() {
 		
 		// 通知等待在条件变量上的线程，有新的数据可用
         dataCondVar.notify_all();
-
+		 if (!dhtThread.joinable()) {
+        // 重新启动线程
+			dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
+		}
         // 等待一段时间再进行下一次读取
         
 		}
