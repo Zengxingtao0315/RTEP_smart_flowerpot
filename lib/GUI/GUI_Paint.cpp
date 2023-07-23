@@ -312,8 +312,8 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
             if (x > paint.Width || y > paint.Height) {
                 break;
             }
-            color = Image[x * 2 + y * Image_Width_Byte];
-            color |= Image[x * 2 + y * Image_Width_Byte + 1] << 8;
+            color = Image[x * 2 + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte];
+            color |= Image[x * 2 + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte + 1] << 8;
             SetPixel(Xstart + x, Ystart + y, color);  // 刷新图像到显示缓冲区
         }
     }
