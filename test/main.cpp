@@ -163,12 +163,12 @@ int main()
 		light_duration = duration.getSunlightDurationInHours(digitalValue);
 		if (digitalValue == 0){
 
-			Paint.DrawString(5, 37, "light", &Font8, BLACK, WHITE);
+			Paint.DrawString(5, 37, "light", &Font12, BLACK, WHITE);
 			std::cout<<"light"<<std::endl;
 
 		}else{
 			std::cout<<"dark"<<std::endl;
-			Paint.DrawString(5, 37, "Dark", &Font8, BLACK, WHITE);
+			Paint.DrawString(5, 37, "Dark", &Font12, BLACK, WHITE);
 
 		}
 		OLED.Display(BlackImage);
@@ -185,7 +185,7 @@ int main()
 		
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
-		Paint.GUI_ReadBmp_65K(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 64);
+		Paint.GUI_ReadBmp(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 64);
 		
 		OLED.Display(BlackImage);
 		DEV.Delay_ms(10000);

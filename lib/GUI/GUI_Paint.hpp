@@ -124,7 +124,7 @@ public:
 	void DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 
 	//pic
-	UBYTE GUI_ReadBmp_65K(const char *path, UWORD Xstart, UWORD Ystart);
+	UBYTE GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart);
 
 };
 
