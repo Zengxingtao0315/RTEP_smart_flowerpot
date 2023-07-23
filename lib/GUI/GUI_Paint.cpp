@@ -109,26 +109,28 @@ parameter:
     Color_Background : Select the background color
 ******************************************************************************/
 void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
-                     sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
+                    sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
-        Debug("Paint_DrawChar Input exceeds the normal display range\r\n");
+        Debug("Paint_DrawChar: 输入超出正常显示范围\r\n");
         return;
     }
 
-    uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * ((Font->Width + 7) / 8);
-    const unsigned char* ptr = &Font->table[Char_Offset];
+    uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
+    const unsigned char *ptr = &Font->table[Char_Offset];
 
     for (UWORD Page = 0; Page < Font->Height; Page++) {
         for (UWORD Column = 0; Column < Font->Width; Column++) {
-            int bitPos = 7 - (Column % 8); // The bit position within the current byte
-            bool isSet = (*ptr >> bitPos) & 1;
-
-            UWORD color = isSet ? Color_Foreground : Color_Background;
+            bool drawForeground = *ptr & (0x80 >> (Column % 8));
+            UWORD color = drawForeground ? Color_Foreground : Color_Background;
             SetPixel(Xpoint + Column, Ypoint + Page, color);
+
+            if (Column % 8 == 7)
+                ptr++;
         }
 
-        ptr += (Font->Width + 7) / 8; // Move to the next row in the character bitmap
+        if (Font->Width % 8 != 0)
+            ptr++;
     }
 }
 
