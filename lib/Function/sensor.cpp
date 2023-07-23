@@ -51,7 +51,7 @@ double Sensor::getHumidity() {
 }
 
 Sensor::Sensor(int digitalPin, int dhtPin)
-    std:: digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0) {
+    std::digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0) {
     if (wiringPiSetup() == -1) {
         std::cerr << "Error initializing wiringPi" << std::endl;
         exit(1);
