@@ -2,6 +2,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp> // 新版 Boost 中的 bind 替换
 #include <boost/thread/thread.hpp> // 如果用到线程
+#include <memory> // 添加这个头文件
 
 using namespace boost::asio;
 using ip::tcp;
@@ -51,20 +52,21 @@ private:
 class HttpServer {
 public:
     HttpServer(boost::asio::io_service& io_service)
-        : acceptor_(io_service, tcp::endpoint(tcp::v4(), 8080)) {
+        : acceptor_(io_service, tcp::endpoint(tcp::v4(), 8080)),
+          io_service_(io_service) { // 使用成员初始化列表初始化 io_service_
         start_accept();
     }
 
 private:
     void start_accept() {
-        boost::shared_ptr<HttpServerSession> new_session =
-            boost::make_shared<HttpServerSession>(boost::ref(io_service_)); // 使用新版 Boost 的 make_shared
+        std::shared_ptr<HttpServerSession> new_session =
+            std::make_shared<HttpServerSession>(boost::ref(io_service_)); // 使用 std::make_shared
 
         acceptor_.async_accept(new_session->socket(),
             boost::bind(&HttpServer::handle_accept, this, new_session, boost::asio::placeholders::error));
     }
 
-    void handle_accept(boost::shared_ptr<HttpServerSession> session, const boost::system::error_code& error) {
+    void handle_accept(std::shared_ptr<HttpServerSession> session, const boost::system::error_code& error) {
         if (!error) {
             session->start();
         }
