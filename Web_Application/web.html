@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Temperature and Humidity</title>
+    <title>获取数据示例</title>
 </head>
 <body>
-    <h1>Temperature and Humidity</h1>
-    <p id="temperature">Temperature: Loading...</p>
-    <p id="humidity">Humidity: Loading...</p>
+    <h1>温湿度数据</h1>
+    <p id="data"></p>
 
     <script>
-        function fetchData() {
-            // 发起GET请求获取数据
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    document.getElementById("temperature").innerText = "Temperature: " + data.temperature + " °C";
-                    document.getElementById("humidity").innerText = "Humidity: " + data.humidity + " %";
+        function getData() {
+            var xhttp = new XMLHttpRequest();
+
+            // 定义请求的IP地址和端口
+            var url = "http://192.168.0.51:8080/"; // 将your_ip_address替换为服务器的IP地址
+
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // 当请求成功返回时，处理服务器返回的数据
+                    var data = this.responseText;
+                    document.getElementById("data").innerHTML = data;
                 }
             };
-            xhr.open("GET", "/get_data", true);
-            xhr.send();
+
+            // 发送GET请求
+            xhttp.open("GET", url, true);
+            xhttp.send();
         }
 
-        // 每隔5秒刷新数据
-        setInterval(fetchData, 5000);
-
-        // 初始加载数据
-        fetchData();
+        // 每隔一段时间调用一次获取数据的函数
+        setInterval(getData, 5000); // 5000毫秒，即5秒
     </script>
 </body>
 </html>
