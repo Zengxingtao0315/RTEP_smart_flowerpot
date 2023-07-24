@@ -138,5 +138,4 @@ DHTdata Sensor::readDHTdata() {
 		printf( "Data not good, skip\n" );
 		
 	}
-
 }

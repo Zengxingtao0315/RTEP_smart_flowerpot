@@ -121,6 +121,21 @@ private:
     tcp::acceptor acceptor_;
 };
 
+void updateSensorData(HttpServerSession& session) {
+    // 获取传感器数据
+    double temp = Sensor.getTemperature();
+    double hum = Sensor.getHumidity();
+
+    // 设置响应数据
+    std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + std::to_string(temp) + "\r\n\r\nHumidity: " + std::to_string(hum);
+
+    // 发送响应
+    boost::asio::async_write(session.socket(), boost::asio::buffer(response),
+        [&session](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
+            session.handle_write(error);
+        });
+}
+
 void serverThreadFunc() {
     boost::asio::io_service io_service;
     HttpServer server(io_service);
@@ -155,20 +170,6 @@ const char* EmojiSelector(double temperature, double humidity, int digital, floa
 
 	
 	
-}
-void updateSensorData(HttpServerSession& session) {
-    // 获取传感器数据
-    double temp = Sensor.getTemperature();
-    double hum = Sensor.getHumidity();
-
-    // 设置响应数据
-    std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + std::to_string(temp) + "\r\n\r\nHumidity: " + std::to_string(hum);
-
-    // 发送响应
-    boost::asio::async_write(session.socket(), boost::asio::buffer(response),
-        [&session](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-            session.handle_write(error);
-        });
 }
 
 

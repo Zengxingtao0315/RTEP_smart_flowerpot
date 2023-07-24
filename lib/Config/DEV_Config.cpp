@@ -56,7 +56,6 @@ void DEV::GPIO_Mode(UWORD Pin, UWORD Mode)
 void DEV::Delay_ms(UDOUBLE xms)
 {
 #if USE_DEV_LIB
-    UDOUBLE i;
     
        std::this_thread::sleep_for(std::chrono::milliseconds(xms));
 
