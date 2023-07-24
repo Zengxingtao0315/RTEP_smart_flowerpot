@@ -53,6 +53,12 @@ public:
             });
     }
 
+    // 响应函数返回类型修改为 std::string
+    std::string response(string humidity, string temperature) {
+        std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + temperature + "\r\n\r\nHumidity: " + humidity;
+        return response;
+    }
+
 private:
     void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
         if (!error) {
@@ -61,8 +67,16 @@ private:
             std::getline(request_stream, http_request);
             std::cout << "Received HTTP request: " << http_request << std::endl;
 
-            std::string response = "HTTP/1.1 200 OK\r\Temperature: " + std::to_string(Sensor.getTemperature()) + "\r\n\r\nHumidity:" + std::to_string(Sensor.getHumidity());
-            async_write(socket_, boost::asio::buffer(response),
+            // 获取传感器数据
+            double temp = Sensor.getTemperature();
+            double hum = Sensor.getHumidity();
+            std::string humidity = std::to_string(hum);
+            std::string temperature = std::to_string(temp);
+
+            // 设置响应数据
+            std::string response_data = response(humidity, temperature);
+
+            async_write(socket_, boost::asio::buffer(response_data),
                 [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
                     self->handle_write(error);
                 });
@@ -221,7 +235,6 @@ int main()
 	double hum ;
 	
 	std::thread serverThread(serverThreadFunc);
-	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
 		//display of internet status
@@ -274,9 +287,9 @@ int main()
 
 		
 		OLED.Clear();
-
+		serverThread.join();
 	}
-	serverThread.join();
+    
 
     return 0;
 }
