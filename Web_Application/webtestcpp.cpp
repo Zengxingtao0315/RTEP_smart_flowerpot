@@ -4,8 +4,6 @@
 #include <chrono>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 typedef websocketpp::server<websocketpp::config::asio> server;
 
 int main() {
@@ -42,7 +40,7 @@ int main() {
         }
 
         // 等待一段时间，模拟传感器数据的更新频率
-        std::this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     return 0;
