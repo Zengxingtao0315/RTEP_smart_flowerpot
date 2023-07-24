@@ -21,8 +21,9 @@ public:
     }
 
 private:
-    std::string generateHTMLResponse() {
-        std::string html = R"(<!DOCTYPE html>
+    std::string HttpServerSession::generateHTMLResponse() {
+    return R"(
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -41,61 +42,60 @@ private:
         .font_1 {
             color: rgb(255,255,255);
             text-align: center;
-
         }
     </style>
 </head>
-<body style="background-color: rgb(29, 29, 29);background-size: 100%">
+<body style="background-color: rgb(29, 29, 29);background-size: 100% ">
     <!-- main body -->
-	<div style="height:800px;width: 800px;margin: auto;display:flex;flex-wrap: wrap; flex-direction: column;">
-		<!-- top -->
+    <div style="height:800px;width: 800px;margin: auto;display:flex;flex-wrap: wrap; flex-direction: column;">
+        <!-- top -->
         <div style="background-color: green; height: 100px;  text-align: center; border-radius: 15px;margin:0 auto; margin:  7px 7px 14px 7px;">
             <h2 style="color: white; line-height: 50px;">Real-time Reflections of Your Lovely Plant</h2>
         </div>
-		<!-- middle -->
-		<!-- middle-top -->
-		<div class='main_1 ' style="height: fit-content; padding: 10px;background-color: rgb(59, 59, 59); text-align:center;">
+        <!-- middle -->
+        <!-- middle-top -->
+        <div class='main_1 ' style="height: fit-content; padding: 10px;background-color: rgb(59, 59, 59); text-align:center;">
+            <h1 class='font_1' style='font-size: 50px;line-height:40px; '>
+                {{time}}
+            </h1>
+            <button onclick="location.reload()" style = "background-color: rgb(59, 59, 59); cursor: pointer;  color: white;border: none; font-size: 20px; margin-top:30px;">Refresh</button>
+        </div>
+        <!-- middle-bottom -->
+        <div style = "display:flex;justify-content: space-between; flex-direction: row;">
+            <div class='main_1 block Temperature' style="height: 300px;float:right;padding: 15px;background-color: rgb(100, 200, 100);text-align: center; width :33%;">
+                <h2 class='font_1' style='font-size: 30px;line-height:100px; '>
+                    Temperature
+                </h2>
+                <h2 class='font_1' style='font-size: 30px;line-height:30px; '>
+                    {{temperature}}<br>&#176;C
+                </h2>
+            </div>
+            <div class='main_1 block Humidity' style="height: 300px;float:right;padding: 15px;background-color: rgb(0, 0, 255); text-align:center;width :33%;">
+                <h2 class='font_1' style='font-size: 30px;line-height:40px;'>
+                    Humidity
+                </h2>
+                <h2 class='font_1' style="font-size: 30px;line-height:30px;margin: 7px; padding: 15px;">
+                    {{humidity}}<br>%
+                </h2>
+            </div>
 
-			<h1 class='font_1' style='font-size: 50px;line-height:40px; '>
-				{{time}}
-			</h1>
-			<button onclick="location.reload()" style = "background-color: rgb(59, 59, 59); cursor: pointer;  color: white;border: none; font-size: 20px; margin-top:30px;">Refresh</button>
-		</div>
-		<!-- middle-bottom -->
-		<div style = "display:flex;justify-content: space-between; flex-direction: row;">
-			<div class='main_1 block Temperature' style="height: 300px;float:right;padding: 15px;background-color: rgb(100, 200, 100);text-align: center; width :33%;">
-				<h2 class='font_1' style='font-size: 30px;line-height:100px; '>
-					Temperature
-				</h2>
-				<h2 class='font_1' style='font-size: 30px;line-height:30px; '>
-					{{temperature}}<br>°C
-				</h2>
-			</div>
-			<div class='main_1 block Humidsity' style="height: 300px;float:right;padding: 15px;background-color: rgb(0, 0, 255); text-align:center;width :33%;">
-				<h2 class='font_1' style='font-size: 30px;line-height:40px;'>
-					Humidity
-				</h2>
-				<h2 class='font_1' style="font-size: 30px;line-height:30px;margin: 7px; padding: 15px;">
-					{{humidity}}<br>%
-				</h2>
-			</div>
-
-			<div class='main_1 block light' style="height: 300px;float:right;padding: 15px;background-color: rgb(255, 165, 0);text-align:center;width :33%; ">
-				<a class='font_1' style="font-size: 30px;line-height:30px; padding: 10px;margin-top:10px ">
-					{{lightFlag}}
-				</a>
-			</div>
-		</div>
-		<!-- bottom -->
-		<div style='height: 50;margin: 0 5px 5px 5px;'>
-			<p style='color:rgb(151, 255, 255);text-align: center;'>Copyright©G27_Real Time Embedded Programming(2022-23)
-				<br>This website is only for academic demo purpose.<br></p>
-		</div>
-	</div>
+            <div class='main_1 block light' style="height: 300px;float:right;padding: 15px;background-color: rgb(255, 165, 0);text-align:center;width :33%; ">
+                <a class='font_1' style="font-size: 30px;line-height:30px; padding: 10px;margin-top:10px ">
+                    {{lightFlag}}
+                </a>
+            </div>
+        </div>
+        <!-- bottom -->
+        <div style='height: 50;margin: 0 5px 5px 5px;'>
+            <p style='color:rgb(151, 255, 255);text-align: center;'>Copyright&copy;G27_Real Time Embedded Programming(2022-23)
+                <br>This website is only for academic demo purpose.<br></p>
+        </div>
+    </div>
 </body>
-</html>)";
-        return html;
-    }
+</html>
+)";
+}
+
 
     void handle_write(const boost::system::error_code& error) {
         if (!error) {
