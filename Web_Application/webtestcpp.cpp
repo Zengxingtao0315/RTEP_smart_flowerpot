@@ -1,61 +1,81 @@
 #include <iostream>
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/server.hpp>
-#include <chrono>
+#include <libwebsockets.h>
+#include <string>
 #include <thread>
-#include <set>
+#include <random>
 
-typedef websocketpp::server<websocketpp::config::asio> server;
+// WebSocket服务器端口
+#define WEBSOCKET_PORT 8080
 
-int main() {
-    // 创建WebSocket服务器
-    server ws_server;
+// WebSocket协议
+static const struct lws_protocols protocols[] = {
+    { "example-protocol", callback_example, 0, 0 },
+    { NULL, NULL, 0, 0 } // 结束标记
+};
 
-    // 设置监听端口
-    int port = 9002;
-    ws_server.listen(port);
+// WebSocket回调函数
+static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
+{
+    switch (reason) {
+        case LWS_CALLBACK_ESTABLISHED: // WebSocket连接建立时触发
+            std::cout << "WebSocket connection established" << std::endl;
+            break;
 
-    // 初始化客户端连接列表
-    std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> clients;
+        case LWS_CALLBACK_CLOSED: // WebSocket连接关闭时触发
+            std::cout << "WebSocket connection closed" << std::endl;
+            break;
 
-    // 设置连接打开事件处理程序
-    ws_server.set_open_handler([&clients](websocketpp::connection_hdl hdl) {
-        clients.insert(hdl);
-    });
-
-    // 设置连接关闭事件处理程序
-    ws_server.set_close_handler([&clients](websocketpp::connection_hdl hdl) {
-        clients.erase(hdl);
-    });
-
-    // 启动服务器线程
-    ws_server.start_accept();
-
-    std::cout << "WebSocket server started on port " << port << std::endl;
-
-    // 模拟传感器数据，并实时发送到HTML网页
-    double sensor_data = 0.0;
-
-    while (true) {
-        // 模拟获取传感器数据，你需要替换此处的代码以读取真实的传感器数据
-        // 假设传感器数据在sensor_data中更新
-        sensor_data += 0.1;
-
-        // 将数据转换成字符串
-        std::string data_str = std::to_string(sensor_data);
-
-        // 遍历客户端列表，发送数据给所有连接的客户端
-        for (auto it : clients) {
-            try {
-                ws_server.send(it, data_str, websocketpp::frame::opcode::text);
-            } catch (const websocketpp::exception &e) {
-                std::cout << "Error sending data to clients: " << e.what() << std::endl;
-            }
-        }
-
-        // 等待一段时间，模拟传感器数据的更新频率
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        default:
+            break;
     }
+
+    return 0;
+}
+
+// 发送随机数据给客户端
+void sendRandomData(struct lws *wsi)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dist(1, 100);
+
+    while (lws_service(wsi, 0) >= 0) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        int randomData = dist(gen);
+
+        // 将随机数据发送给客户端
+        std::string message = std::to_string(randomData);
+        lws_write(wsi, reinterpret_cast<unsigned char*>(const_cast<char*>(message.c_str())), message.length(), LWS_WRITE_TEXT);
+    }
+}
+
+int main()
+{
+    struct lws_context_creation_info info;
+    memset(&info, 0, sizeof(info));
+
+    info.port = WEBSOCKET_PORT;
+    info.protocols = protocols;
+    info.gid = -1;
+    info.uid = -1;
+
+    struct lws_context *context = lws_create_context(&info);
+
+    if (!context) {
+        std::cerr << "WebSocket server creation failed" << std::endl;
+        return -1;
+    }
+
+    std::thread sendDataThread(sendRandomData, lws_client_connect(context, "localhost", WEBSOCKET_PORT, 0, "/", "localhost", nullptr, nullptr, -1));
+
+    // 进入WebSocket事件循环
+    while (true) {
+        lws_service(context, 50);
+    }
+
+    // 清理资源
+    lws_context_destroy(context);
 
     return 0;
 }
