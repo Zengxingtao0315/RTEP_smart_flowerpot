@@ -1,13 +1,11 @@
 #include <iostream>
 #include <boost/asio.hpp>
-#include <boost/bind/bind.hpp> // 新版 Boost 中的 bind 替换
-#include <boost/thread/thread.hpp> // 如果用到线程
-#include <memory> // 添加这个头文件
+#include <memory>
 
 using namespace boost::asio;
 using ip::tcp;
 
-class HttpServerSession {
+class HttpServerSession : public std::enable_shared_from_this<HttpServerSession> {
 public:
     HttpServerSession(boost::asio::io_service& io_service)
         : socket_(io_service) {}
@@ -15,8 +13,10 @@ public:
     tcp::socket& socket() { return socket_; }
 
     void start() {
-        boost::asio::async_read_until(socket_, request_, "\r\n\r\n",
-            boost::bind(&HttpServerSession::handle_read, this, boost::asio::placeholders::error));
+        async_read_until(socket_, request_, "\r\n\r\n",
+            [self = shared_from_this()](const boost::system::error_code& error) {
+                self->handle_read(error);
+            });
     }
 
 private:
@@ -28,11 +28,10 @@ private:
             std::cout << "Received HTTP request: " << http_request << std::endl;
 
             std::string response = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, World!";
-            boost::asio::async_write(socket_, boost::asio::buffer(response),
-                boost::bind(&HttpServerSession::handle_write, this, boost::asio::placeholders::error));
-        }
-        else {
-            delete this;
+            async_write(socket_, boost::asio::buffer(response),
+                [self = shared_from_this()](const boost::system::error_code& error) {
+                    self->handle_write(error);
+                });
         }
     }
 
@@ -41,8 +40,6 @@ private:
             boost::system::error_code ignored_ec;
             socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
         }
-
-        delete this;
     }
 
     tcp::socket socket_;
@@ -53,17 +50,18 @@ class HttpServer {
 public:
     HttpServer(boost::asio::io_service& io_service)
         : acceptor_(io_service, tcp::endpoint(tcp::v4(), 8080)),
-          io_service_(io_service) { // 使用成员初始化列表初始化 io_service_
+          io_service_(io_service) {
         start_accept();
     }
 
 private:
     void start_accept() {
-        std::shared_ptr<HttpServerSession> new_session =
-            std::make_shared<HttpServerSession>(boost::ref(io_service_)); // 使用 std::make_shared
+        auto new_session = std::make_shared<HttpServerSession>(io_service_);
 
         acceptor_.async_accept(new_session->socket(),
-            boost::bind(&HttpServer::handle_accept, this, new_session, boost::asio::placeholders::error));
+            [this, new_session](const boost::system::error_code& error) {
+                handle_accept(new_session, error);
+            });
     }
 
     void handle_accept(std::shared_ptr<HttpServerSession> session, const boost::system::error_code& error) {
@@ -82,9 +80,7 @@ int main() {
     boost::asio::io_service io_service;
     HttpServer server(io_service);
 
-    boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service)); // 如果用到线程
-
-    io_service.run(); // 或者直接在主线程中运行，如果不用到线程的话
+    io_service.run();
 
     return 0;
 }
