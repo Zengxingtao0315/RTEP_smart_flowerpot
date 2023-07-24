@@ -23,8 +23,8 @@ void onRequest(evhttp_request* req, void* arg) {
     // 构建数据
     std::string eventData = "data: " + std::to_string(realtimeData) + "\n\n";
 
-    // 将数据添加到输出缓冲区（使用evbuffer_add_reference）
-    evbuffer_add_reference(buf, eventData.c_str(), eventData.size(), nullptr, nullptr);
+    // 将数据添加到输出缓冲区（使用evbuffer_add_printf）
+    evbuffer_add_printf(buf, "%s", eventData.c_str());
 
     // 发送响应
     evhttp_send_reply(req, HTTP_OK, "OK", nullptr);
