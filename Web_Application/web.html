@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Temperature and Humidity</title>
+</head>
+<body>
+    <h1>Temperature and Humidity</h1>
+    <p id="temperature">Temperature: Loading...</p>
+    <p id="humidity">Humidity: Loading...</p>
+
+    <script>
+        function fetchData() {
+            // 发起GET请求获取数据
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    document.getElementById("temperature").innerText = "Temperature: " + data.temperature + " °C";
+                    document.getElementById("humidity").innerText = "Humidity: " + data.humidity + " %";
+                }
+            };
+            xhr.open("GET", "/get_data", true);
+            xhr.send();
+        }
+
+        // 每隔5秒刷新数据
+        setInterval(fetchData, 5000);
+
+        // 初始加载数据
+        fetchData();
+    </script>
+</body>
+</html>

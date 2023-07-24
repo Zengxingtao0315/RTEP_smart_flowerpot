@@ -55,28 +55,32 @@ public:
 	
 private:
      void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
-        if (!error) {
-            std::istream request_stream(&request_);
-            std::string http_request;
-            std::getline(request_stream, http_request);
-            std::cout << "Received HTTP request: " << http_request << std::endl;
+    if (!error) {
+        std::istream request_stream(&request_);
+        std::string http_request;
+        std::getline(request_stream, http_request);
+        std::cout << "Received HTTP request: " << http_request << std::endl;
 
+        if (http_request.find("GET") != std::string::npos) {
             // 获取最新的温度和湿度数据
             double temperature = Sensor.getTemperature();
             double humidity = Sensor.getHumidity();
 
             // 构建响应
-            std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-            response += "Temperature: " + std::to_string(temperature) + " °C<br>";
-            response += "Humidity: " + std::to_string(humidity) + " %<br>";
+            std::string response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
+            response += "{ \"temperature\": " + std::to_string(temperature) + ", \"humidity\": " + std::to_string(humidity) + " }";
 
             // 发送响应
             async_write(socket_, boost::asio::buffer(response),
                 [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
                     self->handle_write(error);
                 });
+        } else {
+            // 不是GET请求，继续处理下一个请求
+            start();
         }
     }
+}
 
    void handle_write(const boost::system::error_code& error) {
         if (!error) {
