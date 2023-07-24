@@ -60,8 +60,6 @@ public:
                 self->handle_write(error);
             });
     }
-
-private:
     void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
         if (!error) {
             std::istream request_stream(&request_);
@@ -130,18 +128,10 @@ void updateSensorData(HttpServerSession& session) {
     std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + std::to_string(temp) + "\r\n\r\nHumidity: " + std::to_string(hum);
 
     // 发送响应
-    boost::asio::async_write(session.socket(), boost::asio::buffer(response),
-        [&session](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-            session.handle_write(error);
-        });
+    session.sendResponse(response);
 }
 
-void serverThreadFunc() {
-    boost::asio::io_service io_service;
-    HttpServer server(io_service);
 
-    io_service.run();
-}
 //expression plants emotion or status
 const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -172,7 +162,12 @@ const char* EmojiSelector(double temperature, double humidity, int digital, floa
 	
 }
 
+void serverThreadFunc() {
+    boost::asio::io_service io_service;
+    HttpServer server(io_service);
 
+    io_service.run();
+}
 
 void Handler(int signo)
 {
@@ -278,6 +273,7 @@ int main()
 		
 		temp = Sensor.getTemperature();
         hum = Sensor.getHumidity();
+		updateSensorData(session);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		Paint.DrawString(5, 13, "Humi(%)", &Font12, BLACK, WHITE);
 		Paint.DrawNum(60, 13,hum, &Font12, 1,  WHITE, BLACK);
