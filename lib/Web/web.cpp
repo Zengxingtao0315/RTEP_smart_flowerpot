@@ -1,7 +1,7 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <memory>
-#include "../Funcion/sensor.hpp"
+#include "../Function/sensor.hpp"
 using namespace boost::asio;
 using ip::tcp;
 extern Sensor Sensor;
