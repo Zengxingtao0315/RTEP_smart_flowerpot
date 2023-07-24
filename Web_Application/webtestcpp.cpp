@@ -4,22 +4,21 @@
 #include <event2/http_struct.h>
 #include <event2/keyvalq_struct.h>
 #include <string>
-#include <thread>  // 添加缺少的头文件
-#include <chrono>  // 添加缺少的头文件
-
+#include <thread>
+#include <chrono>
 
 // 全局变量，模拟实时更新的数据
 int realtimeData = 0;
 
-void onRequest(struct evhttp_request* req, void* arg) {
-    struct evbuffer* buf = evbuffer_new();
+void onRequest(evhttp_request* req, void* arg) {
+    struct evbuffer* buf = evhttp_request_get_output_buffer(req);
     if (!buf) {
         std::cerr << "Failed to create response buffer." << std::endl;
         return;
     }
 
     // 设置HTTP响应头，指定数据格式为text/event-stream
-    evhttp_add_header(req->output_headers, "Content-Type", "text/event-stream");
+    evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/event-stream");
 
     // 构建数据
     std::string eventData = "data: " + std::to_string(realtimeData) + "\n\n";
@@ -28,20 +27,19 @@ void onRequest(struct evhttp_request* req, void* arg) {
     evbuffer_add(buf, eventData.c_str(), eventData.size());
 
     // 发送响应
-    evhttp_send_reply(req, HTTP_OK, "OK", buf);
+    evhttp_send_reply(req, HTTP_OK, "OK", nullptr);
 
-    // 释放资源
-    evbuffer_free(buf);
+    // 释放资源（注意：不需要手动释放buf，由libevent自动管理）
 }
 
 int main() {
-    struct event_base* base = event_base_new();
+    event_base* base = event_base_new();
     if (!base) {
         std::cerr << "Failed to create event base." << std::endl;
         return -1;
     }
 
-    struct evhttp* http = evhttp_new(base);
+    evhttp* http = evhttp_new(base);
     if (!http) {
         std::cerr << "Failed to create evhttp." << std::endl;
         return -1;
