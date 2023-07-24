@@ -52,14 +52,8 @@ public:
                 self->handle_read(error, bytes_transferred);
             });
     }
-
-    // 新增一个公有函数，用于发送响应数据
-    void sendResponse(const std::string& response) {
-        async_write(socket_, boost::asio::buffer(response),
-            [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-                self->handle_write(error);
-            });
-    }
+	
+private:
     void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
         if (!error) {
             std::istream request_stream(&request_);
@@ -67,14 +61,11 @@ public:
             std::getline(request_stream, http_request);
             std::cout << "Received HTTP request: " << http_request << std::endl;
 
-            // 在这里不再处理响应，仅输出请求信息
-
-            // 注意：在这里不再主动关闭socket，留待后续处理
-
-            // 此处需要调用 handle_write 函数，但它是私有函数，无法直接访问
-            // 可以通过新增公有函数 sendResponse 来发送响应数据
-
-            // 注意：需要处理异常情况，但在此处暂时省略错误处理
+            std::string response = "HTTP/1.1 200 OK\r\ Temperature: " + std::to_string(Sensor.getTemperature()) + "\r\n\r\nHumidity:" + std::to_string(Sensor.getHumidity());
+            async_write(socket_, boost::asio::buffer(response),
+                [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
+                    self->handle_write(error);
+                });
         }
     }
 
@@ -119,19 +110,12 @@ private:
     tcp::acceptor acceptor_;
 };
 
-void updateSensorData(HttpServerSession& session) {
-    // 获取传感器数据
-    double temp = Sensor.getTemperature();
-    double hum = Sensor.getHumidity();
+void serverThreadFunc() {
+    boost::asio::io_service io_service;
+    HttpServer server(io_service);
 
-    // 设置响应数据
-    std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + std::to_string(temp) + "\r\n\r\nHumidity: " + std::to_string(hum);
-
-    // 发送响应
-    session.sendResponse(response);
+    io_service.run();
 }
-
-
 //expression plants emotion or status
 const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -158,16 +142,12 @@ const char* EmojiSelector(double temperature, double humidity, int digital, floa
 		return "./pic/overwatered.bmp";
 	}
 
-	return "./pic/happy.bmp";
+	
 	
 }
 
-void serverThreadFunc() {
-    boost::asio::io_service io_service;
-    HttpServer server(io_service);
 
-    io_service.run();
-}
+
 
 void Handler(int signo)
 {
@@ -181,15 +161,12 @@ void Handler(int signo)
 int main()
 {
 	std::signal(SIGINT, Handler);
-    
-	std::cout << "OLED showing" << std::endl;
-    if (DEV.ModuleInit() != 0) {
+    if (DEV.ModuleInit() != 0 || USE_IIC) {
+        std::cerr << "Failed to initialize components." << std::endl;
         return -1;
     }
-    if (USE_IIC) {
-        std::cout << "Only USE_SPI, Please revise DEV_Config.h !!!" << std::endl;
-        return -1;
-    }
+	
+	std::thread serverThread(serverThreadFunc);
 	//OLED Init...
     std::cout << "OLED Init..." << std::endl;
 	
@@ -240,8 +217,7 @@ int main()
 	double temp ;
 	double hum ;
 	
-	HttpServerSession session(server.io_service());
-    updateSensorData(session);
+
 	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
@@ -254,7 +230,6 @@ int main()
 		
 		temp = Sensor.getTemperature();
         hum = Sensor.getHumidity();
-		updateSensorData(session);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		Paint.DrawString(5, 13, "Humi(%)", &Font12, BLACK, WHITE);
 		Paint.DrawNum(60, 13,hum, &Font12, 1,  WHITE, BLACK);
@@ -294,12 +269,11 @@ int main()
 		DEV.Delay_ms(10000);
 		Paint.Clear(BLACK);	
 
-		std::this_thread::sleep_for(std::chrono::seconds(10));
+		
 		OLED.Clear();
 
 	}
 	serverThread.join();
-    sensorThread.join();
 
     return 0;
 }
