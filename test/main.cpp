@@ -52,13 +52,7 @@ public:
                 self->handle_read(error, bytes_transferred);
             });
     }
-
-    // 响应函数返回类型修改为 std::string
-    std::string response(string humidity, string temperature) {
-        std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + temperature + "\r\n\r\nHumidity: " + humidity;
-        return response;
-    }
-
+	
 private:
     void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
         if (!error) {
@@ -67,16 +61,8 @@ private:
             std::getline(request_stream, http_request);
             std::cout << "Received HTTP request: " << http_request << std::endl;
 
-            // 获取传感器数据
-            double temp = Sensor.getTemperature();
-            double hum = Sensor.getHumidity();
-            std::string humidity = std::to_string(hum);
-            std::string temperature = std::to_string(temp);
-
-            // 设置响应数据
-            std::string response_data = response(humidity, temperature);
-
-            async_write(socket_, boost::asio::buffer(response_data),
+            std::string response = "HTTP/1.1 200 OK\r\ Temperature: " + std::to_string(Sensor.getTemperature()) + "\r\n\r\nHumidity:" + std::to_string(Sensor.getHumidity());
+            async_write(socket_, boost::asio::buffer(response),
                 [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
                     self->handle_write(error);
                 });
@@ -159,7 +145,20 @@ const char* EmojiSelector(double temperature, double humidity, int digital, floa
 	
 	
 }
+void updateSensorData(HttpServerSession& session) {
+    // 获取传感器数据
+    double temp = Sensor.getTemperature();
+    double hum = Sensor.getHumidity();
 
+    // 设置响应数据
+    std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + std::to_string(temp) + "\r\n\r\nHumidity: " + std::to_string(hum);
+
+    // 发送响应
+    boost::asio::async_write(session.socket(), boost::asio::buffer(response),
+        [&session](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
+            session.handle_write(error);
+        });
+}
 
 
 
@@ -235,6 +234,18 @@ int main()
 	double hum ;
 	
 	std::thread serverThread(serverThreadFunc);
+	
+	std::thread sensorThread([&]() {
+        while (true) {
+            // 更新传感器数据并响应
+            HttpServerSession temp_session(server.io_service());
+            updateSensorData(temp_session);
+
+            // 休眠1秒
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+    });
+	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
 		//display of internet status
@@ -285,11 +296,12 @@ int main()
 		DEV.Delay_ms(10000);
 		Paint.Clear(BLACK);	
 
-		
+		std::this_thread::sleep_for(std::chrono::seconds(10));
 		OLED.Clear();
-		serverThread.join();
+
 	}
-    
+	serverThread.join();
+    sensorThread.join();
 
     return 0;
 }
