@@ -110,6 +110,12 @@ private:
     tcp::acceptor acceptor_;
 };
 
+void serverThreadFunc() {
+    boost::asio::io_service io_service;
+    HttpServer server(io_service);
+
+    io_service.run();
+}
 //expression plants emotion or status
 const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -214,10 +220,7 @@ int main()
 	double temp ;
 	double hum ;
 	
-	boost::asio::io_service io_service;
-    HttpServer server(io_service);
-
-    io_service.run();
+	std::thread serverThread(serverThreadFunc);
 	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
@@ -273,7 +276,7 @@ int main()
 		OLED.Clear();
 
 	}
-
+	serverThread.join();
 
     return 0;
 }
