@@ -30,13 +30,11 @@ int main() {
         // 将数据转换成字符串
         std::string data_str = std::to_string(sensor_data);
 
-        // 遍历所有连接的客户端，发送数据
-        for (auto it : ws_server.get_connections()) {
-            try {
-                ws_server.send(it, data_str, websocketpp::frame::opcode::text);
-            } catch (const websocketpp::exception &e) {
-                std::cout << "Error sending data to client: " << e.what() << std::endl;
-            }
+        // 广播数据给所有连接的客户端
+        try {
+            ws_server.send_to_all(data_str, websocketpp::frame::opcode::text);
+        } catch (const websocketpp::exception &e) {
+            std::cout << "Error sending data to clients: " << e.what() << std::endl;
         }
 
         // 等待一段时间，模拟传感器数据的更新频率
