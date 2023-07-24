@@ -1,34 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Real-time C++ Data</title>
+    <title>Realtime Data Update</title>
 </head>
 <body>
-    <h1>Real-time C++ Data</h1>
-    <div id="dataContainer"></div>
+    <h1>Realtime Data: <span id="realtimeData">Waiting for data...</span></h1>
 
     <script>
-        // 创建WebSocket连接
-        const socket = new WebSocket("ws://192.168.0.51:8080"); // 这里的地址要和C++服务器地址匹配
+        // 创建一个EventSource对象来接收服务器的数据
+        const eventSource = new EventSource("http://localhost:8080");
 
-        // 在连接建立时
-        socket.onopen = function (event) {
-            console.log("WebSocket connection established.");
+        // 处理接收到的数据
+        eventSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            const realtimeDataElement = document.getElementById("realtimeData");
+            realtimeDataElement.textContent = data;
         };
 
-        // 在接收到消息时
-        socket.onmessage = function (event) {
-            const data = event.data;
-            console.log("Received data from C++: " + data);
-
-            // 将数据展示在网页上
-            const dataContainer = document.getElementById("dataContainer");
-            dataContainer.innerHTML = data;
-        };
-
-        // 在连接关闭时
-        socket.onclose = function (event) {
-            console.log("WebSocket connection closed.");
+        // 处理错误
+        eventSource.onerror = function (error) {
+            console.error("EventSource failed:", error);
+            eventSource.close();
         };
     </script>
 </body>
