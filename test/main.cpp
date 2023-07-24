@@ -42,7 +42,21 @@ Sensor Sensor(DIGITALPIN,  DHTPIN);
 class HttpServerSession : public std::enable_shared_from_this<HttpServerSession> {
 public:
     HttpServerSession(boost::asio::io_service& io_service)
-        : socket_(io_service) {}
+        : socket_(io_service), timer_(io_service) {
+        // 设置定时器，每隔1秒钟触发一次更新数据的操作
+        timer_.expires_from_now(std::chrono::seconds(1));
+        timer_.async_wait([this](const boost::system::error_code& error) {
+            if (!error) {
+                updateData(); // 更新数据
+                timer_.expires_at(timer_.expiry() + std::chrono::seconds(1));
+                timer_.async_wait([this](const boost::system::error_code& error) {
+                    if (!error) {
+                        updateData();
+                    }
+                });
+            }
+        });
+    }
 
     tcp::socket& socket() { return socket_; }
 
@@ -52,25 +66,19 @@ public:
                 self->handle_read(error, bytes_transferred);
             });
     }
-	
+
 private:
-     void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
+    void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
         if (!error) {
             std::istream request_stream(&request_);
             std::string http_request;
             std::getline(request_stream, http_request);
             std::cout << "Received HTTP request: " << http_request << std::endl;
 
-            // 获取最新的温度和湿度数据
-            double temperature = Sensor.getTemperature();
-            double humidity = Sensor.getHumidity();
-
-            // 构建响应
-            std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-            response += "Temperature: " + std::to_string(temperature) + " °C<br>";
-            response += "Humidity: " + std::to_string(humidity) + " %<br>";
-
-            // 发送响应
+            // 返回最新的温度和湿度数据
+            std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"
+                "Temperature: " + std::to_string(Sensor.getTemperature()) + " ℃\r\n"
+                "Humidity: " + std::to_string(Sensor.getHumidity()) + " %";
             async_write(socket_, boost::asio::buffer(response),
                 [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
                     self->handle_write(error);
@@ -78,16 +86,24 @@ private:
         }
     }
 
-   void handle_write(const boost::system::error_code& error) {
+    void handle_write(const boost::system::error_code& error) {
         if (!error) {
-            // 继续处理下一个请求
-            start();
+            boost::system::error_code ignored_ec;
+            socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
         }
+    }
+
+    // 更新数据的函数
+    void updateData() {
+        // TODO: 更新温度和湿度数据的逻辑，例如从传感器读取最新数据
+        // Sensor.getTemperature() 和 Sensor.getHumidity() 可以替换为实际的数据获取方式
     }
 
     tcp::socket socket_;
     boost::asio::streambuf request_;
+    boost::asio::steady_timer timer_;
 };
+
 
 class HttpServer {
 public:
