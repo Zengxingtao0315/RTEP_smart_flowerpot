@@ -4,14 +4,14 @@ extern "C" {
 	#include <netdb.h>
 	#include <time.h>
 }
-#include "DEV_Config.hpp"
-#include "Debug.hpp"
-#include "GUI_Paint.hpp"
-#include "sensor.hpp"
-#include "GetTime.hpp"
-#include "OLED.hpp"
-#include "checkInternet.hpp"
-#include "web.cpp"
+#include "../lib/Config/DEV_Config.hpp"
+#include "../lib/Config/Debug.hpp"
+#include "../lib/GUI/GUI_Paint.hpp"
+#include "../lib/Function/sensor.hpp"
+#include "../lib/Function/GetTime.hpp"
+#include "../lib/OLED/OLED.hpp"
+#include "../lib/Function/checkInternet.hpp"
+#include "../lib/Web/web.cpp"
 
 #include <ctime> 
 #include <cstdlib> 

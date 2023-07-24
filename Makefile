@@ -5,7 +5,7 @@ DIR_GUI      = ./lib/GUI
 DIR_Function = ./lib/Function
 DIR_BIN      = ./bin
 DIR_TEST     = ./test
-DIR_WEB 	 = ./Web
+DIR_WEB 	 = ./lib/Web
 #C++ files
 SRC_CPP = $(wildcard ${DIR_OLED}/*.cpp ${DIR_Config}/*.cpp ${DIR_GUI}/*.cpp ${DIR_Function}/*.cpp ${DIR_FONTS}/*.cpp ${DIR_TEST}/*.cpp ${DIR_WEB}/*.cpp)
 OBJ_CPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${SRC_CPP}))
