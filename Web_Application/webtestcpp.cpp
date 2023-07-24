@@ -23,13 +23,11 @@ void onRequest(evhttp_request* req, void* arg) {
     // 构建数据
     std::string eventData = "data: " + std::to_string(realtimeData) + "\n\n";
 
-    // 将数据写入响应缓冲区
-    evbuffer_add(buf, eventData.c_str(), eventData.size());
+    // 将数据添加到输出缓冲区（使用evbuffer_add_reference）
+    evbuffer_add_reference(buf, eventData.c_str(), eventData.size(), nullptr, nullptr);
 
     // 发送响应
     evhttp_send_reply(req, HTTP_OK, "OK", nullptr);
-
-    // 释放资源（注意：不需要手动释放buf，由libevent自动管理）
 }
 
 int main() {
