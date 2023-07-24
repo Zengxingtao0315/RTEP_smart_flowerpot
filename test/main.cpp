@@ -158,7 +158,7 @@ const char* EmojiSelector(double temperature, double humidity, int digital, floa
 		return "./pic/overwatered.bmp";
 	}
 
-	
+	return "./pic/happy.bmp";
 	
 }
 
@@ -240,27 +240,8 @@ int main()
 	double temp ;
 	double hum ;
 	
-	std::thread serverThread(serverThreadFunc);
-	
-	std::thread sensorThread([&]() {
-        while (true) {
-            // 更新传感器数据
-            double temp = Sensor.getTemperature();
-            double hum = Sensor.getHumidity();
-
-            // 设置响应数据
-            std::string response = "HTTP/1.1 200 OK\r\nTemperature: " + std::to_string(temp) + "\r\n\r\nHumidity: " + std::to_string(hum);
-
-            // 发送响应
-            server.io_service().post([&, response]() {
-                HttpServerSession temp_session(server.io_service());
-                temp_session.sendResponse(response);
-            });
-
-            // 休眠1秒
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-        }
-    });
+	HttpServerSession session(server.io_service());
+    updateSensorData(session);
 	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
