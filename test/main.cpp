@@ -67,6 +67,8 @@ private:
 
             // 构建响应
             std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+			response += "Access-Control-Allow-Origin: *\r\n";
+			response += "\r\n";
             response += "Temperature: " + std::to_string(temperature) + " °C<br>";
             response += "Humidity: " + std::to_string(humidity) + " %<br>";
 
