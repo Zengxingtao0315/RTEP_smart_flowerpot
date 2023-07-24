@@ -7,27 +7,17 @@
 #include <thread>
 #include <chrono>
 
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
+
+typedef websocketpp::server<websocketpp::config::asio> WebSocketServer;
+typedef WebSocketServer::message_ptr MessagePtr;
+
 // 全局变量，模拟实时更新的数据
 int realtimeData = 0;
 
 void onRequest(evhttp_request* req, void* arg) {
-    struct evbuffer* buf = evhttp_request_get_output_buffer(req);
-    if (!buf) {
-        std::cerr << "Failed to create response buffer." << std::endl;
-        return;
-    }
-
-    // 设置HTTP响应头，指定数据格式为text/event-stream
-    evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/event-stream");
-
-    // 构建数据
-    std::string eventData = "data: " + std::to_string(realtimeData) + "\n\n";
-
-    // 将数据添加到输出缓冲区
-    evbuffer_add_reference(buf, eventData.c_str(), eventData.size(), nullptr, nullptr);
-
-    // 发送响应
-    evhttp_send_reply(req, HTTP_OK, "OK", nullptr);
+    evhttp_send_error(req, HTTP_NOTIMPLEMENTED, "Not implemented");
 }
 
 int main() {
@@ -48,11 +38,28 @@ int main() {
     // 设置请求处理回调函数
     evhttp_set_gencb(http, onRequest, nullptr);
 
+    // 创建WebSocket服务器
+    WebSocketServer server;
+    server.init_asio();
+
+    // 设置WebSocket消息处理回调函数
+    server.set_message_handler([&server](WebSocketServer* ws_server, websocketpp::connection_hdl hdl, MessagePtr msg) {
+        std::string message = msg->get_payload();
+        std::cout << "Received message: " << message << std::endl;
+    });
+
+    // 启动WebSocket服务器在8081端口
+    server.listen(8081);
+
+    // 启动WebSocket服务器的异步事件处理线程
+    std::thread ws_thread([&server]() {
+        server.start_accept();
+        server.run();
+    });
+
     // 模拟数据更新
-    event_base_loopexit(base, nullptr); // 停止事件循环
     while (true) {
         realtimeData++; // 更新数据
-        event_base_loop(base, EVLOOP_NONBLOCK); // 非阻塞模式运行事件循环
         std::this_thread::sleep_for(std::chrono::seconds(1)); // 1秒更新一次数据
     }
 
