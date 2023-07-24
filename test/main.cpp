@@ -11,7 +11,6 @@ extern "C" {
 #include "../lib/Function/GetTime.hpp"
 #include "../lib/OLED/OLED.hpp"
 #include "../lib/Function/checkInternet.hpp"
-#include "../lib/Web/web.cpp"
 
 #include <ctime> 
 #include <cstdlib> 
