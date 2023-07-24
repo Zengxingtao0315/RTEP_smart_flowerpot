@@ -11,6 +11,7 @@ extern "C" {
 #include "GetTime.hpp"
 #include "OLED.hpp"
 #include "checkInternet.hpp"
+#include "web.cpp"
 
 #include <ctime> 
 #include <cstdlib> 
@@ -138,7 +139,10 @@ int main()
 	double temp ;
 	double hum ;
 	
-	
+	boost::asio::io_service io_service;
+    HttpServer server(io_service);
+
+    io_service.run();
 	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
