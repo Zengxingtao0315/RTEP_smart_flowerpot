@@ -1,43 +1,48 @@
 #include <iostream>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+#include <chrono>
+#include <thread>
+
+using namespace std::chrono_literals;
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
-void on_message( websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr msg) {
-    // 这里处理接收到的消息，可以是数据采集程序发送过来的数据
-    std::string data = msg->get_payload();
-    std::cout << "Received data: " << data << std::endl;
-	websocketpp::server<websocketpp::config::asio>* s = nullptr;
-    // 这里可以将接收到的数据发送给其他客户端
-    
-	if(s){
-		std::string data = "hello";
-	s->send(hdl, data, websocketpp::frame::opcode::TEXT);
-	}
-}
-
 int main() {
-    server srv;
-    srv.set_message_handler([&srv](websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr msg){
-		on_message(hdl, msg);
-	});
+    // 创建WebSocket服务器
+    server ws_server;
 
-    // 这里设置服务器的端口号
+    // 设置监听端口
     int port = 9002;
+    ws_server.listen(port);
 
-    try {
-        srv.init_asio();
-        srv.listen(port);
-        srv.start_accept();
+    // 启动服务器线程
+    ws_server.start_accept();
 
-        std::cout << "Server listening on port " << port << std::endl;
+    std::cout << "WebSocket server started on port " << port << std::endl;
 
-        srv.run();
-    } catch (websocketpp::exception const& e) {
-        std::cout << "Error: " << e.what() << std::endl;
-    } catch (...) {
-        std::cout << "Unknown error" << std::endl;
+    // 模拟传感器数据，并实时发送到HTML网页
+    double sensor_data = 0.0;
+
+    while (true) {
+        // 模拟获取传感器数据，你需要替换此处的代码以读取真实的传感器数据
+        // 假设传感器数据在sensor_data中更新
+        sensor_data += 0.1;
+
+        // 将数据转换成字符串
+        std::string data_str = std::to_string(sensor_data);
+
+        // 遍历所有连接的客户端，发送数据
+        for (auto it : ws_server.get_connections()) {
+            try {
+                ws_server.send(it, data_str, websocketpp::frame::opcode::text);
+            } catch (const websocketpp::exception &e) {
+                std::cout << "Error sending data to client: " << e.what() << std::endl;
+            }
+        }
+
+        // 等待一段时间，模拟传感器数据的更新频率
+        std::this_thread::sleep_for(1s);
     }
 
     return 0;
