@@ -14,13 +14,13 @@ public:
 
     void start() {
         async_read_until(socket_, request_, "\r\n\r\n",
-            [self = shared_from_this()](const boost::system::error_code& error) {
-                self->handle_read(error);
+            [self = shared_from_this()](const boost::system::error_code& error, size_t bytes_transferred) {
+                self->handle_read(error, bytes_transferred);
             });
     }
 
 private:
-    void handle_read(const boost::system::error_code& error) {
+    void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
         if (!error) {
             std::istream request_stream(&request_);
             std::string http_request;
@@ -29,7 +29,7 @@ private:
 
             std::string response = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, World!";
             async_write(socket_, boost::asio::buffer(response),
-                [self = shared_from_this()](const boost::system::error_code& error) {
+                [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
                     self->handle_write(error);
                 });
         }
