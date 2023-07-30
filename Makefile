@@ -1,4 +1,4 @@
-DIR_Config   = ./lib/Config
+                                                                                                  DIR_Config   = ./lib/Config
 DIR_OLED     = ./lib/OLED
 DIR_FONTS    = ./lib/Fonts
 DIR_GUI      = ./lib/GUI
@@ -13,18 +13,9 @@ OBJ_CPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${SRC_CPP}))
 
 TARGET = main
 
-#USELIB = USE_BCM2835_LIB
-#USELIB = USE_WIRINGPI_LIB
 USELIB = USE_DEV_LIB
 DEBUG = -D $(USELIB)
-ifeq ($(USELIB), USE_BCM2835_LIB)
-    LIB = -lbcm2835 -lm 
-else ifeq ($(USELIB), USE_WIRINGPI_LIB)
-    LIB = -lwiringPi -lm 
-else ifeq ($(USELIB), USE_DEV_LIB)
-    LIB =  -lwiringPi -lm 
-endif
-
+LIB =  -lwiringPi -lm 
 
 CXX = g++ -std=c++11
 MSG = -g -O0 -Wall -pthread  -lboost_system
