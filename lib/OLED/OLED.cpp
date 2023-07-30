@@ -1,7 +1,9 @@
 /*****************************************************************************
-* | File      	:   OLED.c
-* | Function    :    OLED Module Drive function
-* | Info        :
+
+// This code is adapted from the little-sun-gazer project by dr-mod, licensed under the GNU GENERAL PUBLIC LICENSE.
+// Original source: https://github.com/dr-mod/little-sun-gazer/blob/main/GUI_Paint.c
+// Porject is Copyright (c) 2023 Xingtao Zeng, all rights reserved.
+// Project is licensed under the MIT License: https://opensource.org/licenses/MIT
 * -----------------------------------------------------------------------------
 *****************************************************************************/
 #include "OLED.hpp"
