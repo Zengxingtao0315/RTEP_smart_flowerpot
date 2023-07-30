@@ -1,9 +1,9 @@
 /*****************************************************************************
-* | File        :   RPI_sysfs_gpio.h
-* | Author      :   Xingtao Zeng
-* | Function    :   Drive SC16IS752 GPIO
-* | Info        :   Read and write /sys/class/gpio
 
+This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed under the MIT license.
+// Original source: https://github.com/waveshare/2-CH-RS485-HAT/tree/master/RaspberryPi/user_dev/c/lib/Config
+// Porject is Copyright (c) 2023 Xingtao Zeng, all rights reserved.
+// Project is licensed under the MIT License: https://opensource.org/licenses/MIT
 ******************************************************************************/
 #ifndef __SYSFS_GPIO_HPP_
 #define __SYSFS_GPIO_HPP_

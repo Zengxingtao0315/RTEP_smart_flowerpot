@@ -1,3 +1,12 @@
+/*****************************************************************************
+
+This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed under the MIT license.
+// Original source: https://github.com/waveshare/2-CH-RS485-HAT/tree/master/RaspberryPi/user_dev/c/lib/Config
+// Porject is Copyright (c) 2023 Xingtao Zeng, all rights reserved.
+// Project is licensed under the MIT License: https://opensource.org/licenses/MIT
+******************************************************************************/
+
+
 #ifndef _DEV_CONFIG_HPP_
 #define _DEV_CONFIG_HPP_
 /***********************************************************************************************************************

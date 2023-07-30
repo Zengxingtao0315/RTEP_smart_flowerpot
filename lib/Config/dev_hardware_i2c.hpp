@@ -1,9 +1,9 @@
 /*****************************************************************************
-* | File        :   dev_hardware_i2c.hpp
-* | Author      :   Xingtao Zeng
-* | Function    :   Read and write /dev/i2C,  hardware I2C
-* | Info        :
 
+This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed under the MIT license.
+// Original source: https://github.com/waveshare/2-CH-RS485-HAT/tree/master/RaspberryPi/user_dev/c/lib/Config
+// Porject is Copyright (c) 2023 Xingtao Zeng, all rights reserved.
+// Project is licensed under the MIT License: https://opensource.org/licenses/MIT
 ******************************************************************************/
 #ifndef __DEV_HARDWARE_I2C_HPP_
 #define __DEV_HARDWARE_I2C_HPP_
