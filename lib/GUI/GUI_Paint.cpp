@@ -40,10 +40,7 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Color)
 		
     paint.WidthByte = paint.WidthMemory*2; 
     paint.HeightByte = Height;    
-//    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
-//    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
    
-    
     paint.Width = Width;
     paint.Height = Height;
     
@@ -69,15 +66,22 @@ parameter:
 ******************************************************************************/
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
+    // Check if the specified coordinates are within the display boundaries
     if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
         Debug("Exceeding display boundaries\r\n");
         return;
     }
 
+    // Calculate the memory address (index) in the display buffer for the specified pixel
     UDOUBLE Addr = Xpoint * 2 + Ypoint * paint.WidthByte;
-    paint.Image[Addr] = 0xFF & (Color >> 8);
-    paint.Image[Addr + 1] = 0xFF & Color;
+
+    // Set the color of the pixel in the display buffer
+    // The pixel color is a 16-bit color (UWORD), where the high byte is the first byte (Address) and the low byte is the second byte (Address + 1)
+    // The color is split into the high and low bytes and stored in the display buffer at the specified memory address (Addr).
+    paint.Image[Addr] = 0xFF & (Color >> 8);   // Store the high byte of the color
+    paint.Image[Addr + 1] = 0xFF & Color;      // Store the low byte of the color
 }
+
 
 
 /******************************************************************************
@@ -87,15 +91,29 @@ parameter:
 ******************************************************************************/
 void Paint::Clear(UWORD Color)
 {
+    // Extract the low byte and high byte of the specified color
     UBYTE lowByte = 0x0F & Color;
     UBYTE highByte = 0x0F & (Color >> 8);
 
+    // Get a pointer to the start of the display buffer (paint.Image)
     UBYTE* image = paint.Image;
+
+    // Calculate the size of the display buffer in bytes
     UWORD imageByteSize = paint.WidthByte * paint.HeightByte * 2;
 
+    // Fill the display buffer with the specified color
+    // The memset function is used to set each byte of the buffer to the specified values
+    // The buffer is treated as an array of UBYTE elements (1 byte each), so we fill it in two steps:
+    //   1. Fill the low byte of the color into the buffer
+    //   2. Fill the high byte of the color into the buffer (each UWORD element is 2 bytes)
+
+    // Step 1: Fill the low byte of the color into the buffer
     std::memset(image, lowByte, imageByteSize);
+
+    // Step 2: Fill the high byte of the color into the buffer
     std::memset(image + 1, highByte, imageByteSize);
 }
+
 
 
 /******************************************************************************
@@ -152,23 +170,36 @@ parameter:
     Color_Background : Select the background color
 ******************************************************************************/
 void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char *pString,
-                         sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
+                       sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     UWORD Xpoint = Xstart;
     UWORD Ypoint = Ystart;
 
+    // Loop through the characters in the input string until the null terminator is reached
     for (; *pString != '\0'; pString++) {
+        // Check if the current Xpoint + the character's width exceeds the screen width
+        // If so, reset Xpoint to the starting X-coordinate and move Ypoint down by the character's height
         if (Xpoint + Font->Width > paint.Width) {
             Xpoint = Xstart;
             Ypoint += Font->Height;
         }
+
+        // Check if the current Ypoint + the character's height exceeds the screen height
+        // If so, break out of the loop as the screen area is full
         if (Ypoint + Font->Height > paint.Height) {
-            break; // if the showearea is full, so break
+            break;
         }
+
+        // Call the DrawChar function to draw the current character on the screen
+        // at the specified coordinates (Xpoint, Ypoint) using the specified font
+        // with the given foreground and background colors
         DrawChar(Xpoint, Ypoint, *pString, Font, Color_Background, Color_Foreground);
+
+        // Move the Xpoint to the right by the character's width to position the next character
         Xpoint += Font->Width;
     }
 }
+
 
 
 
@@ -186,12 +217,21 @@ parameter:
 #define  ARRAY_LEN 255
 
 void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Number,
-                   sFONT* Font, UWORD Digit, UWORD Color_Foreground, UWORD Color_Background)
+                    sFONT* Font, UWORD Digit, UWORD Color_Foreground, UWORD Color_Background)
 {
+    // Create a character array to store the formatted number string
     char str[ARRAY_LEN];
+
+    // Format the number into a string with a specific number of digits after the decimal point
+    // and store it in the 'str' array
     snprintf(str, ARRAY_LEN, "%.*f", Digit, Number);
+
+    // Call the DrawString function to draw the formatted number on the screen
+    // at the specified coordinates (Xpoint, Ypoint) using the specified font
+    // with the given foreground and background colors
     DrawString(Xpoint, Ypoint, str, Font, Color_Background, Color_Foreground);
 }
+
 
 /******************************************************************************
 function:	Display time
@@ -227,46 +267,63 @@ info:
 
 UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 {
+    // Open the BMP file in binary read mode
     FILE *fp = fopen(path, "rb");  
     if (!fp) {
         Debug("Cann't open the file!\n");
         return 1;
     }
 
+    // Read the BMP file header and info header
     BMPFILEHEADER bmpFileHeader;
     BMPINFOHEADER bmpInfoHeader;
     fread(&bmpFileHeader, sizeof(BMPFILEHEADER), 1, fp);  // Read BMP file header
-    fread(&bmpInfoHeader, sizeof(BMPINFOHEADER), 1, fp);  // Read the BMP message header
+    fread(&bmpInfoHeader, sizeof(BMPINFOHEADER), 1, fp);  // Read the BMP info header
 
+    // Check if the BMP image is a 65K-color bitmap (16-bit color depth)
     if (bmpInfoHeader.biBitCount != 16) {
         Debug("Bmp image is not a 65K-color bitmap!\n");
         fclose(fp);
         return 2;
     }
 
+    // Calculate the number of bytes per row of the image
     UWORD Image_Width_Byte = bmpInfoHeader.biWidth * 2;
+
+    // Allocate memory to store the image data in an array
     UBYTE Image[Image_Width_Byte * bmpInfoHeader.biHeight];
     memset(Image, 0xFF, Image_Width_Byte * bmpInfoHeader.biHeight);
 
+    // Move the file pointer to the start of the image data
     fseek(fp, bmpFileHeader.bOffset, SEEK_SET);
 
-    // Read image data line by line starting from the bottom line
+    // Read the image data line by line, starting from the bottom line (due to BMP storage format)
     for (int y = bmpInfoHeader.biHeight - 1; y >= 0; y--) {
         fread(Image + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte, sizeof(UBYTE), Image_Width_Byte, fp);
     }
 
+    // Close the BMP file as we have read the image data
     fclose(fp);
 
+    // Temporary variable to store the color value
     UWORD color;
+
+    // Loop through the image and update the display buffer
     for (UWORD y = 0; y < bmpInfoHeader.biHeight; y++) {
         for (UWORD x = 0; x < bmpInfoHeader.biWidth; x++) {
+            // If the current pixel is outside the screen size, break out of the loop
             if (x > paint.Width || y > paint.Height) {
                 break;
             }
+            // Extract the color value from the image data (16-bit color depth)
             color = Image[x * 2 + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte];
             color |= Image[x * 2 + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte + 1] << 8;
+
+            // Update the pixel at the specified position (Xstart + x, Ystart + y) with the color value
             SetPixel(Xstart + x, Ystart + y, color);  // Refresh image to display buffer
         }
     }
+
+    // Return 0 to indicate success
     return 0;
 }
