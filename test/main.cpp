@@ -100,18 +100,14 @@ int main()
 	
 	UWORD  digitalValue;
 	//UWORD  analogValue;
-	float light_duration;
-	SunlightDurationRecorder duration;
 	double temp ;
 	double hum ;
-	char* bmp_path;
 
 	
     while (1) {
 		std::cout<<"painting the first page!"<<std::endl;
 		//display of internet status
-		bmp_path = selector.BmpSelector();
-		Paint.GUI_ReadBmp(bmp_path, 100, 0);
+		Paint.GUI_ReadBmp(selector.BmpSelector(), 100, 0);
 		Paint.DrawTime(5, 0, &local_time, &Font12, BLACK, TIME_COLOR);
 		//Humidity and Temperature
 		

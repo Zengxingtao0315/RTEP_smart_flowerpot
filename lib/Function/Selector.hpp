@@ -13,7 +13,7 @@ class Selector {
 public:
     const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration );
     void BmpSelector();
-	bool lightSelector();
+	std::string lightSelector();
 	
 private:
 	char* bmp_path = "./pic/internet_down.bmp";
