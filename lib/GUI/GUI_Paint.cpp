@@ -130,7 +130,7 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
                      sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
     if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
-        Debug("Paint_DrawChar: 输入超出正常显示范围\r\n");
+        Debug("Paint_DrawChar: Input is outside the normal display range\r\n");
         return;
     }
 

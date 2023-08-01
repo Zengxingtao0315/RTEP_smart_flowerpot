@@ -114,7 +114,8 @@ public:
 
 	//pic
 	UBYTE GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart);
-
+private:
+	
 };
 
 
