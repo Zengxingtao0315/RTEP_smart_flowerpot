@@ -7,10 +7,9 @@ Function:
 *******************************************************************************/
 
 // Declaration and definition of a class named InternetConnectionChecker.
-class InternetConnectionChecker {
-public:
+
     // Member function: Checks if the internet connection is available.
-    bool CheckInternetConnection() {
+    bool InternetConnectionChecker::CheckInternetConnection() {
         // Declare and define an addrinfo struct named "hints" to provide hints for the getaddrinfo function for address resolution.
         struct addrinfo hints;
         // Declare and define a pointer to an addrinfo struct named "res" to store the result returned by the getaddrinfo function.
@@ -37,4 +36,3 @@ public:
         // If getaddrinfo executed successfully and resolved the hostname, the function returns true, indicating that the internet connection is available.
         return true;
     }
-};
