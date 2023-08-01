@@ -5,7 +5,7 @@
         "ip" : "192.168.1.240"
     },
     "http" : {
-        "script_names" : ["/sensor"]
+        "script_names" : ["/"]
     },
     "file_server" : {
         "enable" : true,
