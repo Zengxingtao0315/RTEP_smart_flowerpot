@@ -7,13 +7,13 @@
 #include "checkInternet.hpp"
 #include "sensor.hpp"
 #include "GetTime.hpp"
-
+#include "../Config/DEV_Config.hpp"
 
 class Selector {
 public:
     const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration );
-    void BmpSelector();
-	std::string lightSelector();
+    const char* BmpSelector();
+	const char* lightSelector();
 	
 private:
 	char* bmp_path = "./pic/internet_down.bmp";

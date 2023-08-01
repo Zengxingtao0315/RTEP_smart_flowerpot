@@ -124,7 +124,7 @@ int main()
 
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
-		Paint.GUI_ReadBmp(selector.EmojiSelector, 32, 64);
+		Paint.GUI_ReadBmp(selector.EmojiSelector(temp,hum), 32, 64);
 		
 		OLED.Display(BlackImage);
 		DEV.Delay_ms(10000);

@@ -2,9 +2,15 @@
 
 
 
-const char* Selector::EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
+const char* Selector::EmojiSelector(double temperature, double humidity){
+	
 	using namespace std;
 	//When everything is fine
+	SunlightDurationRecorder LightRecorder;
+	float light_duration = LightRecorder.getSunlightDurationInHours();
+	Sensor sensor;
+	UWORD digital = sensor.readDigitalValue();
+	
 	if(temperature <= 38.0 && temperature >= 15.0 && digital == 0 && humidity >= 30.0 && humidity <= 50.0)
 	{
 		return "./pic/happy.bmp";		
@@ -30,7 +36,7 @@ const char* Selector::EmojiSelector(double temperature, double humidity, int dig
 }
 
 
-char* Selector::BmpSelector(){
+const char* Selector::BmpSelector(){
 	
 	InternetConnectionChecker checker;
 	checker.CheckInternetConnection()? bmp_path = "./pic/internet_up.bmp" : bmp_path = "./pic/internet_down.bmp";
@@ -39,8 +45,8 @@ char* Selector::BmpSelector(){
 }
 
 
-std::string Selector::lightSelector(){
-	std::string Lstr = "bright";
+const char* Selector::lightSelector(){
+	char* Lstr = "bright";
 	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	light_flag = Sensor.readDigitalValue();
 	if (light_flag == 0){

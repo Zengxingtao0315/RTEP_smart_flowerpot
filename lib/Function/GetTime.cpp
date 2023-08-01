@@ -29,3 +29,41 @@ PAINT_TIME Time::getLocalTime() {
     return time;
 }
 
+// Function to calculate the duration of sunlight in hours based on a digital value (0 or 1).
+float SunlightDurationRecorder::getSunlightDurationInHours() {
+    Sensor sensor;
+	UWORD digitalValue = sensor.readDigitalValue();
+	auto now = std::chrono::system_clock::now();
+    if (!initialized_) {
+        // First call to the function to initialize logging information
+        start_time_ = now;
+        duration_0_ = std::chrono::duration<int, std::ratio<1, 1>>(0);
+        last_reset_time_ = now;
+        initialized_ = true;
+    } else {
+        // Check to see if a new day has been reached, and if so, reset the duration record
+        auto time_since_last_reset = now - last_reset_time_;
+        if (time_since_last_reset >= std::chrono::hours(24)) {
+            duration_0_ = std::chrono::duration<int, std::ratio<1, 1>>{0};
+            last_reset_time_ = now;
+        }
+    }
+
+    // Record the duration since the start_time_ according to the digital value (0 or 1).
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start_time_);
+    if (digitalValue == 0) {
+        duration_0_ += duration;
+    }
+    if (digitalValue == 1) {
+        // If digitalValue is 1, reset the start_time_ to the current time.
+        start_time_ = now;
+    }
+
+    // Get the total duration of sunlight in seconds.
+    int light_duration = duration_0_.count();
+    std::chrono::seconds Drt{light_duration};
+    // Convert the duration to hours and return the result.
+    float hours = std::chrono::duration_cast<std::chrono::hours>(Drt).count();
+    std::cout << hours << " hours" << std::endl;
+    return hours;
+}
