@@ -31,7 +31,7 @@ PAINT_TIME Time::getLocalTime() {
 
 // Function to calculate the duration of sunlight in hours based on a digital value (0 or 1).
 float SunlightDurationRecorder::getSunlightDurationInHours() {
-    Sensor Sensor(DIGITALPIN,  DHTPIN);
+    Sensor sensor(DIGITALPIN,  DHTPIN);
 	UWORD digitalValue = sensor.readDigitalValue();
 	auto now = std::chrono::system_clock::now();
     if (!initialized_) {
