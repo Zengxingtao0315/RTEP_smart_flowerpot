@@ -40,17 +40,17 @@ char* Selector::BmpSelector(){
 
 
 std::string Selector::lightSelector(){
-	string Lstring = "bright";
+	std::string Lstr = "bright";
 	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	light_flag = Sensor.readDigitalValue();
 	if (light_flag == 0){
-		Lstring = "bright";
+		Lstr = "bright";
 		std::cout<<"bright"<<std::endl;
 	}else{
-		Lstring = "dark";
+		Lstr = "dark";
 		std::cout<<"dark"<<std::endl;
 	}
-	return Lstring;
+	return Lstr;
 	
 	
 }
