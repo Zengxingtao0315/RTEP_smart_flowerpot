@@ -7,6 +7,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <sstream>
 
 // Simulated sensor data for demonstration purposes
 double getTemperature() {
@@ -25,6 +26,7 @@ public:
 
     void index() {
         // Set the content type to JSON
+		std::ostringstream json;
         response().content_type("application/json");
 
         while (true) {
