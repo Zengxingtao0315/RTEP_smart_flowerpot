@@ -37,8 +37,8 @@
 		<!-- middle-top -->
 		<div class='main_1 ' style="height: fit-content; padding: 10px;background-color: rgb(59, 59, 59); text-align:center;">
 
-			<h1 class='font_1' style='font-size: 50px;line-height:40px; '>
-				{{time}}
+			<h1 id = "currentTime" class='font_1' style='font-size: 50px;line-height:40px; '>
+				
 			</h1>
 			<button onclick="location.reload()" style = "background-color: rgb(59, 59, 59); cursor: pointer;  color: white;border: none; font-size: 20px; margin-top:30px;">Refresh</button>
 		</div>
@@ -48,19 +48,13 @@
 				<h2 class='font_1' style='font-size: 30px;line-height:100px; '>
 					Temperature
 				</h2>
-				<span id="temperature"></span>
+				<span id="temperature" class='font_1' style='font-size: 30px;line-height:100px; '></span>
 			</div>
 			<div class='main_1 block' style="height: 300px;float:right;padding: 15px;background-color: rgb(0, 0, 255); text-align:center;width :33%;">
 				<h2 class='font_1' style='font-size: 30px;line-height:40px;'>
 					Humidity
 				</h2>
-				<span id="humidity"></span>
-			</div>
-
-			<div class='main_1 block light' style="height: 300px;float:right;padding: 15px;background-color: rgb(255, 165, 0);text-align:center;width :33%; ">
-				<a class='font_1' style="font-size: 30px;line-height:30px; padding: 10px;margin-top:10px ">
-					{{lightFlag}}
-				</a>
+				<span id="humidity"class='font_1' style='font-size: 30px;line-height:100px; '></span>
 			</div>
 		</div>
 		<!-- bottom -->
@@ -71,11 +65,28 @@
 	</div>
 	<script src="data.js"></script>
     <script>
-        // 在data.js文件中获取温度和湿度数据
-        // 这里假设data.js中已经定义了temperature和humidity变量
-        // 如果data.js未被加载，则数据将为NaN
+        // Get the temperature and humidity data in the data.js file
+         // Here it is assumed that the temperature and humidity variables have been defined in data.js
+         // If data.js is not loaded, data will be NaN
         document.getElementById("temperature").textContent = temperature + " °C";
         document.getElementById("humidity").textContent = humidity + " %";
+		
+		function updateTime() {
+            // Get the current time object
+            var now = new Date();
+
+            // Build a time string in the format "hour:minute:second"
+            var timeStr = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+
+            // Set the time string to the DOM element whose id is currentTime
+            document.getElementById("currentTime").textContent = timeStr;
+        }
+
+        // Use the setInterval function to call the updateTime function every second to achieve real-time update time
+        setInterval(updateTime, 1000);
+
+        // Call the updateTime function once when the page is loaded to avoid displaying the time after refreshing the page
+        updateTime();
     </script>
 </body>
 

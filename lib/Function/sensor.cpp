@@ -151,12 +151,12 @@ void Sensor::sendDHTdataToHTML(const DHTdata& data){
 	std::ofstream jsFile("/var/www/html/data.js");
 
     if (jsFile.is_open()) {
-        // 在data.js文件中写入温度和湿度数据
+        // Write temperature and humidity data in the data.js file
         jsFile << "var temperature = " << data.temperature << ";\n";
         jsFile << "var humidity = " << data.humidity << ";\n";
         jsFile.close();
     } else {
-        std::cerr << "无法打开data.js文件" << std::endl;
+        std::cerr << "Unable to open data.js file" << std::endl;
     }
 	
 }
