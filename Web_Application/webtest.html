@@ -6,7 +6,7 @@
         function updateSensorData() {
             // Make an AJAX request to the server
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/sensor', true);
+            xhr.open('GET', '/', true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);

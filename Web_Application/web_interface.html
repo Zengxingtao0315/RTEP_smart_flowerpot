@@ -44,21 +44,17 @@
 		</div>
 		<!-- middle-bottom -->
 		<div style = "display:flex;justify-content: space-between; flex-direction: row;">
-			<div class='main_1 block Temperature' style="height: 300px;float:right;padding: 15px;background-color: rgb(100, 200, 100);text-align: center; width :33%;">
+			<div class='main_1 block' style="height: 300px;float:right;padding: 15px;background-color: rgb(100, 200, 100);text-align: center; width :33%;">
 				<h2 class='font_1' style='font-size: 30px;line-height:100px; '>
 					Temperature
 				</h2>
-				<h2 class='font_1' style='font-size: 30px;line-height:30px; '>
-					{{temperature}}<br>°C
-				</h2>
+				<span id="temperature"></span>
 			</div>
-			<div class='main_1 block Humidsity' style="height: 300px;float:right;padding: 15px;background-color: rgb(0, 0, 255); text-align:center;width :33%;">
+			<div class='main_1 block' style="height: 300px;float:right;padding: 15px;background-color: rgb(0, 0, 255); text-align:center;width :33%;">
 				<h2 class='font_1' style='font-size: 30px;line-height:40px;'>
 					Humidity
 				</h2>
-				<h2 class='font_1' style="font-size: 30px;line-height:30px;margin: 7px; padding: 15px;">
-					{{humidity}}<br>%
-				</h2>
+				<span id="humidity"></span>
 			</div>
 
 			<div class='main_1 block light' style="height: 300px;float:right;padding: 15px;background-color: rgb(255, 165, 0);text-align:center;width :33%; ">
@@ -73,6 +69,39 @@
 				<br>This website is only for academic demo purpose.<br></p>
 		</div>
 	</div>
+	<script>
+	const webSocket = new WebSocket('ws://localhost:8080');
 
+        webSocket.onopen = function(event) {
+            console.log('WebSocket connection opened.');
+        };
+
+        webSocket.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                updateUI(data);
+            } catch (error) {
+                console.error('Error parsing JSON data:', error);
+            }
+        };
+
+        webSocket.onclose = function(event) {
+            console.log('WebSocket connection closed.');
+        };
+
+        function updateUI(data) {
+            const temperatureElement = document.getElementById('temperature');
+            const humidityElement = document.getElementById('humidity');
+
+            if (data.hasOwnProperty('temperature')) {
+                temperatureElement.textContent = data.temperature.toFixed(2) + ' °C';
+            }
+
+            if (data.hasOwnProperty('humidity')) {
+                humidityElement.textContent = data.humidity.toFixed(2) + ' %';
+            }
+        }
+    </script>
 </body>
+
 </html>
