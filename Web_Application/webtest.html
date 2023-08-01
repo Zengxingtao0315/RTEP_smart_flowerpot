@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Realtime Data Update</title>
+    <title>Sensor Data</title>
+    <script>
+        function updateSensorData() {
+            // Make an AJAX request to the server
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/sensor', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    // Update temperature and humidity values on the page
+                    document.getElementById('temperature').textContent = data.temperature;
+                    document.getElementById('humidity').textContent = data.humidity;
+                }
+            };
+            xhr.send();
+        }
+
+        // Update sensor data every 2 seconds
+        setInterval(updateSensorData, 2000);
+    </script>
 </head>
 <body>
-    <h1>Realtime Data: <span id="realtimeData">Waiting for data...</span></h1>
-
-    <script>
-        // 创建一个EventSource对象来接收服务器的数据
-        const eventSource = new EventSource("http://localhost:8080");
-
-        // 处理接收到的数据
-        eventSource.onmessage = function (event) {
-            const data = JSON.parse(event.data);
-            const realtimeDataElement = document.getElementById("realtimeData");
-            realtimeDataElement.textContent = data;
-        };
-
-        // 处理错误
-        eventSource.onerror = function (error) {
-            console.error("EventSource failed:", error);
-            eventSource.close();
-        };
-    </script>
+    <h1>Temperature: <span id="temperature">--</span> °C</h1>
+    <h1>Humidity: <span id="humidity">--</span> %</h1>
 </body>
 </html>
