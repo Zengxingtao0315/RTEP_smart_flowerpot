@@ -50,7 +50,7 @@ public:
 int main(int argc, char **argv) {
     try {
         cppcms::service srv(argc, argv);
-        srv.applications_pool().mount(cppcms::applications_factory<SensorApp>());
+        srv.applications_pool().mount(cppcms::applications_factory<SensorApp>(),"/sensor");
         srv.run();
     }
     catch (std::exception const &e) {
