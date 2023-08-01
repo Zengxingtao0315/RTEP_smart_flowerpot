@@ -8,7 +8,7 @@ const char* Selector::EmojiSelector(double temperature, double humidity){
 	//When everything is fine
 	SunlightDurationRecorder LightRecorder;
 	float light_duration = LightRecorder.getSunlightDurationInHours();
-	Sensor sensor;
+	Sensor Sensor(DIGITALPIN,  DHTPIN);
 	UWORD digital = sensor.readDigitalValue();
 	
 	if(temperature <= 38.0 && temperature >= 15.0 && digital == 0 && humidity >= 30.0 && humidity <= 50.0)

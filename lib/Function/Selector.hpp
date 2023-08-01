@@ -11,7 +11,7 @@
 
 class Selector {
 public:
-    const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration );
+    const char* EmojiSelector(double temperature, double humidity);
     const char* BmpSelector();
 	const char* lightSelector();
 	
