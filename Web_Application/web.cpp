@@ -26,7 +26,6 @@ public:
 
     void index() {
         // Set the content type to JSON
-		std::ostringstream json;
         response().content_type("application/json");
 
         while (true) {
@@ -47,15 +46,14 @@ public:
     }
 };
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     try {
         cppcms::service srv(argc, argv);
-        srv.applications_pool().mount(cppcms::applications_factory<SensorApp>(), cppcms::mount_point("/sensor"));
+        srv.applications_pool().mount(cppcms::applications_factory<SensorApp>(), "/sensor");
         srv.run();
     }
-    catch (std::exception const& e) {
+    catch (std::exception const &e) {
         std::cerr << e.what() << std::endl;
     }
     return 0;
 }
-
