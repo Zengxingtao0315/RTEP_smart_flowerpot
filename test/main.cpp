@@ -39,94 +39,7 @@ using ip::tcp;
 using namespace std;
 extern DEV DEV;
 Sensor Sensor(DIGITALPIN,  DHTPIN);
-class HttpServerSession : public std::enable_shared_from_this<HttpServerSession> {
-public:
-    HttpServerSession(boost::asio::io_service& io_service)
-        : socket_(io_service) {}
 
-    tcp::socket& socket() { return socket_; }
-
-    void start() {
-        async_read_until(socket_, request_, "\r\n\r\n",
-            [self = shared_from_this()](const boost::system::error_code& error, size_t bytes_transferred) {
-                self->handle_read(error, bytes_transferred);
-            });
-    }
-	
-private:
-     void handle_read(const boost::system::error_code& error, size_t bytes_transferred) {
-        if (!error) {
-            std::istream request_stream(&request_);
-            std::string http_request;
-            std::getline(request_stream, http_request);
-            std::cout << "Received HTTP request: " << http_request << std::endl;
-
-            // Get the latest temperature and humidity data
-            double temperature = Sensor.getTemperature();
-            double humidity = Sensor.getHumidity();
-
-            // Build the response
-            std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-			response += "Access-Control-Allow-Origin: *\r\n";
-			response += "\r\n";
-            response += "Temperature: " + std::to_string(temperature) + " °C<br>";
-            response += "Humidity: " + std::to_string(humidity) + " %<br>";
-
-            // Send a response
-            async_write(socket_, boost::asio::buffer(response),
-                [self = shared_from_this()](const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-                    self->handle_write(error);
-                });
-        }
-    }
-
-   void handle_write(const boost::system::error_code& error) {
-        if (!error) {
-            // Continue to process the next request
-            start();
-        }
-    }
-
-    tcp::socket socket_;
-    boost::asio::streambuf request_;
-};
-
-class HttpServer {
-public:
-    HttpServer(boost::asio::io_service& io_service)
-        : acceptor_(io_service, tcp::endpoint(tcp::v4(), 8080)),
-          io_service_(io_service) {
-        start_accept();
-    }
-
-private:
-    void start_accept() {
-        auto new_session = std::make_shared<HttpServerSession>(io_service_);
-
-        acceptor_.async_accept(new_session->socket(),
-            [this, new_session](const boost::system::error_code& error) {
-                handle_accept(new_session, error);
-            });
-    }
-
-    void handle_accept(std::shared_ptr<HttpServerSession> session, const boost::system::error_code& error) {
-        if (!error) {
-            session->start();
-        }
-
-        start_accept();
-    }
-
-    boost::asio::io_service& io_service_;
-    tcp::acceptor acceptor_;
-};
-
-void serverThreadFunc() {
-    boost::asio::io_service io_service;
-    HttpServer server(io_service);
-
-    io_service.run();
-}
 //expression plants emotion or status
 const char* EmojiSelector(double temperature, double humidity, int digital, float light_duration ){
 	//When everything is fine
@@ -177,7 +90,6 @@ int main()
         return -1;
     }
 	
-	std::thread serverThread(serverThreadFunc);
 	//OLED Init...
     std::cout << "OLED Init..." << std::endl;
 	
@@ -284,7 +196,6 @@ int main()
 		OLED.Clear();
 
 	}
-	serverThread.join();
 
     return 0;
 }

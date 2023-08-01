@@ -69,38 +69,13 @@
 				<br>This website is only for academic demo purpose.<br></p>
 		</div>
 	</div>
-	<script>
-	const webSocket = new WebSocket('ws://localhost:8080');
-
-        webSocket.onopen = function(event) {
-            console.log('WebSocket connection opened.');
-        };
-
-        webSocket.onmessage = function(event) {
-            try {
-                const data = JSON.parse(event.data);
-                updateUI(data);
-            } catch (error) {
-                console.error('Error parsing JSON data:', error);
-            }
-        };
-
-        webSocket.onclose = function(event) {
-            console.log('WebSocket connection closed.');
-        };
-
-        function updateUI(data) {
-            const temperatureElement = document.getElementById('temperature');
-            const humidityElement = document.getElementById('humidity');
-
-            if (data.hasOwnProperty('temperature')) {
-                temperatureElement.textContent = data.temperature.toFixed(2) + ' °C';
-            }
-
-            if (data.hasOwnProperty('humidity')) {
-                humidityElement.textContent = data.humidity.toFixed(2) + ' %';
-            }
-        }
+	<script src="data.js"></script>
+    <script>
+        // 在data.js文件中获取温度和湿度数据
+        // 这里假设data.js中已经定义了temperature和humidity变量
+        // 如果data.js未被加载，则数据将为NaN
+        document.getElementById("temperature").textContent = temperature + " °C";
+        document.getElementById("humidity").textContent = humidity + " %";
     </script>
 </body>
 

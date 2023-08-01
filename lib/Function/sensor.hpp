@@ -1,6 +1,6 @@
 #ifndef _SENSOR_HPP_
 #define _SENSOR_HPP_
-
+#include <fstream>
 #include <wiringPi.h>
 #include <cstdio>
 #include <cstdlib>
@@ -42,5 +42,6 @@ public:
     UWORD readDigitalValue();
     //UWORD readAnalogValue();
     DHTdata readDHTdata();
+	void sendDHTdataToHTML(const DHTdata& data);
 };
 #endif

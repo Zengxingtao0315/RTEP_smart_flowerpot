@@ -82,8 +82,8 @@ UWORD Sensor::readDigitalValue() {
 }
 
 // Function to read data from the DHT sensor.
-DHTdata Sensor::readDHTdata() {
-    DHTdata data;
+DHTdata Sensor::readDHTdata() {   
+	DHTdata data;
     int dht11_dat[5] = {0, 0, 0, 0, 0};
     uint8_t cnt = 7;
     uint8_t idx = 0;
@@ -135,6 +135,7 @@ DHTdata Sensor::readDHTdata() {
     if (dht11_dat[4] == ((dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)) {
         data.humidity = dht11_dat[0];
         data.temperature = dht11_dat[2] + dht11_dat[3] * 0.1;
+		sendDHTdataToHTML(data);
         f = dht11_dat[2] * 9.0 / 5.0 + 32;
         printf("Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
                dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f);
@@ -145,4 +146,17 @@ DHTdata Sensor::readDHTdata() {
 
     // Return the data read from the DHT sensor.
     return data;
+}
+void Sensor::sendDHTdataToHTML(const DHTdata& data){
+	std::ofstream jsFile("/var/www/html/data.js");
+
+    if (jsFile.is_open()) {
+        // 在data.js文件中写入温度和湿度数据
+        jsFile << "var temperature = " << data.temperature << ";\n";
+        jsFile << "var humidity = " << data.humidity << ";\n";
+        jsFile.close();
+    } else {
+        std::cerr << "无法打开data.js文件" << std::endl;
+    }
+	
 }
