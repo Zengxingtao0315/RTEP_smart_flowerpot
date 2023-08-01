@@ -118,12 +118,6 @@ int main()
 
     Paint.Clear(BLACK);
 
-    // initialise the whole display
-    //GUI_ReadBmp("./pic/OLED.bmp", 0, 0);
-    // Show image on page
-    //OLED_Display(BlackImage);
-    //DEV_Delay_ms(500);
-    //Paint_Clear(BLACK);
 
 	// init time funciton, get local time.
 	Time time;
@@ -175,15 +169,7 @@ int main()
 		}
 		OLED.Display(BlackImage);
 		Paint.Clear(BLACK);	
-		/**********************************
-		if(light_duration < 8.0){
-			Paint.DrawString(10, 40, "need more light", &Font12, BLACK, WHITE);
-		}
-		else{
-			Paint.DrawString(10, 40, "light sufficient", &Font12, BLACK, WHITE);
-		}
-		**********************************/
-		
+
 		//display of the plant emoji
 		std::cout<<"painting the emoji page!"<<std::endl;
 		Paint.GUI_ReadBmp(EmojiSelector(temp, hum,digitalValue, light_duration), 32, 64);

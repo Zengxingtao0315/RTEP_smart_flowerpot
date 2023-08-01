@@ -154,6 +154,7 @@ void Sensor::sendDHTdataToHTML(const DHTdata& data){
         // Write temperature and humidity data in the data.js file
         jsFile << "var temperature = " << data.temperature << ";\n";
         jsFile << "var humidity = " << data.humidity << ";\n";
+		jsFile << "var light = " << readDigitalValue() << ";\n";
         jsFile.close();
     } else {
         std::cerr << "Unable to open data.js file" << std::endl;

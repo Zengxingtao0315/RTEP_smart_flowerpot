@@ -56,6 +56,11 @@
 				</h2>
 				<span id="humidity"class='font_1' style='font-size: 30px;line-height:100px; '></span>
 			</div>
+			<div class='main_1 block light' style="height: 300px;float:right;padding: 15px;background-color: rgb(255, 165, 0);text-align:center;width :33%; ">
+				<a id ="light" class='font_1' style="font-size: 30px;line-height:30px; padding: 10px;margin-top:10px ">
+					
+				</a>
+			</div>
 		</div>
 		<!-- bottom -->
 		<div style='height: 50;margin: 0 5px 5px 5px;'>
@@ -70,6 +75,13 @@
          // If data.js is not loaded, data will be NaN
         document.getElementById("temperature").textContent = temperature + " °C";
         document.getElementById("humidity").textContent = humidity + " %";
+		if (light === 1) {
+            
+            document.getElementById("light").textContent = "dark";
+        } else {
+            
+            document.getElementById("light").textContent = "bright";
+        }
 		
 		function updateTime() {
             // Get the current time object
