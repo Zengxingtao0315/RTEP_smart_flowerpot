@@ -28,8 +28,6 @@
 #define OLED_HEIGHT 128
 
 
-using namespace boost::asio;
-using ip::tcp;
 using namespace std;
 extern DEV DEV;
 Sensor Sensor(DIGITALPIN,  DHTPIN);
