@@ -75,14 +75,3 @@ float SunlightDurationRecorder::getSunlightDurationInHours() {
 
 
 
-void Time::startRecording() {
-        startTime = std::chrono::high_resolution_clock::now();
-    }
-
-void Time::stopRecording() {
-    endTime = std::chrono::high_resolution_clock::now();
-}
-
-long long Time::getDuration() {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-    }

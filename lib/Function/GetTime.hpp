@@ -18,17 +18,9 @@ extern "C" {
 class Time {
 public:
     PAINT_TIME getLocalTime();
-    void startRecording();
-
-    void stopRecording();
-    long long getDuration();
     Time();
     ~Time();
 
-private:
-    auto starTime;
-    auto endTime;
-    PAINT_TIME time;
     std::chrono::high_resolution_clock::time_point startTime;
     std::chrono::high_resolution_clock::time_point endTime;
 };
