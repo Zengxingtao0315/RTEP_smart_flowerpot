@@ -7,9 +7,9 @@ using namespace std;
 
 
    
-mainLoop::mainLoop(): loopState(SUCCESS){}
+mainLoop::mainLoop(): loopState(SUCCESS),sensor(DIGITALPIN, DHTPIN){}
         
-mainLoop::~mainLoop():sensor(DIGITALPIN, DHTPIN){
+mainLoop::~mainLoop(){
     if (loopState.load() == TIMEOUT || loopState.load() == INITERROR||loopState.load() == UNKNOWN_ERROR) {
     stopLoop();
     }
