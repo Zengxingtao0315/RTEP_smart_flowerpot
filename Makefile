@@ -42,7 +42,7 @@ ${DIR_BIN}/%.o:$(DIR_Config)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LIB)
 	
 ${DIR_BIN}/%.o:$(DIR_Function)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ 
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -I $(DIR_GUI) -I $(DIR_Config)
 
 
 
