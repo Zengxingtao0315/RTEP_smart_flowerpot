@@ -80,12 +80,19 @@ typedef struct {
 } PAINT_TIME;
 
 typedef enum {
-    READING;
-    WRITING;
-    COMPLETED;
+    READING,
+    WRITING,
+    COMPLETED
 }IOSTATE;
 
 class Paint {
+private:
+	PAINT paint;
+    void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
+    IOSTATE iostate = COMPLETED;
+    std::mutex mtx;
+
+
 public:
 
 	void NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Color);
@@ -102,11 +109,6 @@ public:
 
 	//pic
 	UBYTE GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart);
-private:
-	PAINT paint;
-    void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
-    IOSTATE iostate = COMPLETED;
-    std::mutex mtx;
 
 };
 
