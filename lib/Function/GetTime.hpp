@@ -18,8 +18,6 @@ extern "C" {
 class Time {
 public:
     PAINT_TIME getLocalTime();
-    Time();
-    ~Time();
 
 private:
     PAINT_TIME time;

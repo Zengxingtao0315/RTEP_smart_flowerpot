@@ -1,5 +1,5 @@
-#ifndef __OLED_1IN5_RGB_HPP_
-#define __OLED_1IN5_RGB_HPP_
+#ifndef __OLED_HPP_
+#define __OLED_HPP_
 
 #include <cstdint> // C++ standard header file that includes definitions of integer types like uint8_t and uint16_t.
 #include <cstring> // C++ standard header file that includes the definition of memset function.

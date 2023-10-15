@@ -1,3 +1,6 @@
+#ifndef __MAIN_
+#define __MAIN_
+
 #include <iostream>
 #include <string>
 #include <thread>
@@ -30,3 +33,5 @@ int main()
 	mainloop.StateChecker();
     return 0;
 }
+
+#endif
