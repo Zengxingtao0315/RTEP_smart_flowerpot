@@ -13,6 +13,9 @@
 
 #include "../Config/DEV_Config.hpp"
 #include "../Fonts/fonts.hpp"
+#include <mutex>
+
+using namespace std;
 
 /*Bitmap file header   14bit*/
 typedef struct BMP_FILE_HEADER {

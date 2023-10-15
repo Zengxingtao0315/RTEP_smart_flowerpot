@@ -15,6 +15,9 @@
 #define MAXTIMINGS  85
 #define DHTPIN    7
 #define DIGITALPIN 1   
+
+using namespace std;
+
   
 typedef struct DHTdata {
     double temperature;
@@ -44,4 +47,6 @@ public:
     DHTdata readDHTdata();
 	void sendDHTdataToHTML(const DHTdata& data);
 };
+
+
 #endif
