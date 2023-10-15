@@ -17,7 +17,7 @@ mainLoop::~mainLoop(){
 
 void mainLoop::loop()
 {
-   std::signal(SIGINT, [](int signo) { Handler(signo, &DEV); });
+   std::signal(SIGINT, Handler);
     if (dev.ModuleInit() != 0)
     {
         std::cerr << "Failed to initialize components." << std::endl;
@@ -125,7 +125,7 @@ void mainLoop::loop()
         //display of the plant emoji
         std::cout<<"painting the emoji page!"<<std::endl;
         
-        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity(), 32, 64));
+        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity()), 32, 64);
         thread GRB_Thread2(GRB_func2);
         GRB_Thread2.join();
 

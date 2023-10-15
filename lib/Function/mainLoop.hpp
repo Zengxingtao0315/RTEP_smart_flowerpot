@@ -39,11 +39,12 @@ typedef enum{
 
 
 
-void Handler(int signo, DEV * DEV)
+void Handler(int signo)
 {
-	// System Exit
+	DEV dev;
+    // System Exit
 	std::cout << "Handler: exit" << std::endl;
-	DEV->ModuleExit();
+	dev.ModuleExit();
 
 	std::exit(0);
 }
