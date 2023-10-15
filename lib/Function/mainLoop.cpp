@@ -17,7 +17,7 @@ mainLoop::~mainLoop(){
 
 void mainLoop::loop()
 {
-   std::signal(SIGINT, Handler);
+   
     if (dev.ModuleInit() != 0)
     {
         std::cerr << "Failed to initialize components." << std::endl;
