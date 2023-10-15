@@ -36,7 +36,7 @@ ${DIR_BIN}/%.o:$(DIR_FONTS)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 ${DIR_BIN}/%.o:$(DIR_GUI)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -I $(DIR_Config) -I $(DIR_OLED) -I $(DIR_TEST)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -I $(DIR_Config) -I $(DIR_OLED) -I $(DIR_MAIN)
 
 ${DIR_BIN}/%.o:$(DIR_Config)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LIB)

@@ -37,7 +37,7 @@ SunlightDurationRecorder::~SunlightDurationRecorder(){
 
 // Function to calculate the duration of sunlight in hours based on a digital value (0 or 1).
 float SunlightDurationRecorder::getSunlightDurationInHours() {
-	UWORD digitalValue = sensor.readDigitalValue();
+	UWORD digitalValue = sensor->readDigitalValue();
 	auto now = std::chrono::system_clock::now();
     if (!initialized_) {
         // First call to the function to initialize logging information

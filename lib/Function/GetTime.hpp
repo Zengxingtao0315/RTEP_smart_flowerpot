@@ -39,7 +39,7 @@ public:
     SunlightDurationRecorder(Sensor *sensor);
     ~SunlightDurationRecorder();
 private:
-    Sensor * sensor = new sensor(DIGITALPIN, DHTPIN);
+    Sensor * sensor = new Sensor(DIGITALPIN, DHTPIN);
     bool initialized_{false};
     std::chrono::system_clock::time_point start_time_;
     std::chrono::duration<int, std::ratio<1, 1>> duration_0_{0};
