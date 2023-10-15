@@ -10,14 +10,15 @@ using namespace std;
 mainLoop::mainLoop(): loopState(SUCCESS){}
         
 mainLoop::~mainLoop(){
-    if (loopState.load() == TIMEOUT || loopState.load()! == INITERROR||loopState.load()! == UNKNOWN_ERROR) {
+    if (loopState.load() == TIMEOUT || loopState.load() == INITERROR||loopState.load() == UNKNOWN_ERROR) {
     stopLoop();
 }
 
 void mainLoop::loop()
 {
     std::signal(SIGINT, Handler);
-    if (DEV.ModuleInit() != 0) {
+    if (dev.ModuleInit() != 0)
+    {
         std::cerr << "Failed to initialize components." << std::endl;
         loopState = INITERROR;
         return;
@@ -28,19 +29,20 @@ void mainLoop::loop()
     
     wiringPiSetup();
     Paint Paint;
-    OLED OLED(&DEV);
+    OLED OLED(&dev);
     if(!OlED.checkInit())
     {
         std::cout << "ERROR ON OLED Init" << std::endl;
         loopState = INITERROR;
         return;
     }
-    DEV.Delay_ms(500);	
+    dev.Delay_ms(500);	
     
     // Create a new image cache
     UBYTE *BlackImage;
     UWORD Imagesize = (OLED_WIDTH * 2) * OLED_HEIGHT;
-    if ((BlackImage = new UBYTE[Imagesize + 300]) == NULL) {
+    if ((BlackImage = new UBYTE[Imagesize + 300]) == NULL)
+    {
         std::cout << "Failed to apply for black memory..." << std::endl;
         loopState = INITERROR;
     }
@@ -52,7 +54,7 @@ void mainLoop::loop()
     //Select Image
     Paint.SelectImage(BlackImage);
 
-    DEV.Delay_ms(500);
+    dev.Delay_ms(500);
 
     Paint.Clear(BLACK);
 
@@ -73,7 +75,8 @@ void mainLoop::loop()
 
 
     
-    while (1) {
+    while (1) 
+    {
         auto startTime = std::chrono::high_resolution_clock::now();
         
         
@@ -89,8 +92,8 @@ void mainLoop::loop()
 
         //Humidity and Temperature
 
-        plant_1.set_temperature(Sensor.getTemperature());
-        plant_1.set_humidity(Sensor.getHumidity());
+        plant_1.set_temperature(sensor.getTemperature());
+        plant_1.set_humidity(sensor.getHumidity());
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
         
@@ -121,33 +124,35 @@ void mainLoop::loop()
         //display of the plant emoji
         std::cout<<"painting the emoji page!"<<std::endl;
         
-        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(Sensor.getTemperature(),Sensor.getHumidity()), 32, 64);
+        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity()), 32, 64);
         thread GRB_Thread2(GRB_func2);
         GRB_Thread2.join();
 
         
         OLED.Display(BlackImage);
-        DEV.Delay_ms(1000);
+        dev.Delay_ms(1000);
         
         Paint.Clear(BLACK);	
-        DEV.Delay_ms(1000);
+        dev.Delay_ms(1000);
         
         OLED.Clear();
 
         auto endTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start; // 计算运行时间
 
-        if (duration.count() >= 2.0) {
+        if (duration.count() >= 2.0) 
+        {
             loopState = TIMEOUT; // 如果运行时间超过2秒，返回超时状态
     
         }
-        else{
+        else
+        {
             loopState = SUCCESS;
         }
 
     }
 
-};
+}
 
 
 void mainLoop::StateChecker()
@@ -187,5 +192,5 @@ STATE mainLoop::getLoopState(){
     
 
 
-}
+
 

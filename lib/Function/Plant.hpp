@@ -1,3 +1,6 @@
+#ifndef _PLANT_HPP_
+#define _PLANT_HPP_
+
 #include <iostream>
 
 using namespace std;
@@ -32,3 +35,4 @@ private:
     range humidityRange;
     range LightRatiorange;
 };
+#endif

@@ -18,7 +18,7 @@ public:
 	
 	void setTemperatureRange(range tRg);
 	void setHumidityRange(range hRg);
-	void setLightRatioRange(float lr);
+	void setLightRatioRange(range lrRg);
 
 
 	Selector(Sensor * sensor, range tRg, range hRg, range lrRg);
@@ -27,11 +27,11 @@ public:
 private:
 	char* bmp_path = "./pic/internet_down.bmp";
 	bool light_flag = 0;
-	Sensor * sensorPtr = new sensor(DIGITALPIN, DHTPIN);
+	Sensor * sensorPtr = new Sensor(DIGITALPIN, DHTPIN);
 	SunlightDurationRecorder LightRecorder = new SunlightDurationRecorder(sensorPtr);
 	range tempRange;
 	range humiRange;
-	range lightratiorange;
+	range lightratioRange;
 
 };
 

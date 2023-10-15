@@ -12,9 +12,9 @@
 #include <mutex>
 #include <condition_variable>
 
-#define MAXTIMINGS  85
-#define DHTPIN    7
-#define DIGITALPIN 1   
+#define MAXTIMINGS  (85)
+#define DHTPIN    (7)
+#define DIGITALPIN   (1)
 
 using namespace std;
 

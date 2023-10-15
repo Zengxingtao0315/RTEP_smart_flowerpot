@@ -30,10 +30,10 @@
 
 using namespace std;
 typedef enum{
-    TIMEOUT;
-    INITERROR;
-    SUCCESS;
-    UNKNOWN_ERROR;
+    TIMEOUT,
+    INITERROR,
+    SUCCESS,
+    UNKNOWN_ERROR
 }STATE;
 
 
@@ -43,7 +43,7 @@ void Handler(int signo, DEV * DEV)
 {
 	// System Exit
 	std::cout << "Handler: exit" << std::endl;
-	DEV.ModuleExit();
+	DEV->ModuleExit();
 
 	std::exit(0);
 }
@@ -52,8 +52,8 @@ void Handler(int signo, DEV * DEV)
 
 class mainLoop{
     private:
-        DEV DEV;
-        Sensor Sensor(DIGITALPIN,  DHTPIN);
+        DEV dev;
+        Sensor sensor(DIGITALPIN,  DHTPIN);
         std::thread Loopthread; //
         std::atomic<STATE> loopState;
 
@@ -66,8 +66,7 @@ class mainLoop{
         void setLoopState(STATE Lstate);
         STATE getLoopState();
         void controlWriteToE(Paint& paint);
-        e.writeToBuffer(value);
-    }
+    
 
 }
 
