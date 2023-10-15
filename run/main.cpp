@@ -24,10 +24,19 @@
 
 using namespace std;
 
+void Handler(int signo)
+{
+	DEV dev;
+    // System Exit
+	std::cout << "Handler: exit" << std::endl;
+	dev.ModuleExit();
 
+	std::exit(0);
+}
 
 int main()
 {
+	std::signal(SIGINT, Handler);
 	mainLoop mainloop;
 	mainloop.loop();
 	mainloop.StateChecker();
