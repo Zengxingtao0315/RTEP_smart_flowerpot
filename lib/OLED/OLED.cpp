@@ -29,12 +29,12 @@ using namespace std;
 
 void OLED::Reset(void)
 {
-	DEV.Digital_Write(OLED_RST,1);
-    DEV.Delay_ms(100);
-	DEV.Digital_Write(OLED_RST,0);
-    DEV.Delay_ms(100);
-	DEV.Digital_Write(OLED_RST,1);
-    DEV.Delay_ms(100);
+	dev.Digital_Write(OLED_RST,1);
+    dev.Delay_ms(100);
+	dev.Digital_Write(OLED_RST,0);
+    dev.Delay_ms(100);
+	dev.Digital_Write(OLED_RST,1);
+    dev.Delay_ms(100);
 }
 
 /*******************************************************************************
@@ -44,16 +44,16 @@ function:
 void OLED::WriteReg(uint8_t Reg)
 {
 #if USE_SPI
-    DEV.Digital_Write(OLED_DC,0);
-    DEV.SPI_WriteByte(Reg);
+    dev.Digital_Write(OLED_DC,0);
+    dev.SPI_WriteByte(Reg);
 #endif
 }
 
 void OLED::WriteData(uint8_t Data)
 {   
 #if USE_SPI
-    DEV.Digital_Write(OLED_DC,1);
-    DEV.SPI_WriteByte(Data);
+    dev.Digital_Write(OLED_DC,1);
+    dev.SPI_WriteByte(Data);
 #endif
 }
 
@@ -140,7 +140,7 @@ void OLED::Init(void)
 
     //Set the initialization register
     InitReg();
-    DEV.Delay_ms(200);
+    dev.Delay_ms(200);
 
     //Turn on the OLED display
     WriteReg(0xAF);

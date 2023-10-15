@@ -18,7 +18,7 @@ using namespace std;
 void DEV::Digital_Write(UWORD Pin, UBYTE Value)
 {
 #if USE_DEV_LIB
-    GPIO.SYSFS_GPIO_Write(Pin, Value);
+    gpio.SYSFS_GPIO_Write(Pin, Value);
     
 #endif
 }
@@ -27,12 +27,12 @@ void DEV::Digital_Write(UWORD Pin, UBYTE Value)
 void DEV::GPIO_Mode(UWORD Pin, UWORD Mode)
 {
 #if USE_DEV_LIB
-    GPIO.SYSFS_GPIO_Export(Pin);
+    gpio.SYSFS_GPIO_Export(Pin);
     if(Mode == 0 || Mode == SYSFS_GPIO_IN){
-        GPIO.SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_IN);
+        gpio.SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_IN);
         // printf("IN Pin = %d\r\n",Pin);
     }else{
-        GPIO.SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_OUT);
+        gpio.SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_OUT);
         // printf("OUT Pin = %d\r\n",Pin);
     }
 #endif   
@@ -69,7 +69,7 @@ UBYTE DEV::ModuleInit(void)
 	GPIO_Init();
     #if USE_SPI
         std::cout << "USE_SPI" << std::endl;      
-        DEV_SPI.DEV_HARDWARE_SPI_beginSet("/dev/spidev0.0",mode,10000000);
+        dev_spi.DEV_HARDWARE_SPI_beginSet("/dev/spidev0.0",mode,10000000);
     #endif
 #endif
     return 0;
@@ -81,7 +81,7 @@ void DEV::SPI_WriteByte(UBYTE Value)
 {
 #if USE_DEV_LIB
 	// printf("write data is %d\r\n", Value);
-    DEV_SPI.DEV_HARDWARE_SPI_TransferByte(Value);
+    dev_spi.DEV_HARDWARE_SPI_TransferByte(Value);
     
 #endif
 }
@@ -98,7 +98,7 @@ void DEV::ModuleExit(void)
     Digital_Write(OLED_CS,0);
 	Digital_Write(OLED_RST,1);
 	Digital_Write(OLED_DC,0);
-    DEV_SPI.DEV_HARDWARE_SPI_end();
+    dev_spi.DEV_HARDWARE_SPI_end();
 #endif
 }
 

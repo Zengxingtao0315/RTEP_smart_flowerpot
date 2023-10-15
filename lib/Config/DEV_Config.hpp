@@ -52,8 +52,8 @@ class DEV {
 		void GPIO_Mode(UWORD Pin, UWORD Mode);
 		void GPIO_Init(void);
 		UDOUBLE fd;
-		DEV_SPI DEV_SPI;
-		GPIO GPIO;
+		DEV_SPI dev_spi;
+		GPIO gpio;
 
 	public:
 		UBYTE ModuleInit(void);

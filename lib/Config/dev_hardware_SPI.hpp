@@ -10,6 +10,22 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 
 #include <cstdint>
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
+
+#include <cstdint> 
+#include <cstdio> 
+#include <cstdlib> 
+#include <iostream>
+extern "C" {
+	#include <getopt.h> 
+	#include <unistd.h> 
+	#include <fcntl.h> 
+	#include <sys/ioctl.h> 
+	#include <linux/types.h> 
+	#include <linux/spi/spidev.h> 
+}
+
 
 #define DEV_HARDWARE_SPI_DEBUG 0
 #if DEV_HARDWARE_SPI_DEBUG
