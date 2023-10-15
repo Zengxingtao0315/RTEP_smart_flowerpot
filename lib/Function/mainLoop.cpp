@@ -12,6 +12,7 @@ mainLoop::mainLoop(): loopState(SUCCESS){}
 mainLoop::~mainLoop(){
     if (loopState.load() == TIMEOUT || loopState.load() == INITERROR||loopState.load() == UNKNOWN_ERROR) {
     stopLoop();
+    }
 }
 
 void mainLoop::loop()

@@ -4,8 +4,8 @@ using namespace std;
 
 
 
-    Plant::Plant(struct range tRg,struct range hRg, range lrRg)
-        : temperatureRange(tRg), humidityRange(hRg), LightRatiorange(lrRg), curr_temp(0.0), curr_humi(0.0), curr_lightratio(0.0) {}
+    Plant::Plant(struct range tRg,struct range hRg)
+        : temperatureRange(tRg), humidityRange(hRg), curr_temp(0.0), curr_humi(0.0) {}
     
     
     double Plant::get_temperature() {
@@ -16,9 +16,6 @@ using namespace std;
         return curr_humi;
     }
 
-    float Plant:: get_light_ratio() {
-        return curr_lightratio;
-    }
 
     void Plant:: set_temperature(double temp) {
         curr_temp = temp;
@@ -28,9 +25,6 @@ using namespace std;
         curr_humi = humi;
     }
 
-    void Plant:: set_light_ratio(float ratio) {
-        curr_lightratio = ratio;
-    }
 
     range Plant:: getHumidityRange()
     {
@@ -42,9 +36,6 @@ using namespace std;
     }
     
     
-    range Plant::getLightratiorange(){
-        return LightRatiorange;
-    }
     
  
     

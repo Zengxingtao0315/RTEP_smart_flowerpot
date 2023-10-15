@@ -7,11 +7,10 @@ const char* Selector::EmojiSelector(double temperature, double humidity){
 	using namespace std;
 	//When everything is fine
 	
-	float light_duration = LightRecorder.getSunlightDurationInHours();
+	float light_duration = LightRecorder->getSunlightDurationInHours();
 	
 	UWORD digital = sensorPtr->readDigitalValue();
-	setTemperatureRange();
-	
+
 	if(temperature <= tempRange.max && temperature >= tempRange.min && digital == 0 && humidity >= humiRange.min && humidity <= humiRange.max)
 	{
 		return "./pic/happy.bmp";		
@@ -73,12 +72,8 @@ void Selector::setHumidityRange(range hRg)
 }
 
 
-void Selector::setLightRatioRange(range lrRg)
-{
-	lightratioRange = lrRg;
-}
 
-Selector::Selector(Sensor * sensor, range tRg, range hRg, range lrRg): sensorPtr(sensor), tempRange(tRg), humiRange(hRg), lightratioRange(lrRg){	
+Selector::Selector(Sensor * sensor, range tRg, range hRg): sensorPtr(sensor), tempRange(tRg), humiRange(hRg){	
 
 }
 Selector::~Selector(){

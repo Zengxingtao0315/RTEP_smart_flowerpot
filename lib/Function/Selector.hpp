@@ -18,10 +18,9 @@ public:
 	
 	void setTemperatureRange(range tRg);
 	void setHumidityRange(range hRg);
-	void setLightRatioRange(range lrRg);
 
 
-	Selector(Sensor * sensor, range tRg, range hRg, range lrRg);
+	Selector(Sensor * sensor, range tRg, range hRg);
 	~Selector();
 	
 private:
@@ -31,7 +30,6 @@ private:
 	SunlightDurationRecorder * LightRecorder = new SunlightDurationRecorder(sensorPtr);
 	range tempRange;
 	range humiRange;
-	range lightratioRange;
 
 };
 
