@@ -5,7 +5,7 @@
 #include <cstring>
 #include <string>
 #include "checkInternet.hpp"
-#include "Sensor.hpp"
+#include "sensor.hpp"
 #include "GetTime.hpp"
 #include "../Config/DEV_Config.hpp"
 #include "Plant.hpp"
