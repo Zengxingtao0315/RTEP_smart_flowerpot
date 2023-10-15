@@ -5,7 +5,7 @@
 * | Info        :   WENBO YANG modified the function of readDHTdata
 ******************************************************************************/
 
-#include "sensor.hpp"
+#include "Sensor.hpp"
 
 using namespace std;
 

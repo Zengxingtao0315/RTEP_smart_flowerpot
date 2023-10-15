@@ -24,19 +24,6 @@ extern "C" {
 	#include <linux/spi/spidev.h> 
 }
 
-
-HARDWARE_SPI hardware_SPI;
-
-static uint8_t bits = 8; 
-
-#define SPI_CS_HIGH     0x04                //Chip select high  
-#define SPI_LSB_FIRST   0x08                //LSB  
-#define SPI_3WIRE       0x10                //3-wire mode SI and SO same line
-#define SPI_LOOP        0x20                //Loopback mode  
-#define SPI_NO_CS       0x40                //A single device occupies one SPI bus, so there is no chip select 
-#define SPI_READY       0x80                //Slave pull low to stop data transmission  
-
-struct spi_ioc_transfer tr;
 using namespace std;
 
 /******************************************************************************
@@ -47,37 +34,6 @@ Info:
     /dev/spidev0.0 
     /dev/spidev0.1
 ******************************************************************************/
-void DEV_SPI::DEV_HARDWARE_SPI_begin(char *SPI_device)
-{
-    //device
-	SPIMode mode = SPI_MODE0;
-    int ret = 0; 
-    if((hardware_SPI.fd = open(SPI_device, O_RDWR )) < 0)  {
-        std::cerr << "Failed to open SPI device." << std::endl;
-        DEV_HARDWARE_SPI_Debug("Failed to open SPI device\r\n");
-        std::exit(1); 
-    } else {
-        DEV_HARDWARE_SPI_Debug("open : %s\r\n", SPI_device);
-    }
-    hardware_SPI.mode = 0;
-    
-    ret = ioctl(hardware_SPI.fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
-    if (ret == -1) {
-        DEV_HARDWARE_SPI_Debug("can't set bits per word\r\n"); 
-    }
- 
-    ret = ioctl(hardware_SPI.fd, SPI_IOC_RD_BITS_PER_WORD, &bits);
-    if (ret == -1) {
-        DEV_HARDWARE_SPI_Debug("can't get bits per word\r\n"); 
-    }
-    tr.bits_per_word = bits;
-    
-    DEV_HARDWARE_SPI_Mode(mode);
-    DEV_HARDWARE_SPI_ChipSelect(SPI_CS_Mode_LOW);
-    DEV_HARDWARE_SPI_SetBitOrder(SPI_BIT_ORDER_MSBFIRST);
-    DEV_HARDWARE_SPI_setSpeed(20000000);
-    DEV_HARDWARE_SPI_SetDataInterval(0);
-}
 
 void DEV_SPI::DEV_HARDWARE_SPI_beginSet(char *SPI_device, SPIMode mode, uint32_t speed)
 {
@@ -177,32 +133,6 @@ int DEV_SPI::DEV_HARDWARE_SPI_Mode(SPIMode mode)
 }
 
 /******************************************************************************
-function:   Set SPI CS Enable
-parameter:
-Info:  
-    EN:
-        DISABLE 
-        ENABLE 
-    Return :
-        Return 1 success 
-        Return -1 failed
-******************************************************************************/
-int DEV_SPI::DEV_HARDWARE_SPI_CSEN(SPICSEN EN)
-{
-    if(EN == ENABLE){
-        hardware_SPI.mode |= SPI_NO_CS;
-    }else {
-        hardware_SPI.mode &= ~SPI_NO_CS;
-    }
-    //Write device
-    if (ioctl(hardware_SPI.fd, SPI_IOC_WR_MODE, &hardware_SPI.mode) == -1) {
-        DEV_HARDWARE_SPI_Debug("can't set spi CS EN\r\n"); 
-        return -1;
-    }
-    return 1;
-}
-
-/******************************************************************************
 function:   Chip Select
 parameter:
 Info:  
@@ -234,61 +164,7 @@ int DEV_SPI::DEV_HARDWARE_SPI_ChipSelect(SPIChipSelect CS_Mode)
     return 1;
 }
 
-/******************************************************************************
-function:   Sets the SPI bit order
-parameter:
-Info:  
-    Order:
-        SPI_BIT_ORDER_LSBFIRST
-        SPI_BIT_ORDER_MSBFIRST
-    Return :
-        Return 1 success 
-        Return -1 failed
-******************************************************************************/
-int DEV_SPI::DEV_HARDWARE_SPI_SetBitOrder(SPIBitOrder Order)
-{
-    if(Order == SPI_BIT_ORDER_LSBFIRST){
-        hardware_SPI.mode |= SPI_LSB_FIRST;
-        DEV_HARDWARE_SPI_Debug("SPI_LSB_FIRST\r\n");
-    }else if(Order == SPI_BIT_ORDER_MSBFIRST){
-        hardware_SPI.mode &= ~SPI_LSB_FIRST;
-        DEV_HARDWARE_SPI_Debug("SPI_MSB_FIRST\r\n");
-    }
-    
-    // DEV_HARDWARE_SPI_Debug("hardware_SPI.mode = 0x%02x\r\n", hardware_SPI.mode);
-    int fd = ioctl(hardware_SPI.fd, SPI_IOC_WR_MODE, &hardware_SPI.mode);
-    DEV_HARDWARE_SPI_Debug("fd = %d\r\n",fd);
-    if (fd == -1) {
-        DEV_HARDWARE_SPI_Debug("can't set spi SPI_LSB_FIRST\r\n"); 
-        return -1;
-    }
-    return 1;
-}
 
-/******************************************************************************
-function:   Sets the SPI Bus Mode
-parameter:
-Info:  
-    Order:
-        SPI_3WIRE_Mode
-        SPI_4WIRE_Mode
-    Return :
-        Return 1 success 
-        Return -1 failed
-******************************************************************************/
-int DEV_SPI::DEV_HARDWARE_SPI_SetBusMode(BusMode mode)
-{
-    if(mode == SPI_3WIRE_Mode){
-        hardware_SPI.mode |= SPI_3WIRE;
-    }else if(mode == SPI_4WIRE_Mode){
-        hardware_SPI.mode &= ~SPI_3WIRE;
-    }
-    if (ioctl(hardware_SPI.fd, SPI_IOC_WR_MODE, &hardware_SPI.mode) == -1) {
-        DEV_HARDWARE_SPI_Debug("can't set spi mode\r\n"); 
-        return -1;
-    }
-    return 1;
-}
 
 /******************************************************************************
 function: 

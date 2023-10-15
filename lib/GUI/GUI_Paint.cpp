@@ -18,9 +18,11 @@
 #include <cmath>
 #include <ctime>
 #include <iostream>
+#include <mutex>
+#include <thread>
 
-PAINT paint;
 using namespace std;
+
 /******************************************************************************
 function: Create Image
 parameter:
@@ -66,6 +68,8 @@ parameter:
 ******************************************************************************/
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
+    
+    std::lock_guard<std::mutex> lock(mtx);
     // Check if the specified coordinates are within the display boundaries
     if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
         Debug("Exceeding display boundaries\r\n");
@@ -80,6 +84,7 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
     // The color is split into the high and low bytes and stored in the display buffer at the specified memory address (Addr).
     paint.Image[Addr] = 0xFF & (Color >> 8);   // Store the high byte of the color
     paint.Image[Addr + 1] = 0xFF & Color;      // Store the low byte of the color
+    
 }
 
 
@@ -267,8 +272,12 @@ info:
 
 UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 {
+    
+    std::lock_guard<std::mutex> lock(mtx);
     // Open the BMP file in binary read mode
-    FILE *fp = fopen(path, "rb");  
+    
+    FILE *fp = fopen(path, "rb");
+     
     if (!fp) {
         Debug("Cann't open the file!\n");
         return 1;
@@ -323,7 +332,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
             SetPixel(Xstart + x, Ystart + y, color);  // Refresh image to display buffer
         }
     }
-
+    
     // Return 0 to indicate success
     return 0;
 }

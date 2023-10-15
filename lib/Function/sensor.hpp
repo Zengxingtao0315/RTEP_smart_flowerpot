@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <iostream>
 #include "../Config/DEV_Config.hpp"
+#include "Plant.hpp"
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -15,7 +16,7 @@
 #define DHTPIN    7
 #define DIGITALPIN 1   
   
-struct DHTdata {
+typedef struct DHTdata {
     double temperature;
     double humidity;
 };

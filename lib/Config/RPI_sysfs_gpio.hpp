@@ -52,9 +52,7 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 class GPIO{
 public:
 	int SYSFS_GPIO_Export(int Pin);
-	int SYSFS_GPIO_Unexport(int Pin);
 	int SYSFS_GPIO_Direction(int Pin, int Dir);
-	int SYSFS_GPIO_Read(int Pin);
 	int SYSFS_GPIO_Write(int Pin, int value);
 };
 #endif

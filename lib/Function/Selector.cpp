@@ -6,31 +6,32 @@ const char* Selector::EmojiSelector(double temperature, double humidity){
 	
 	using namespace std;
 	//When everything is fine
-	SunlightDurationRecorder LightRecorder;
-	float light_duration = LightRecorder.getSunlightDurationInHours();
-	Sensor sensor(DIGITALPIN,  DHTPIN);
-	UWORD digital = sensor.readDigitalValue();
 	
-	if(temperature <= 38.0 && temperature >= 15.0 && digital == 0 && humidity >= 30.0 && humidity <= 50.0)
+	float light_duration = LightRecorder.getSunlightDurationInHours();
+	
+	UWORD digital = sensor.readDigitalValue();
+	setTemperatureRange() 
+	
+	if(temperature <= tempRange.max && temperature >= tempRange.min && digital == 0 && humidity >= humiRange.min && humidity <= humiRange.max)
 	{
 		return "./pic/happy.bmp";		
 	}//Too many hours of sunlight when the temperature is too high
-	else if(temperature > 38.0  && digital == 0 && humidity >= 30.0 && humidity <= 50.0 && light_duration > 8.0){
+	else if(temperature > tempRange.max  && digital == 0 && humidity >= humiRange.min && humidity <= humiRange.max && light_duration > 8.0){
 		return "./pic/too_much_light.bmp";
 	}//Insufficient sunshine hours when the temperature is too high
-	else if(temperature > 38.0  && digital == 0 && humidity >= 30.0 && humidity <= 50.0 && light_duration <= 8.0){
+	else if(temperature > tempRange.max  && digital == 0 && humidity >= humiRange.min && humidity <= humiRange.max && light_duration <= 8.0){
 		return "./pic/too_hot.bmp";
 	}//When plants are not exposed to light and have insufficient hours of sunlight
-	else if(temperature <= 38.0 && temperature >= 15.0  && digital == 1 && humidity >= 30.0 && humidity <= 50.0 && light_duration <= 8.0){
+	else if(temperature <= tempRange.max && temperature >= tempRange.min  && digital == 1 && humidity >= humiRange.min && humidity <= humiRange.max && light_duration <= 8.0){
 		return "./pic/lack_of_sunlight.bmp";
 	}//Any time the temperature is too low
-	else if(temperature < 15.0  && humidity >= 30.0 && humidity <= 50.0 ){
+	else if(temperature < tempRange.min  && humidity >= humiRange.min && humidity <= humiRange.max ){
 		return "./pic/cold.bmp";
 	}//Any time the humidity is too low
-	else if(humidity < 30.0 ){
+	else if(humidity < humiRange.min ){
 		return "./pic/need_water.bmp";
 	}//Any time the humidity is too high
-	else if(humidity > 50.0 ){
+	else if(humidity > humiRange.max ){
 		return "./pic/overwatered.bmp";
 	}	
 }
@@ -47,8 +48,7 @@ const char* Selector::BmpSelector(){
 
 const char* Selector::lightSelector(){
 	char* Lstr = "bright";
-	Sensor Sensor(DIGITALPIN,  DHTPIN);
-	light_flag = Sensor.readDigitalValue();
+	light_flag = sensor.readDigitalValue();
 	if (light_flag == 0){
 		Lstr = "bright";
 		std::cout<<"bright"<<std::endl;
@@ -59,4 +59,29 @@ const char* Selector::lightSelector(){
 	return Lstr;
 	
 	
+}
+
+void Selector::setTemperatureRange(range tRg)
+{
+	tempRange = tRg;
+}
+
+
+void Selector::setHumidityRange(range hRg)
+{
+	humiRange = hRg;
+}
+
+
+void Selector::setLightRatioRange(float lr)
+{
+	lightratio = lr;
+}
+
+Selector::Selector(Sensor * sensor, range tRg, range hRg, float lr): sensorPtr(sensor), tempRange(tRg), humiRange(hRg), lightratio(lr){	
+
+}
+Selector::~Selector(){
+	delete sensorPtr;
+
 }

@@ -15,11 +15,8 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 			|\\\					Hardware interface							///|
 			------------------------------------------------------------------------
 ***********************************************************************************************************************/
-#if USE_DEV_LIB
-    #include "RPI_sysfs_gpio.hpp"
-    #include "dev_hardware_SPI.hpp"
-    #include "dev_hardware_i2c.hpp"   
-#endif
+#include "RPI_sysfs_gpio.hpp"
+#include "dev_hardware_SPI.hpp"
 
 #include <cerrno>
 #include <cstdio>
@@ -34,9 +31,6 @@ extern "C" {
 #include "Debug.hpp"
 
 #define USE_SPI 1
-#define USE_IIC 0
-#define IIC_CMD        0X00
-#define IIC_RAM        0X40
 
 
 /**
@@ -54,18 +48,19 @@ extern "C" {
 
 /*------------------------------------------------------------------------------------------------------*/
 class DEV {
+	private:
+		void GPIO_Mode(UWORD Pin, UWORD Mode);
+		void GPIO_Init(void);
+		UDOUBLE fd;
+		DEV_SPI DEV_SPI;
+		GPIO GPIO;
+
 	public:
 		UBYTE ModuleInit(void);
 		void  ModuleExit(void);
-
-		void GPIO_Mode(UWORD Pin, UWORD Mode);
-		void GPIO_Init(void);
 		void Digital_Write(UWORD Pin, UBYTE Value);
-		UBYTE Digital_Read(UWORD Pin);
 		void Delay_ms(UDOUBLE xms);
-
-		void I2C_Write_Byte(uint8_t value, uint8_t Cmd);
 		void SPI_WriteByte(UBYTE Value);
-		void SPI_Write_nByte(uint8_t *pData, uint32_t Len);
+
 };
 #endif

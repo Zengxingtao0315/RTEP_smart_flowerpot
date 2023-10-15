@@ -38,13 +38,6 @@ typedef struct BMP_INFO {
     UDOUBLE biClrImportant;  //The number of important colors
 } __attribute__ ((packed)) BMPINFOHEADER;
 
-/*Color table: palette */
-typedef struct RGB_QUAD {
-    UBYTE rgbBlue;               //Blue intensity
-    UBYTE rgbGreen;              //Green strength
-    UBYTE rgbRed;                //Red intensity
-    UBYTE rgbReversed;           //Reserved value
-} __attribute__ ((packed)) BMPRGBQUAD;
 /**************************************** end ***********************************************/
 
 /**
@@ -60,7 +53,6 @@ typedef struct {
     UWORD WidthByte;
     UWORD HeightByte;
 } PAINT;
-extern PAINT paint;
 
 /**
  * image color
@@ -75,15 +67,6 @@ extern PAINT paint;
 #define FONT_BACKGROUND     WHITE
 
 
-
-/**
- * Whether the graphic is filled
-**/
-typedef enum {
-    DRAW_FILL_EMPTY = 0,
-    DRAW_FILL_FULL,
-} DRAW_FILL;
-
 /**
  * Custom structure of a time attribute
 **/
@@ -95,14 +78,19 @@ typedef struct {
     UBYTE Min;   //0 - 59
     UBYTE Sec;   //0 - 59
 } PAINT_TIME;
-extern PAINT_TIME sPaint_time;
+
+typedef enum {
+    READING;
+    WRITING;
+    COMPLETED;
+}IOSTATE;
 
 class Paint {
 public:
 
 	void NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Color);
 	void SelectImage(UBYTE *image);
-	void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
+	
 
 
 	void Clear(UWORD Color);
@@ -115,7 +103,11 @@ public:
 	//pic
 	UBYTE GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart);
 private:
-	
+	PAINT paint;
+    void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
+    IOSTATE iostate = COMPLETED;
+    std::mutex mtx;
+
 };
 
 

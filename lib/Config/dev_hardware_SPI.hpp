@@ -10,6 +10,7 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 
 #include <cstdint>
 #include <iostream>
+
 #define DEV_HARDWARE_SPI_DEBUG 0
 #if DEV_HARDWARE_SPI_DEBUG
 #define DEV_HARDWARE_SPI_Debug(__info,...) std::cout << "Debug: " << info << __VA_ARGS__ << std::endl
@@ -23,6 +24,14 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 #define SPI_MODE_1      (0|SPI_CPHA)
 #define SPI_MODE_2      (SPI_CPOL|0)
 #define SPI_MODE_3      0x03
+#define SPI_CS_HIGH     0x04                //Chip select high  
+#define SPI_LSB_FIRST   0x08                //LSB  
+#define SPI_3WIRE       0x10                //3-wire mode SI and SO same line
+#define SPI_LOOP        0x20                //Loopback mode  
+#define SPI_NO_CS       0x40                //A single device occupies one SPI bus, so there is no chip select 
+#define SPI_READY       0x80                //Slave pull low to stop data transmission  
+
+
 
 typedef enum{
     SPI_MODE0 = SPI_MODE_0,  /*!< CPOL = 0, CPHA = 0 */
@@ -72,27 +81,29 @@ typedef struct SPIStruct {
     uint16_t mode;
     uint16_t delay;
     int fd; //
-} HARDWARE_SPI;
+};
+
+static uint8_t bits = 8; 
+
 
 
 
 class DEV_SPI {
-	public:
-		void DEV_HARDWARE_SPI_begin(char *SPI_device);
+	private:
+        int DEV_HARDWARE_SPI_setSpeed(uint32_t speed);
+		int DEV_HARDWARE_SPI_Mode(SPIMode mode);
+        int DEV_HARDWARE_SPI_ChipSelect(SPIChipSelect CS_Mode);
+        void DEV_HARDWARE_SPI_SetDataInterval(uint16_t us);
+        
+        struct SPIStruct hardware_SPI;
+        struct spi_ioc_transfer tr;
+
+    public:
 		void DEV_HARDWARE_SPI_beginSet(char *SPI_device, SPIMode mode, uint32_t speed);
 		void DEV_HARDWARE_SPI_end(void);
-
-		int DEV_HARDWARE_SPI_setSpeed(uint32_t speed);
-
 		uint8_t DEV_HARDWARE_SPI_TransferByte(uint8_t buf);
 		int DEV_HARDWARE_SPI_Transfer(uint8_t *buf, uint32_t len);
 
-		void DEV_HARDWARE_SPI_SetDataInterval(uint16_t us);
-		int DEV_HARDWARE_SPI_SetBusMode(BusMode mode);
-		int DEV_HARDWARE_SPI_SetBitOrder(SPIBitOrder Order);
-		int DEV_HARDWARE_SPI_ChipSelect(SPIChipSelect CS_Mode);
-		int DEV_HARDWARE_SPI_CSEN(SPICSEN EN);
-		int DEV_HARDWARE_SPI_Mode(SPIMode mode);
 };
 
 #endif

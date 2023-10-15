@@ -13,7 +13,7 @@ Function:
 *******************************************************************************/
 // Function to get the current local time and return it in the form of a PAINT_TIME struct.
 PAINT_TIME Time::getLocalTime() {
-    PAINT_TIME time;
+    
     std::time_t now;
     std::tm *local;
 
@@ -29,9 +29,14 @@ PAINT_TIME Time::getLocalTime() {
     return time;
 }
 
+
+SunlightDurationRecorder::SunlightDurationRecorder(Sensor *sensorPtr):sensor(sensorPtr){};
+SunlightDurationRecorder::~SunlightDurationRecorder(){
+    delete sensor;
+};
+
 // Function to calculate the duration of sunlight in hours based on a digital value (0 or 1).
 float SunlightDurationRecorder::getSunlightDurationInHours() {
-    Sensor sensor(DIGITALPIN,  DHTPIN);
 	UWORD digitalValue = sensor.readDigitalValue();
 	auto now = std::chrono::system_clock::now();
     if (!initialized_) {
@@ -67,3 +72,17 @@ float SunlightDurationRecorder::getSunlightDurationInHours() {
     std::cout << hours << " hours" << std::endl;
     return hours;
 }
+
+
+
+void Time::startRecording() {
+        startTime = std::chrono::high_resolution_clock::now();
+    }
+
+void Time::stopRecording() {
+    endTime = std::chrono::high_resolution_clock::now();
+}
+
+long long Time::getDuration() {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+    }

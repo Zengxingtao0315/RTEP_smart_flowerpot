@@ -4,9 +4,9 @@ DIR_FONTS    = ./lib/Fonts
 DIR_GUI      = ./lib/GUI
 DIR_Function = ./lib/Function
 DIR_BIN      = ./bin
-DIR_TEST     = ./test
+DIR_MAIN     = ./main
 #C++ files
-SRC_CPP = $(wildcard ${DIR_OLED}/*.cpp ${DIR_Config}/*.cpp ${DIR_GUI}/*.cpp ${DIR_Function}/*.cpp ${DIR_FONTS}/*.cpp ${DIR_TEST}/*.cpp )
+SRC_CPP = $(wildcard ${DIR_OLED}/*.cpp ${DIR_Config}/*.cpp ${DIR_GUI}/*.cpp ${DIR_Function}/*.cpp ${DIR_FONTS}/*.cpp ${DIR_MAIN}/*.cpp )
 OBJ_CPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${SRC_CPP}))
 
 
@@ -26,7 +26,7 @@ CXXFLAGS += $(MSG) $(DEBUG)
 ${TARGET}:${OBJ_CPP}
 	$(CXX) $(CXXFLAGS) $(OBJ_CPP) -o $@ $(LIB)
 	
-${DIR_BIN}/%.o:$(DIR_TEST)/%.cpp
+${DIR_BIN}/%.o:$(DIR_MAIN)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -I $(DIR_Config) -I $(DIR_GUI) -I $(DIR_OLED) -I $(DIR_Function)
 
 ${DIR_BIN}/%.o:$(DIR_OLED)/%.cpp

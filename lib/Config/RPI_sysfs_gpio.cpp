@@ -38,26 +38,6 @@ int GPIO::SYSFS_GPIO_Export(int Pin)
     return 0;
 }
 
-int GPIO::SYSFS_GPIO_Unexport(int Pin)
-{
-    char buffer[NUM_MAXBUF];
-    int len;
-    int fd;
-
-    fd = open("/sys/class/gpio/unexport", O_WRONLY);
-    if (fd < 0) {
-        SYSFS_GPIO_Debug( "unexport Failed: Pin%d\n", Pin);
-        return -1;
-    }
-
-    len = snprintf(buffer, NUM_MAXBUF, "%d", Pin);
-    write(fd, buffer, len);
-    
-    SYSFS_GPIO_Debug( "Unexport: Pin%d\r\n", Pin);
-    
-    close(fd);
-    return 0;
-}
 
 int GPIO::SYSFS_GPIO_Direction(int Pin, int Dir)
 {
@@ -87,27 +67,6 @@ int GPIO::SYSFS_GPIO_Direction(int Pin, int Dir)
     return 0;
 }
 
-int GPIO::SYSFS_GPIO_Read(int Pin)
-{
-    char path[DIR_MAXSIZ];
-    char value_str[3];
-    int fd;
-    
-    snprintf(path, DIR_MAXSIZ, "/sys/class/gpio/gpio%d/value", Pin);
-    fd = open(path, O_RDONLY);
-    if (fd < 0) {
-        SYSFS_GPIO_Debug( "Read failed Pin%d\n", Pin);
-        return -1;
-    }
-
-    if (read(fd, value_str, 3) < 0) {
-        SYSFS_GPIO_Debug( "failed to read value!\n");
-        return -1;
-    }
-
-    close(fd);
-    return(atoi(value_str));
-}
 
 int GPIO::SYSFS_GPIO_Write(int Pin, int value)
 {

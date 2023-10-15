@@ -26,8 +26,8 @@ Function:
 ********************************************************************************/
 class OLED {
 public:
-    // Function to initialize the OLED display.
-    void Init(void);
+    OLED(DEV * devPtr);
+    ~OLED();
 
     // Function to clear the OLED display.
     void Clear(void);
@@ -38,7 +38,12 @@ public:
     // Function to set a specific window on the display and display an image in that window.
     void SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
+    bool checkInit();
+
 private:
+    
+    // Function to initialize the OLED display.
+    void Init();
     // Function to reset the OLED.
     void Reset();
 
@@ -50,13 +55,9 @@ private:
 
     // Function to initialize the OLED registers.
     void InitReg();
+    bool initSuccess = false;
+    DEV * dev ;
 };
 
-// Define a struct to hold various sensor readings (temperature, humidity, light intensity).
-typedef struct {
-    float temperature;
-    float humidity;
-    float light_intensity;
-} pSTATUS;
 
 #endif

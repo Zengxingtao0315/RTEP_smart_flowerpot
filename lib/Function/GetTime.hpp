@@ -12,18 +12,34 @@ extern "C" {
 };
 #include <ctime>
 #include "../GUI/GUI_Paint.hpp"
-#include "sensor.hpp"
+#include "Sensor.hpp"
 
 
 class Time {
 public:
     PAINT_TIME getLocalTime();
+    void startRecording();
+
+    void stopRecording();
+    long long getDuration();
+    Time();
+    ~Time();
+
+private:
+    auto starTime;
+    auto endTime;
+    PAINT_TIME time;
+    std::chrono::high_resolution_clock::time_point startTime;
+    std::chrono::high_resolution_clock::time_point endTime;
 };
 
 class SunlightDurationRecorder {
 public:
 	float getSunlightDurationInHours();
+    SunlightDurationRecorder(Sensor *sensor);
+    ~SunlightDurationRecorder();
 private:
+    Sensor * sensor = new sensor(DIGITALPIN, DHTPIN);
     bool initialized_{false};
     std::chrono::system_clock::time_point start_time_;
     std::chrono::duration<int, std::ratio<1, 1>> duration_0_{0};

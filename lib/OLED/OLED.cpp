@@ -12,8 +12,15 @@
 #include <cstdint>
 #include <cstring>
 
-DEV_SPI DEV_SPI;
-DEV DEV;
+
+
+OLED::OLED(DEV * devPtr): dev(devPtr){}
+
+
+ OLED::~OLED(){
+    delete dev;
+ }
+
 /*******************************************************************************
 function:
             Hardware reset
@@ -137,6 +144,8 @@ void OLED::Init(void)
 
     //Turn on the OLED display
     WriteReg(0xAF);
+    initSuccess = true;
+    
 }
 
 /********************************************************************************
@@ -206,3 +215,23 @@ void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2,
     }
 }
 
+
+
+bool OLED::checkInit()
+{
+    int maxRetryCount = 3; // 最大重试次数
+    int currentRetryCount = 0;
+
+    while (currentRetryCount < maxRetryCount) {
+        Init();
+        if (initSuccess) {
+            break; // 如果初始化成功，则跳出循环
+        }
+
+        currentRetryCount++;
+    }
+    return initSuccess;
+
+}
+
+}
