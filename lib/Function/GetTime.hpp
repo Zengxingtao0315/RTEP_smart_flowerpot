@@ -12,7 +12,7 @@ extern "C" {
 };
 #include <ctime>
 #include "../GUI/GUI_Paint.hpp"
-#include "Sensor.hpp" 
+#include "sensor.hpp" 
 
 
 class Time {

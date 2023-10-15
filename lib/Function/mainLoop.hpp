@@ -20,7 +20,7 @@
 #include "../Config/DEV_Config.hpp"
 #include "../Config/Debug.hpp"
 #include "../GUI/GUI_Paint.hpp"
-#include "Sensor.hpp"
+#include "sensor.hpp"
 #include "./Selector.hpp"
 #include "./Plant.hpp"
 #include "./GetTime.hpp"
