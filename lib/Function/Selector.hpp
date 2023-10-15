@@ -28,7 +28,7 @@ private:
 	char* bmp_path = "./pic/internet_down.bmp";
 	bool light_flag = 0;
 	Sensor * sensorPtr = new Sensor(DIGITALPIN, DHTPIN);
-	SunlightDurationRecorder LightRecorder = new SunlightDurationRecorder(sensorPtr);
+	SunlightDurationRecorder * LightRecorder = new SunlightDurationRecorder(sensorPtr);
 	range tempRange;
 	range humiRange;
 	range lightratioRange;

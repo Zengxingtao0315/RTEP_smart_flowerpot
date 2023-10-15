@@ -65,7 +65,6 @@ class mainLoop{
         void stopLoop();
         void setLoopState(STATE Lstate);
         STATE getLoopState();
-        void controlWriteToE(Paint& paint);
     
 
 }
