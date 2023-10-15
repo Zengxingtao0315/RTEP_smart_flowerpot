@@ -53,7 +53,7 @@ void Handler(int signo, DEV * DEV)
 class mainLoop{
     private:
         DEV dev;
-        Sensor sensor(DIGITALPIN,  DHTPIN);
+        Sensor sensor;
         std::thread Loopthread; //
         std::atomic<STATE> loopState;
 

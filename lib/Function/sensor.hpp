@@ -12,12 +12,12 @@
 #include <mutex>
 #include <condition_variable>
 
-#define MAXTIMINGS  85
-#define DHTPIN    7
-#define DIGITALPIN   1
-
 using namespace std;
 
+
+const int MAXTIMINGS = 85;
+const int DHTPIN = 7;
+const int DIGITALPIN = 1;
   
 typedef struct DHTdata {
     double temperature;

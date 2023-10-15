@@ -9,7 +9,7 @@ using namespace std;
    
 mainLoop::mainLoop(): loopState(SUCCESS){}
         
-mainLoop::~mainLoop(){
+mainLoop::~mainLoop():sensor(DIGITALPIN, DHTPIN){
     if (loopState.load() == TIMEOUT || loopState.load() == INITERROR||loopState.load() == UNKNOWN_ERROR) {
     stopLoop();
     }
@@ -17,7 +17,7 @@ mainLoop::~mainLoop(){
 
 void mainLoop::loop()
 {
-    std::signal(SIGINT, Handler);
+   std::signal(SIGINT, [](int signo) { Handler(signo, &DEV); });
     if (dev.ModuleInit() != 0)
     {
         std::cerr << "Failed to initialize components." << std::endl;
@@ -31,7 +31,7 @@ void mainLoop::loop()
     wiringPiSetup();
     Paint Paint;
     OLED OLED(&dev);
-    if(!OlED.checkInit())
+    if(!OLED.checkInit())
     {
         std::cout << "ERROR ON OLED Init" << std::endl;
         loopState = INITERROR;
@@ -63,17 +63,17 @@ void mainLoop::loop()
     // init time funciton, get local time.
     Time time;
     PAINT_TIME local_time;
-    //init Selector
-    Selector selector;
+    
+    
     //init Sensors pin
     
     UWORD  digitalValue;
     //UWORD  analogValue;
     struct range temperaRange = {18.5, 40.0};
     struct range humidityRange = {0.2, 0.5};
-    struct range lightratioRange = {0.2, 0.7};
-    Plant plant_1(temperaRange,humidityRange,lightratioRange);
-
+    Plant plant_1(temperaRange,humidityRange);
+    //init Selector
+    Selector selector(&sensor, temperaRange, humidityRange);
 
     
     while (1) 
@@ -125,7 +125,7 @@ void mainLoop::loop()
         //display of the plant emoji
         std::cout<<"painting the emoji page!"<<std::endl;
         
-        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity()), 32, 64);
+        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity(), 32, 64));
         thread GRB_Thread2(GRB_func2);
         GRB_Thread2.join();
 
@@ -139,7 +139,7 @@ void mainLoop::loop()
         OLED.Clear();
 
         auto endTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start; // 计算运行时间
+        std::chrono::duration<double> duration = endTime - startTime; // 计算运行时间
 
         if (duration.count() >= 2.0) 
         {
@@ -158,7 +158,7 @@ void mainLoop::loop()
 
 void mainLoop::StateChecker()
 {
-    if(loopState.load() == TIMEOUT || loopState.load()! == INITERROR||loopState.load()! == UNKNOWN_ERROR)
+    if(loopState.load() == TIMEOUT || loopState.load() == INITERROR||loopState.load() == UNKNOWN_ERROR)
     {
         stopLoop();
         std::cout << "Function B is not running. Starting a new B..." << std::endl;
