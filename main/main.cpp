@@ -26,7 +26,7 @@ using namespace std;
 int main()
 {
 	mainLoop mainloop;
-	mainloop.Loop();
-	mainloop.StatuChecker();
+	mainloop.loop();
+	mainloop.StateChecker();
     return 0;
 }

@@ -21,7 +21,7 @@ void mainLoop::loop()
     {
         std::cerr << "Failed to initialize components." << std::endl;
         loopState = INITERROR;
-        return;
+        
     }
     
     //OLED Init...
@@ -34,7 +34,7 @@ void mainLoop::loop()
     {
         std::cout << "ERROR ON OLED Init" << std::endl;
         loopState = INITERROR;
-        return;
+        
     }
     dev.Delay_ms(500);	
     
