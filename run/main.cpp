@@ -39,7 +39,6 @@ int main()
 	std::signal(SIGINT, Handler);
 	mainLoop mainloop;
 	mainloop.loop();
-	mainloop.StateChecker();
     return 0;
 }
 

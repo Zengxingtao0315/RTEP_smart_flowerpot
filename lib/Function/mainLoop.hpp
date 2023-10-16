@@ -48,6 +48,7 @@ class mainLoop{
         DEV dev;
         Sensor sensor;
         std::thread Loopthread; //
+        std::thread Checkthread;
         std::atomic<STATE> loopState;
 
     public:

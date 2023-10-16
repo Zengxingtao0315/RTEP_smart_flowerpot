@@ -69,7 +69,6 @@ parameter:
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
     
-    std::lock_guard<std::mutex> lock(mtx);
     // Check if the specified coordinates are within the display boundaries
     if (Xpoint >= paint.Width || Ypoint >= paint.Height) {
         Debug("Exceeding display boundaries\r\n");
@@ -273,7 +272,6 @@ info:
 UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 {
     
-    std::lock_guard<std::mutex> lock(mtx);
     // Open the BMP file in binary read mode
     
     FILE *fp = fopen(path, "rb");

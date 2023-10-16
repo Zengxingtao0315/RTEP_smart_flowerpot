@@ -93,7 +93,6 @@ private:
 	PAINT paint;
     void SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
     IOSTATE iostate = COMPLETED;
-    std::mutex mtx;
 
 
 public:

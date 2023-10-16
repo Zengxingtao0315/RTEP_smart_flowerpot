@@ -7,7 +7,9 @@ using namespace std;
 
 
    
-mainLoop::mainLoop(): loopState(SUCCESS),sensor(DIGITALPIN, DHTPIN){}
+mainLoop::mainLoop(): loopState(SUCCESS),sensor(DIGITALPIN, DHTPIN){
+    Checkthread = std::thread(&mainLoop::StateChecker, this);
+}
         
 mainLoop::~mainLoop(){
     if (loopState.load() == TIMEOUT || loopState.load() == INITERROR||loopState.load() == UNKNOWN_ERROR) {
@@ -83,13 +85,10 @@ void mainLoop::loop()
         
         std::cout<<"painting the first page!"<<std::endl;
         //display of internet status
-        auto GRB_func1 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.BmpSelector(), 100, 0);
-        thread GRB_Thread1(GRB_func1);
-        GRB_Thread1.join();
+        Paint.GUI_ReadBmp(selector.BmpSelector(), 100, 0);
 
-        auto DT_func = std::bind(&Paint::DrawTime, &Paint, 5, 0, &local_time, &Font12, BLACK, TIME_COLOR);
-        thread DT_Thread(DT_func);
-        DT_Thread.join();
+        Paint.DrawTime(5, 0, &local_time, &Font12, BLACK, TIME_COLOR);
+
 
         //Humidity and Temperature
 
@@ -98,37 +97,25 @@ void mainLoop::loop()
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
         
-        auto DS_func1 = std::bind(&Paint::DrawString, &Paint, 5, 13, "Humi(%)", &Font12, BLACK, WHITE);
-        thread DS_Thread1(DS_func1);
-        DS_Thread1.join();
+        Paint.DrawString, &Paint, 5, 13, "Humi(%)", &Font12, BLACK, WHITE);
+    
 
-
-        auto DN_func = std::bind(&Paint::DrawNum, &Paint, 60, 13,plant_1.get_humidity(), &Font12, 1,  WHITE, BLACK);
-        thread DN_Thread(DN_func);
-        DN_Thread.join();
-
+        Paint.DrawNum(60, 13,plant_1.get_humidity(), &Font12, 1,  WHITE, BLACK);
+       
         
-        auto DS_func2 = std::bind(&Paint::DrawString, &Paint, 5, 25, "Temp(C)", &Font12, BLACK, WHITE);
-        thread DS_Thread2(DS_func2);
-        DS_Thread2.join();
+        Paint.DrawString(5, 25, "Temp(C)", &Font12, BLACK, WHITE);
+    
 
-
-        auto DN_func2 = std::bind(&Paint::DrawNum, &Paint, 60, 25, plant_1.get_temperature(), &Font12, 1,  WHITE, BLACK);
-        thread DN_Thread2(DN_func2);
-        DN_Thread2.join();
+        Paint.DrawNum(60, 25, plant_1.get_temperature(), &Font12, 1,  WHITE, BLACK);
+        
 		
-        auto DS_func3 = std::bind(&Paint::DrawString, &Paint, 5, 37, selector.lightSelector(), &Font12, BLACK, WHITE);
-        thread DS_Thread3(DS_func3);
-        DS_Thread3.join();
+        Paint.DrawString(5, 37, selector.lightSelector(), &Font12, BLACK, WHITE);
         
 
         //display of the plant emoji
         std::cout<<"painting the emoji page!"<<std::endl;
         
-        auto GRB_func2 = std::bind(&Paint::GUI_ReadBmp, &Paint, selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity()), 32, 64);
-        thread GRB_Thread2(GRB_func2);
-        GRB_Thread2.join();
-
+        Paint.GUI_ReadBmp(selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity()), 32, 64);
         
         OLED.Display(BlackImage);
         dev.Delay_ms(1000);
