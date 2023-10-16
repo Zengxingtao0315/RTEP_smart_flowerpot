@@ -97,7 +97,7 @@ void mainLoop::loop()
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
         
-        Paint.DrawString, &Paint, 5, 13, "Humi(%)", &Font12, BLACK, WHITE);
+        Paint.DrawString(5, 13, "Humi(%)", &Font12, BLACK, WHITE);
     
 
         Paint.DrawNum(60, 13,plant_1.get_humidity(), &Font12, 1,  WHITE, BLACK);
