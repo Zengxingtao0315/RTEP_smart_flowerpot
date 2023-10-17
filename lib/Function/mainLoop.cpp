@@ -11,7 +11,7 @@ mainLoop::mainLoop(): loopState(SUCCESS),stopRequested(false){
     bool sensorCreated = false;
     while (!sensorCreated) {
         try {
-            sensor = Sensor(DIGITALPIN, DHTPIN); 
+            Sensor sensor(DIGITALPIN, DHTPIN); 
             sensorCreated = true; 
         } catch (const std::exception& e) {
             std::cerr << "Failed to create Sensor object: " << e.what() << std::endl;
