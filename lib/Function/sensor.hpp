@@ -36,6 +36,7 @@ private:
 	double lastTemperature = 0.0;
     double lastHumidity = 0.0;
 	std::condition_variable dataCondVar;
+    std::atomic<bool> isThreaedRunning;
 public:
     Sensor(int digitalPin, int dhtPin);
 	~Sensor();

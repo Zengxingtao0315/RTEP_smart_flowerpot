@@ -9,27 +9,51 @@
 
 using namespace std;
 
+
+// Constructor for the Sensor class, which sets up the pins and starts the reading loop.
+Sensor::Sensor(int digitalPin, int dhtPin)
+    : digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0),isThreaedRunning(false) {
+    // Initialize wiringPi. If it fails, print an error message and exit.
+    if (wiringPiSetup() == -1) {
+        std::cerr << "Error initializing wiringPi" << std::endl;
+        exit(1);
+    }
+    // Start a new thread for reading DHT sensor data in a loop.
+    dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
+    isThreaedRunning = true;
+}
+
+// Destructor for the Sensor class, which waits for the dhtThread to finish before cleaning up.
+Sensor::~Sensor(){
+    if (dhtThread.joinable()) {
+        dhtThread.join();
+    }
+}
 // Function to continuously read data from the DHT sensor in a loop.
 void Sensor::readDHTdataLoop() {
-    while (true) {
-        // Read data from the DHT sensor.
-        DHTdata data = readDHTdata();
-        // Pause the loop for 1 second before the next reading.
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    if(isThreaedRunning.load()){
+        while (true) {
+            // Read data from the DHT sensor.
+            DHTdata data = readDHTdata();
+            // Pause the loop for 1 second before the next reading.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-        // Acquire the lock on dataMutex to safely update the temperature and humidity variables.
-        std::unique_lock<std::mutex> lock(dataMutex);
-        temperature = data.temperature;
-        humidity = data.humidity;
+            // Acquire the lock on dataMutex to safely update the temperature and humidity variables.
+            std::unique_lock<std::mutex> lock(dataMutex);
+            temperature = data.temperature;
+            humidity = data.humidity;
 
-        // Notify the threads waiting on the condition variable (dataCondVar) that new data is available.
-        dataCondVar.notify_all();
+            // Notify the threads waiting on the condition variable (dataCondVar) that new data is available.
+            dataCondVar.notify_all();
 
-        // If the dhtThread is not joinable, start a new thread to continue reading data.
-        if (!dhtThread.joinable()) {
-            dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
+            // If the dhtThread is not joinable, start a new thread to continue reading data.
+            if (!dhtThread.joinable()) {
+                dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
+            }
         }
     }
+    else std::cerr << "loopThread created failed!!" << std::endl;
+        
 }
 
 // Function to get the latest temperature reading.
@@ -54,25 +78,6 @@ double Sensor::getHumidity() {
     // Update the latest humidity value and return it.
     lastHumidity = humidity;
     return humidity;
-}
-
-// Constructor for the Sensor class, which sets up the pins and starts the reading loop.
-Sensor::Sensor(int digitalPin, int dhtPin)
-    : digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0) {
-    // Initialize wiringPi. If it fails, print an error message and exit.
-    if (wiringPiSetup() == -1) {
-        std::cerr << "Error initializing wiringPi" << std::endl;
-        exit(1);
-    }
-    // Start a new thread for reading DHT sensor data in a loop.
-    dhtThread = std::thread(&Sensor::readDHTdataLoop, this);
-}
-
-// Destructor for the Sensor class, which waits for the dhtThread to finish before cleaning up.
-Sensor::~Sensor(){
-    if (dhtThread.joinable()) {
-        dhtThread.join();
-    }
 }
 
 // Function to read the digital value from the light sensor.
