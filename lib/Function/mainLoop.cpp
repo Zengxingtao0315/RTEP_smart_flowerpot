@@ -118,17 +118,17 @@ void mainLoop::loop()
         Paint.GUI_ReadBmp(selector.EmojiSelector(sensor.getTemperature(),sensor.getHumidity()), 32, 64);
         
         OLED.Display(BlackImage);
-        dev.Delay_ms(1000);
+        dev.Delay_ms(10000);
         
         Paint.Clear(BLACK);	
-        dev.Delay_ms(1000);
+        dev.Delay_ms(10000);
         
         OLED.Clear();
 
         auto endTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = endTime - startTime; // 计算运行时间
 
-        if (duration.count() >= 2.0) 
+        if (duration.count() >= 10.0) 
         {
             loopState = TIMEOUT; // 如果运行时间超过2秒，返回超时状态
     
