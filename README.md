@@ -5,6 +5,8 @@ Group 27
 
 ## Description
 The intelligent flowerpot is designed to help you to ensure the plants optimal growth. With sensors, it can monitor your plants’ temperature, humidity and light level. It features a built-in screen that expresses the mood of your plants through emoji and real-time statistics to remind you what you should do to take good care of your lovely plant. Meanwhile, we have built a website interface to monitor and observe real-time condition of your plant remotely.
+# Main implementation logic
+The implementation of this project consists mainly of two separate threads. One thread reads the sensor data every second and the other thread is a big loop that constantly refreshes the data on the display. There is also a verify function that constantly checks whether the running state is normal or not, if the sensor reads the data timeout, it will get a TIMEOUT state, then the verify function will shut down the currently running main thread and restart the main thread. Of course, when the initialisation fails, the same operation will be performed.
  
 ## Features
 1) Visual expression of plants' mood
