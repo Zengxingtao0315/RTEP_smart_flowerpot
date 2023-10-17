@@ -50,6 +50,7 @@ class mainLoop{
         std::thread Loopthread; //
         std::thread Checkthread;
         std::atomic<STATE> loopState;
+        std::atomic<bool> stopRequested;
 
     public:
         mainLoop();

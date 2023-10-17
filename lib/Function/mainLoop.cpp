@@ -7,7 +7,17 @@ using namespace std;
 
 
    
-mainLoop::mainLoop(): loopState(SUCCESS),sensor(DIGITALPIN, DHTPIN){
+mainLoop::mainLoop(): loopState(SUCCESS),stopRequested(false){
+    bool sensorCreated = false;
+    while (!sensorCreated) {
+        try {
+            sensor = Sensor(DIGITALPIN, DHTPIN); 
+            sensorCreated = true; 
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to create Sensor object: " << e.what() << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
+        }
+    }
     Checkthread = std::thread(&mainLoop::StateChecker, this);
 }
         
@@ -78,7 +88,7 @@ void mainLoop::loop()
     Selector selector(&sensor, temperaRange, humidityRange);
 
     
-    while (1) 
+    while (!stopRequested) 
     {
         auto startTime = std::chrono::high_resolution_clock::now();
         
@@ -151,14 +161,15 @@ void mainLoop::StateChecker()
         std::cout << "Function B is not running. Starting a new B..." << std::endl;
         Loopthread = std::thread(&mainLoop::loop, this); // 启动一个新的B函数
     }
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     
 }
 
 
 void mainLoop::stopLoop()
 {   
-    loopState = UNKNOWN_ERROR;
-    Loopthread.join();
+    stopRequested = true;
+    
 }
 
 

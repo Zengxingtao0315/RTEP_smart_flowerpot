@@ -12,18 +12,23 @@ using namespace std;
 // Function to continuously read data from the DHT sensor in a loop.
 void Sensor::readDHTdataLoop() {
     while (true) {
-        // Read data from the DHT sensor.
-        DHTdata data = readDHTdata();
-        // Pause the loop for 1 second before the next reading.
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        try {
+            // Read data from the DHT sensor.
+            DHTdata data = readDHTdata();
+            // Pause the loop for 1 second before the next reading.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-        // Acquire the lock on dataMutex to safely update the temperature and humidity variables.
-        std::unique_lock<std::mutex> lock(dataMutex);
-        temperature = data.temperature;
-        humidity = data.humidity;
+            // Acquire the lock on dataMutex to safely update the temperature and humidity variables.
+            std::unique_lock<std::mutex> lock(dataMutex);
+            temperature = data.temperature;
+            humidity = data.humidity;
 
-        // Notify the threads waiting on the condition variable (dataCondVar) that new data is available.
-        dataCondVar.notify_all();
+            // Notify the threads waiting on the condition variable (dataCondVar) that new data is available.
+            dataCondVar.notify_all();
+        } catch (const std::exception& e) {
+            // Handle the exception (e.g., log an error message).
+            std::cerr << "Exception in readDHTdataLoop: " << e.what() << std::endl;
+        }
 
         // If the dhtThread is not joinable, start a new thread to continue reading data.
         if (!dhtThread.joinable()) {
@@ -31,6 +36,7 @@ void Sensor::readDHTdataLoop() {
         }
     }
 }
+
 
 // Function to get the latest temperature reading.
 double Sensor::getTemperature() {
@@ -83,69 +89,79 @@ UWORD Sensor::readDigitalValue() {
 
 // Function to read data from the DHT sensor.
 DHTdata Sensor::readDHTdata() {   
-	DHTdata data;
-    int dht11_dat[5] = {0, 0, 0, 0, 0};
-    uint8_t cnt = 7;
-    uint8_t idx = 0;
-    float f;
+	try {
+        DHTdata data;
+        int dht11_dat[5] = {0, 0, 0, 0, 0};
+        uint8_t cnt = 7;
+        uint8_t idx = 0;
+        float f;
 
-    dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
+        dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
 
-    // Initialize the DHT sensor by pulling the data pin LOW and then HIGH.
-    pinMode(DHTPIN, OUTPUT);
-    digitalWrite(DHTPIN, LOW);
-    delay(19);
-    digitalWrite(DHTPIN, HIGH);
-    delayMicroseconds(40);
-    pinMode(DHTPIN, INPUT);
+        // Initialize the DHT sensor by pulling the data pin LOW and then HIGH.
+        pinMode(DHTPIN, OUTPUT);
+        digitalWrite(DHTPIN, LOW);
+        delay(19);
+        digitalWrite(DHTPIN, HIGH);
+        delayMicroseconds(40);
+        pinMode(DHTPIN, INPUT);
 
-    // Wait for the DHT sensor to respond (ACKNOWLEDGE).
-    unsigned int loopCnt = 10000;
-    while (digitalRead(DHTPIN) == LOW)
-        if (loopCnt-- == 0);
-
-    loopCnt = 10000;
-    while (digitalRead(DHTPIN) == HIGH)
-        if (loopCnt-- == 0);
-
-    // Read data from the DHT sensor.
-    for (int i = 0; i < 40; i++) {
-        loopCnt = 10000;
+        // Wait for the DHT sensor to respond (ACKNOWLEDGE).
+        unsigned int loopCnt = 10000;
         while (digitalRead(DHTPIN) == LOW)
             if (loopCnt-- == 0);
-
-        unsigned long t = micros();
 
         loopCnt = 10000;
         while (digitalRead(DHTPIN) == HIGH)
             if (loopCnt-- == 0);
 
-        if ((micros() - t) > 40) {
-            dht11_dat[idx] |= (1 << cnt);
+        // Read data from the DHT sensor.
+        for (int i = 0; i < 40; i++) {
+            loopCnt = 10000;
+            while (digitalRead(DHTPIN) == LOW)
+                if (loopCnt-- == 0);
+
+            unsigned long t = micros();
+
+            loopCnt = 10000;
+            while (digitalRead(DHTPIN) == HIGH)
+                if (loopCnt-- == 0);
+
+            if ((micros() - t) > 40) {
+                dht11_dat[idx] |= (1 << cnt);
+            }
+            if (cnt == 0) {
+                cnt = 7;
+                idx++;
+            } else {
+                cnt--;
+            }
         }
-        if (cnt == 0) {
-            cnt = 7;
-            idx++;
+
+        // Check if the data received from the DHT sensor is valid.
+        if (dht11_dat[4] == ((dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)) {
+            data.humidity = dht11_dat[0];
+            data.temperature = dht11_dat[2] + dht11_dat[3] * 0.1;
+            sendDHTdataToHTML(data);
+            f = dht11_dat[2] * 9.0 / 5.0 + 32;
+            printf("Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
+                dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f);
+            return data;
         } else {
-            cnt--;
+            printf("Data not good, skip\n");
         }
-    }
 
-    // Check if the data received from the DHT sensor is valid.
-    if (dht11_dat[4] == ((dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)) {
-        data.humidity = dht11_dat[0];
-        data.temperature = dht11_dat[2] + dht11_dat[3] * 0.1;
-		sendDHTdataToHTML(data);
-        f = dht11_dat[2] * 9.0 / 5.0 + 32;
-        printf("Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
-               dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f);
+        // Return the data read from the DHT sensor.
         return data;
-    } else {
-        printf("Data not good, skip\n");
+    } catch (const std::exception& e) {
+        std::cerr << "Exception in readDHTdata: " << e.what() << std::endl;
+        // 返回一个合适的默认值或者标记表示读取失败
+        DHTdata data;
+        data.humidity = -1.0; // 或者其他适当的值
+        data.temperature = -1.0; // 或者其他适当的值
+        return data;
     }
-
-    // Return the data read from the DHT sensor.
-    return data;
+    
 }
 void Sensor::sendDHTdataToHTML(const DHTdata& data){
 	std::ofstream jsFile("/var/www/html/data.js");
