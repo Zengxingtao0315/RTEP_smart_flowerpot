@@ -7,17 +7,8 @@ using namespace std;
 
 
    
-mainLoop::mainLoop(): loopState(SUCCESS),stopRequested(false){
-    bool sensorCreated = false;
-    while (!sensorCreated) {
-        try {
-            Sensor sensor(DIGITALPIN, DHTPIN); 
-            sensorCreated = true; 
-        } catch (const std::exception& e) {
-            std::cerr << "Failed to create Sensor object: " << e.what() << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
-        }
-    }
+mainLoop::mainLoop(): loopState(SUCCESS),sensor(DIGITALPIN, DHTPIN),stopRequested(false){
+    
     Checkthread = std::thread(&mainLoop::StateChecker, this);
 }
         
