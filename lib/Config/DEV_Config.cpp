@@ -34,7 +34,7 @@ void DEV::GPIO_Mode(UWORD Pin, UWORD Mode)
         gpio.SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_OUT);
         // printf("OUT Pin = %d\r\n",Pin);
     }
-#endif   
+
 }
 
 /**
@@ -45,7 +45,7 @@ void DEV::Delay_ms(UDOUBLE xms)
     
     std::this_thread::sleep_for(std::chrono::milliseconds(xms));
 
-#endif
+
 }
 
 void DEV::GPIO_Init(void)
