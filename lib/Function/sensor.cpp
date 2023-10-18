@@ -34,9 +34,11 @@ void Sensor::readDHTdataLoop() {
     if(isThreaedRunning.load()){
         while (true) {
             // Read data from the DHT sensor.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            
             DHTdata data = readDHTdata();
             // Pause the loop for 1 second before the next reading.
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            
 
             // Acquire the lock on dataMutex to safely update the temperature and humidity variables.
             std::unique_lock<std::mutex> lock(dataMutex);
@@ -159,10 +161,19 @@ void Sensor::sendDHTdataToHTML(const DHTdata& data){
         // Write temperature and humidity data in the data.js file
         jsFile << "var temperature = " << data.temperature << ";\n";
         jsFile << "var humidity = " << data.humidity << ";\n";
-		jsFile << "var light = " << readDigitalValue() << ";\n";
+        jsFile << "var light = " << readDigitalValue() << ";\n";
         jsFile.close();
     } else {
-        std::cerr << "Unable to open data.js file" << std::endl;
+        // 文件无法打开，创建一个新文件
+        jsFile.open("/var/www/html/data.js");
+        if (jsFile.is_open()) {
+            jsFile << "var temperature = " << data.temperature << ";\n";
+            jsFile << "var humidity = " << data.humidity << ";\n";
+            jsFile << "var light = " << readDigitalValue() << ";\n";
+            jsFile.close();
+        } else {
+            std::cerr << "Unable to open data.js file" << std::endl;
+        }
     }
 	
 }

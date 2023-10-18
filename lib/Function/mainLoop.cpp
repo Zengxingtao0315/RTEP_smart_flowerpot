@@ -150,7 +150,7 @@ void mainLoop::StateChecker()
     {
         stopLoop();
         std::cout << "Function B is not running. Starting a new B..." << std::endl;
-        Loopthread = std::thread(&mainLoop::loop, this); // 启动一个新的B函数
+        Loopthread = std::thread(&mainLoop::loop, this); 
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     
