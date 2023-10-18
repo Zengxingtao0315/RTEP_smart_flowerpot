@@ -322,7 +322,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
     for (UWORD y = 0; y < bmpInfoHeader.biHeight; y++) {
         for (UWORD x = 0; x < bmpInfoHeader.biWidth; x++) {
             // If the current pixel is outside the screen size, break out of the loop
-            if (x + Xstart >= paint.Width || y + Ystart >= paint.Height) {
+            if (x >= paint.Width || y >= paint.Height) {
                 break;
             }
             // Extract the color value from the image data (16-bit color depth)
