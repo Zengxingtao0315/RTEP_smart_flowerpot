@@ -93,19 +93,19 @@ static uint8_t bits = 8;
 
 class DEV_SPI {
 	private:
-        int DEV_HARDWARE_SPI_setSpeed(uint32_t speed);
-		int DEV_HARDWARE_SPI_Mode(SPIMode mode);
-        int DEV_HARDWARE_SPI_ChipSelect(SPIChipSelect CS_Mode);
-        void DEV_HARDWARE_SPI_SetDataInterval(uint16_t us);
+        int DEV_SPI_setSpeed(uint32_t speed);
+		int DEV_SPI_Mode(SPIMode mode);
+        int DEV_SPI_ChipSelect(SPIChipSelect CS_Mode);
+        void DEV_SPI_SetDataInterval(uint16_t us);
         
-        struct SPIStruct hardware_SPI;
+        struct SPIStruct SPI;
         struct spi_ioc_transfer tr;
 
     public:
-		void DEV_HARDWARE_SPI_beginSet(char *SPI_device, SPIMode mode, uint32_t speed);
-		void DEV_HARDWARE_SPI_end(void);
-		uint8_t DEV_HARDWARE_SPI_TransferByte(uint8_t buf);
-		int DEV_HARDWARE_SPI_Transfer(uint8_t *buf, uint32_t len);
+		void DEV_SPI_beginSet(char *SPI_device, SPIMode mode, uint32_t speed);
+		void DEV_SPI_end(void);
+		uint8_t DEV_SPI_TransferByte(uint8_t buf);
+		int DEV_SPI_Transfer(uint8_t *buf, uint32_t len);
 
 };
 

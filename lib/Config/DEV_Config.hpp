@@ -57,7 +57,7 @@ class DEV {
 
 	public:
 		UBYTE ModuleInit(void);
-		void  ModuleExit(void);
+		void ModuleExit(void);
 		void Digital_Write(UWORD Pin, UBYTE Value);
 		void Delay_ms(UDOUBLE xms);
 		void SPI_WriteByte(UBYTE Value);

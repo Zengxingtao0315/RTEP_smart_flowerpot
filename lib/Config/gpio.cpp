@@ -22,7 +22,7 @@ extern "C" {
  * param Pin - GPIO pin number to be exported.
  * return 0 if successful, -1 on error.
  */
-int GPIO::SYSFS_GPIO_Export(int Pin)
+int GPIO::GPIO_Export(int Pin)
 {
     char buffer[NUM_MAXBUF];  
     int len;  
@@ -54,7 +54,7 @@ int GPIO::SYSFS_GPIO_Export(int Pin)
  * param Dir - Direction to set (GPIO_IN for input, GPIO_OUT for output).
  * return 0 if successful, -1 on error.
  */
-int GPIO::SYSFS_GPIO_Direction(int Pin, int Dir)
+int GPIO::GPIO_Direction(int Pin, int Dir)
 {
     const char dir_str[] = "in\0out";  
     char path[DIR_MAXSIZ];  
@@ -98,7 +98,7 @@ int GPIO::SYSFS_GPIO_Direction(int Pin, int Dir)
  * param value - Value to write (GPIO_LOW for 0, GPIO_HIGH for 1).
  * return 0 if successful, -1 on error.
  */
-int GPIO::SYSFS_GPIO_Write(int Pin, int value)
+int GPIO::GPIO_Write(int Pin, int value)
 {
     const char s_values_str[] = "01";  
     char path[DIR_MAXSIZ];  
