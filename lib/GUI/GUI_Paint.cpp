@@ -146,6 +146,9 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     for (UWORD Page = 0; Page < Font->Height; Page++) {
         // Pixel-by-pixel data processing
         for (UWORD Column = 0; Column < Font->Width; Column++) {
+            if (Xpoint + Column >= paint.Width || Ypoint + Page >= paint.Height) {
+                break; // Exit inner loop if out of screen range
+            }
             // Determine if the current pixel is a foreground color pixel
             bool drawForeground = *ptr & (0x80 >> (Column % 8));
             UWORD color = drawForeground ? Color_Foreground : Color_Background;
@@ -277,7 +280,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
     FILE *fp = fopen(path, "rb");
      
     if (!fp) {
-        Debug("Cann't open the file!\n");
+        Debug("Error: Unable to open file for reading.\n");
         return 1;
     }
 
@@ -289,7 +292,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 
     // Check if the BMP image is a 65K-color bitmap (16-bit color depth)
     if (bmpInfoHeader.biBitCount != 16) {
-        Debug("Bmp image is not a 65K-color bitmap!\n");
+        Debug("Error: Not a 65K-color bitmap.\n");
         fclose(fp);
         return 2;
     }
@@ -319,7 +322,7 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
     for (UWORD y = 0; y < bmpInfoHeader.biHeight; y++) {
         for (UWORD x = 0; x < bmpInfoHeader.biWidth; x++) {
             // If the current pixel is outside the screen size, break out of the loop
-            if (x > paint.Width || y > paint.Height) {
+            if (x + Xstart >= paint.Width || y + Ystart >= paint.Height) {
                 break;
             }
             // Extract the color value from the image data (16-bit color depth)

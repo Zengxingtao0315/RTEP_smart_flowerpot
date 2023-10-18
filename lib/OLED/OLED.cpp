@@ -139,7 +139,7 @@ void OLED::Init(void)
 
     //Set the initialization register
     InitReg();
-    dev->Delay_ms(200);
+    dev->Delay_ms(100);
 
     //Turn on the OLED display
     WriteReg(0xAF);
