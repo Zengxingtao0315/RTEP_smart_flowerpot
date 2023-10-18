@@ -13,15 +13,14 @@ OBJ_CPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${SRC_CPP}))
 
 TARGET = main
 
-USELIB = USE_DEV_LIB
-DEBUG = -D $(USELIB)
+
 LIB =  -lwiringPi -lm 
 
 CXX = g++ -std=c++11
 MSG = -g -O0 -Wall -pthread  -lboost_system
 
 
-CXXFLAGS += $(MSG) $(DEBUG)
+CXXFLAGS += $(MSG) 
 
 ${TARGET}:${OBJ_CPP}
 	$(CXX) $(CXXFLAGS) $(OBJ_CPP) -o $@ $(LIB)

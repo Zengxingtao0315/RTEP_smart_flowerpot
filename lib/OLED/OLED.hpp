@@ -35,9 +35,6 @@ public:
     // Function to display an image on the OLED.
     void Display(UBYTE *Image);
 
-    // Function to set a specific window on the display and display an image in that window.
-    void SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
-
     bool checkInit();
 
 private:

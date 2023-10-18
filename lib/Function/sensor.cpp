@@ -164,7 +164,7 @@ void Sensor::sendDHTdataToHTML(const DHTdata& data){
         jsFile << "var light = " << readDigitalValue() << ";\n";
         jsFile.close();
     } else {
-        // 文件无法打开，创建一个新文件
+        // File cannot be opened, create a new file
         jsFile.open("/var/www/html/data.js");
         if (jsFile.is_open()) {
             jsFile << "var temperature = " << data.temperature << ";\n";

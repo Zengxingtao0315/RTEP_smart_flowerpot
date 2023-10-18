@@ -56,10 +56,6 @@ typedef enum{
     SPI_MODE3 = SPI_MODE_3   /*!< CPOL = 1, CPHA = 1 */
 }SPIMode;
 
-typedef enum{
-    DISABLE  = 0,
-    ENABLE   = 1
-}SPICSEN;
 
 typedef enum{
     SPI_CS_Mode_LOW  = 0,     /*!< Chip Select 0 */
@@ -67,11 +63,7 @@ typedef enum{
     SPI_CS_Mode_NONE = 3  /*!< No CS, control it yourself */
 }SPIChipSelect;
 
-typedef enum
-{
-    SPI_BIT_ORDER_LSBFIRST = 0,  /*!< LSB First */
-    SPI_BIT_ORDER_MSBFIRST = 1   /*!< MSB First */
-}SPIBitOrder;
+
 
 typedef enum
 {

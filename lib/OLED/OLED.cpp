@@ -43,18 +43,17 @@ function:
 *******************************************************************************/
 void OLED::WriteReg(uint8_t Reg)
 {
-#if USE_SPI
+
     dev->Digital_Write(OLED_DC,0);
     dev->SPI_WriteByte(Reg);
-#endif
+
 }
 
 void OLED::WriteData(uint8_t Data)
 {   
-#if USE_SPI
+
     dev->Digital_Write(OLED_DC,1);
     dev->SPI_WriteByte(Data);
-#endif
 }
 
 /*******************************************************************************
@@ -190,42 +189,18 @@ void OLED::Display(uint8_t *Image)
         }
     }
 }
-/********************************************************************************
-function:   Updates memory to OLED 
-********************************************************************************/
-void OLED::SetWindow_Display(uint8_t *Image, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
-{
-    uint16_t width = x2 - x1 + 1; 
-    uint16_t height = y2 - y1 + 1; 
-
-    WriteReg(0x15); 
-    WriteData(x1); 
-    WriteData(x2); 
-
-    WriteReg(0x75); 
-    WriteData(y1); 
-    WriteData(y2); 
-
-    WriteReg(0x5C); 
-
-  
-    for (uint16_t i = 0; i < width * height; i++)
-    {
-        WriteData(Image[i]);
-    }
-}
 
 
 
 bool OLED::checkInit()
 {
-    int maxRetryCount = 3; // 最大重试次数
+    int maxRetryCount = 3; // Maximum number of retries
     int currentRetryCount = 0;
 
     while (currentRetryCount < maxRetryCount) {
         Init();
         if (initSuccess) {
-            break; // 如果初始化成功，则跳出循环
+            break; // If the initialisation succeeds, jump out of the loop
         }
 
         currentRetryCount++;

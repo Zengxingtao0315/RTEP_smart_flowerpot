@@ -127,11 +127,11 @@ void mainLoop::loop()
         OLED.Clear();
 
         auto endTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = endTime - startTime; // 计算运行时间
+        std::chrono::duration<double> duration = endTime - startTime; // Calculate runtime
 
         if (duration.count() >= 2.0) 
         {
-            loopState = TIMEOUT; // 如果运行时间超过2秒，返回超时状态
+            loopState = TIMEOUT; // If the run time exceeds 2 seconds, return a timeout status
     
         }
         else

@@ -17,16 +17,15 @@ using namespace std;
 *****************************************/
 void DEV::Digital_Write(UWORD Pin, UBYTE Value)
 {
-#if USE_DEV_LIB
+
     gpio.SYSFS_GPIO_Write(Pin, Value);
     
-#endif
+
 }
 
 
 void DEV::GPIO_Mode(UWORD Pin, UWORD Mode)
 {
-#if USE_DEV_LIB
     gpio.SYSFS_GPIO_Export(Pin);
     if(Mode == 0 || Mode == SYSFS_GPIO_IN){
         gpio.SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_IN);
@@ -43,9 +42,8 @@ void DEV::GPIO_Mode(UWORD Pin, UWORD Mode)
 **/
 void DEV::Delay_ms(UDOUBLE xms)
 {
-#if USE_DEV_LIB
     
-       std::this_thread::sleep_for(std::chrono::milliseconds(xms));
+    std::this_thread::sleep_for(std::chrono::milliseconds(xms));
 
 #endif
 }
@@ -65,13 +63,9 @@ Info:
 UBYTE DEV::ModuleInit(void)
 {
 	SPIMode mode = SPI_MODE3;
- #if USE_DEV_LIB
 	GPIO_Init();
-    #if USE_SPI
-        std::cout << "USE_SPI" << std::endl;      
-        dev_spi.DEV_HARDWARE_SPI_beginSet("/dev/spidev0.0",mode,10000000);
-    #endif
-#endif
+    std::cout << "USE_SPI" << std::endl;      
+    dev_spi.DEV_HARDWARE_SPI_beginSet("/dev/spidev0.0",mode,10000000);
     return 0;
 }
 
@@ -79,11 +73,10 @@ UBYTE DEV::ModuleInit(void)
 
 void DEV::SPI_WriteByte(UBYTE Value)
 {
-#if USE_DEV_LIB
+
 	// printf("write data is %d\r\n", Value);
     dev_spi.DEV_HARDWARE_SPI_TransferByte(Value);
-    
-#endif
+
 }
 
 
@@ -94,11 +87,11 @@ Info:
 ******************************************************************************/
 void DEV::ModuleExit(void)
 {
-#if USE_DEV_LIB
+
     Digital_Write(OLED_CS,0);
 	Digital_Write(OLED_RST,1);
 	Digital_Write(OLED_DC,0);
     dev_spi.DEV_HARDWARE_SPI_end();
-#endif
+
 }
 
