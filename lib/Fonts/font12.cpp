@@ -1,5 +1,6 @@
 /**
   ******************************************************************************
+  * This code is adapted from the Pico-code project by waveshare, licensed under the MIT license.
   * @file    Font12.c
   * @author  MCD Application Team
   * @version V1.0.0
