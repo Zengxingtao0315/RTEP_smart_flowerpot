@@ -5,8 +5,8 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 // Porject is Copyright (c) 2023 Xingtao Zeng, all rights reserved.
 // Project is licensed under the MIT License: https://opensource.org/licenses/MIT
 ******************************************************************************/
-#ifndef __DEV_HARDWARE_SPI_HPP_
-#define __DEV_HARDWARE_SPI_HPP_
+#ifndef __SPI_HPP_
+#define __SPI_HPP_
 
 #include <cstdint>
 #include <iostream>
@@ -17,6 +17,7 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 #include <cstdio> 
 #include <cstdlib> 
 #include <iostream>
+#include "Debug.hpp"
 extern "C" {
 	#include <getopt.h> 
 	#include <unistd.h> 
@@ -27,12 +28,6 @@ extern "C" {
 }
 
 
-#define DEV_HARDWARE_SPI_DEBUG 0
-#if DEV_HARDWARE_SPI_DEBUG
-#define DEV_HARDWARE_SPI_Debug(__info,...) std::cout << "Debug: " << info << __VA_ARGS__ << std::endl
-#else
-#define DEV_HARDWARE_SPI_Debug(__info,...)
-#endif
 
 #define SPI_CPHA        0x01
 #define SPI_CPOL        0x02

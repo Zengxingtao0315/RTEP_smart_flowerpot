@@ -15,8 +15,8 @@ This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed unde
 			|\\\					Hardware interface							///|
 			------------------------------------------------------------------------
 ***********************************************************************************************************************/
-#include "RPI_sysfs_gpio.hpp"
-#include "dev_hardware_SPI.hpp"
+#include "gpio.hpp"
+#include "SPI.hpp"
 
 #include <cerrno>
 #include <cstdio>
@@ -41,9 +41,9 @@ extern "C" {
 #define UDOUBLE std::uint32_t
 
 //OLED Define
-#define OLED_CS         8		
-#define OLED_RST        27	
-#define OLED_DC         25	
+const int OLED_CS = 8;		
+const int OLED_RST = 27;	
+const int OLED_DC = 25;	
 
 
 /*------------------------------------------------------------------------------------------------------*/

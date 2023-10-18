@@ -1,12 +1,10 @@
-/******************************************************************************
-* | File      	:   GUI_mc
-* | Author      :   Xingtao Zeng
-* | Function    :	Achieve drawing: draw points, lines, boxes, circles and
-*                   their size, solid dotted line, solid rectangle hollow
-*                   rectangle, solid circle hollow circle.
-* | Info        :
-
+/*****************************************************************************
+This code is adapted from the 2-CH-RS485-HAT project by waveshare, licensed under the MIT license.
+// Original source: https://github.com/waveshare/2-CH-RS485-HAT/tree/master/RaspberryPi/user_dev/c/lib/Config
+// Porject is Copyright (c) 2023 Xingtao Zeng, all rights reserved.
+// Project is licensed under the MIT License: https://opensource.org/licenses/MIT
 ******************************************************************************/
+
 #include "GUI_Paint.hpp"
 
 #include "DEV_Config.hpp"
@@ -23,14 +21,14 @@
 
 using namespace std;
 
-/******************************************************************************
-function: Create Image
-parameter:
-    image   :   Pointer to the image cache
-    width   :   The width of the picture
-    Height  :   The height of the picture
-    Color   :   Whether the picture is inverted
-******************************************************************************/
+/**
+ * Function: Initialize a new image for painting.
+ * 
+ * param image - Pointer to the image data.
+ * param Width - Width of the image.
+ * param Height - Height of the image.
+ * param Color - Color information.
+ */
 void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Color)
 {
     paint.Image = NULL;
@@ -48,24 +46,23 @@ void Paint::NewImage(UBYTE *image, UWORD Width, UWORD Height, UWORD Color)
     
 }
 
-/******************************************************************************
-function: Select Image
-parameter:
-    image : Pointer to the image cache
-******************************************************************************/
+/**
+ * Function: set image from cache
+
+ */
 void Paint::SelectImage(UBYTE *image)
 {
     paint.Image = image;
 }
 
 
-/******************************************************************************
-function: Draw Pixels
-parameter:
-    Xpoint : At point X
-    Ypoint : At point Y
-    Color  : Painted colors
-******************************************************************************/
+/**
+ * Function: Set a pixel at specified coordinates with the specified color.
+ * 
+ * param Xpoint - X coordinate of the pixel.
+ * param Ypoint - Y coordinate of the pixel.
+ * param Color - Color information.
+ */
 void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
     
@@ -78,9 +75,7 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
     // Calculate the memory address (index) in the display buffer for the specified pixel
     UDOUBLE Addr = Xpoint * 2 + Ypoint * paint.WidthByte;
 
-    // Set the color of the pixel in the display buffer
-    // The pixel color is a 16-bit color (UWORD), where the high byte is the first byte (Address) and the low byte is the second byte (Address + 1)
-    // The color is split into the high and low bytes and stored in the display buffer at the specified memory address (Addr).
+    
     paint.Image[Addr] = 0xFF & (Color >> 8);   // Store the high byte of the color
     paint.Image[Addr + 1] = 0xFF & Color;      // Store the low byte of the color
     
@@ -88,11 +83,11 @@ void Paint::SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 
 
 
-/******************************************************************************
-function: Clear the color of the picture
-parameter:
-    Color : Painted colors
-******************************************************************************/
+/**
+ * Function: clear the color
+ * 
+
+ */
 void Paint::Clear(UWORD Color)
 {
     // Extract the low byte and high byte of the specified color
@@ -105,11 +100,7 @@ void Paint::Clear(UWORD Color)
     // Calculate the size of the display buffer in bytes
     UWORD imageByteSize = paint.WidthByte * paint.HeightByte * 2;
 
-    // Fill the display buffer with the specified color
-    // The memset function is used to set each byte of the buffer to the specified values
-    // The buffer is treated as an array of UBYTE elements (1 byte each), so we fill it in two steps:
-    //   1. Fill the low byte of the color into the buffer
-    //   2. Fill the high byte of the color into the buffer (each UWORD element is 2 bytes)
+
 
     // Step 1: Fill the low byte of the color into the buffer
     std::memset(image, lowByte, imageByteSize);
@@ -120,16 +111,17 @@ void Paint::Clear(UWORD Color)
 
 
 
-/******************************************************************************
-function: Show English characters
-parameter:
-    Xpoint           ：X coordinate
-    Ypoint           ：Y coordinate
-    Acsii_Char       ：To display the English characters
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
+/**
+ * Function: Draw a character on the display.
+ * 
+ * param Xpoint - X coordinate of the starting point for the character.
+ * param Ypoint - Y coordinate of the starting point for the character.
+ * param Acsii_Char - ASCII character to be displayed.
+ * param Font - Pointer to the font information.
+ * param Color_Foreground - Color for the character.
+ * param Color_Background - Background color.
+ */
+
 void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
                      sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -164,16 +156,17 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
 }
 
 
-/******************************************************************************
-function:	Display the string
-parameter:
-    Xstart           ：X coordinate
-    Ystart           ：Y coordinate
-    pString          ：The first address of the English string to be displayed
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
+/**
+ * Function: Draw a string on the display.
+ * 
+ * param Xstart - X coordinate of the starting point for the string.
+ * param Ystart - Y coordinate of the starting point for the string.
+ * param pString - Pointer to the string to be displayed.
+ * param Font - Pointer to the font information.
+ * param Color_Foreground - Color for the characters.
+ * param Color_Background - Background color.
+ */
+
 void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char *pString,
                        sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -195,9 +188,7 @@ void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char *pString,
             break;
         }
 
-        // Call the DrawChar function to draw the current character on the screen
-        // at the specified coordinates (Xpoint, Ypoint) using the specified font
-        // with the given foreground and background colors
+        // Call the DrawChar functions
         DrawChar(Xpoint, Ypoint, *pString, Font, Color_Background, Color_Foreground);
 
         // Move the Xpoint to the right by the character's width to position the next character
@@ -208,18 +199,18 @@ void Paint::DrawString(UWORD Xstart, UWORD Ystart, const char *pString,
 
 
 
-/******************************************************************************
-function:	Display nummber
-parameter:
-    Xstart           ：X coordinate
-    Ystart           : Y coordinate
-    Nummber          : The number displayed
-    Font             ：A structure pointer that displays a character size
-	Digit						 : Fractional width
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
-#define  ARRAY_LEN 255
+/**
+ * Function: Draw a number on the display.
+ * 
+ * param Xpoint - X coordinate of the starting point for the number.
+ * param Ypoint - Y coordinate of the starting point for the number.
+ * param Number - The number to be displayed.
+ * param Font - Pointer to the font information.
+ * param Digit - Number of digits after the decimal point.
+ * param Color_Foreground - Color for the characters.
+ * param Color_Background - Background color.
+ */
+const int  ARRAY_LEN = 255;
 
 void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Number,
                     sFONT* Font, UWORD Digit, UWORD Color_Foreground, UWORD Color_Background)
@@ -227,27 +218,24 @@ void Paint::DrawNum(UWORD Xpoint, UWORD Ypoint, double Number,
     // Create a character array to store the formatted number string
     char str[ARRAY_LEN];
 
-    // Format the number into a string with a specific number of digits after the decimal point
-    // and store it in the 'str' array
+    
     snprintf(str, ARRAY_LEN, "%.*f", Digit, Number);
 
-    // Call the DrawString function to draw the formatted number on the screen
-    // at the specified coordinates (Xpoint, Ypoint) using the specified font
-    // with the given foreground and background colors
+    // Call the DrawString function
     DrawString(Xpoint, Ypoint, str, Font, Color_Background, Color_Foreground);
 }
 
+/**
+ * Function: Draw a time 
+ *
+ * param Xstart            X coordinate of the starting point
+ * param Ystart            Y coordinate of the starting point
+ * param pTime             Pointer to the PAINT_TIME structure containing Hour, Min, and Sec
+ * param Font              Pointer to the font structure
+ * param Color_Foreground  Foreground color
+ * param Color_Background  Background color
+ */
 
-/******************************************************************************
-function:	Display time
-parameter:
-    Xstart           ：X coordinate
-    Ystart           : Y coordinate
-    pTime            : Time-related structures
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
 void Paint::DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME* pTime, sFONT* Font,
                      UWORD Color_Foreground, UWORD Color_Background)
 {
@@ -261,14 +249,14 @@ void Paint::DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME* pTime, sFONT* Font,
 }
 
 
-/******************************************************************************
-function:	Display monochrome bitmap
-parameter:
-    image_buffer ：A picture data converted to a bitmap
-info:
-    Use a computer to convert the image into a corresponding array,
-    and then embed the array directly into Imagedata.cpp as a .c file.
-******************************************************************************/
+/**
+ * Function: Read and display a 65K-color BMP image.
+ *
+ * param path       Path to the BMP file
+ * param Xstart     X coordinate for starting point
+ * param Ystart     Y coordinate for starting point
+ * return           0 if successful, 1 if unable to open file, 2 if not a 65K-color bitmap
+ */
 
 UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
 {
@@ -310,10 +298,10 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
         fread(Image + (bmpInfoHeader.biHeight - 1 - y) * Image_Width_Byte, sizeof(UBYTE), Image_Width_Byte, fp);
     }
 
-    // Close the BMP file as we have read the image data
+   
     fclose(fp);
 
-    // Temporary variable to store the color value
+    
     UWORD color;
 
     // Loop through the image and update the display buffer
@@ -332,6 +320,6 @@ UBYTE Paint::GUI_ReadBmp(const char *path, UWORD Xstart, UWORD Ystart)
         }
     }
     
-    // Return 0 to indicate success
+   
     return 0;
 }

@@ -21,10 +21,9 @@ OLED::OLED(DEV * devPtr): dev(devPtr){}
     delete dev;
  }
 
-/*******************************************************************************
-function:
-            Hardware reset
-*******************************************************************************/
+/**
+ * Function: hardware reset
+ */
 using namespace std;
 
 void OLED::Reset(void)
@@ -37,10 +36,9 @@ void OLED::Reset(void)
     dev->Delay_ms(100);
 }
 
-/*******************************************************************************
-function:
-            Write register address and data
-*******************************************************************************/
+/**
+ * Function: write register add and data
+ */
 void OLED::WriteReg(uint8_t Reg)
 {
 
@@ -56,10 +54,9 @@ void OLED::WriteData(uint8_t Data)
     dev->SPI_WriteByte(Data);
 }
 
-/*******************************************************************************
-function:
-        Common register initialization
-*******************************************************************************/
+/**
+ * Function: common register intialization
+ */
 void OLED::InitReg(void)
 {
     WriteReg(0xfd);  // command lock
@@ -128,10 +125,9 @@ void OLED::InitReg(void)
     WriteReg(0xA6);
 }
 
-/********************************************************************************
-function:
-            initialization
-********************************************************************************/
+/**
+ * Function: Intialization
+ */
 void OLED::Init(void)
 {
     //Hardware reset
@@ -147,10 +143,9 @@ void OLED::Init(void)
     
 }
 
-/********************************************************************************
-function:
-            Clear screen
-********************************************************************************/
+/**
+ * Function: Clear the OLED screen by setting all pixels to off.
+ */
 void OLED::Clear()
 {
     uint16_t i;
@@ -168,9 +163,11 @@ void OLED::Clear()
 }
 
 
-/********************************************************************************
-function:   Update all memory to OLED
-********************************************************************************/
+/**
+ * Function: Display an image on the OLED screen.
+ *
+ * param Image Pointer to the image data.
+ */
 void OLED::Display(uint8_t *Image)
 {
     uint16_t i, j;
@@ -190,7 +187,11 @@ void OLED::Display(uint8_t *Image)
     }
 }
 
-
+/**
+ * Function: Check and retry OLED initialization for a maximum number of times.
+ *
+ * return True if initialization is successful, otherwise false.
+ */
 
 bool OLED::checkInit()
 {

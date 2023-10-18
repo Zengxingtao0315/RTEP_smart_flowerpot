@@ -39,16 +39,3 @@ using namespace std;
     
  
     
-/***
-int main()
-{
-    double humi = 4.0;
-    Plant xianrenzhang(0.3,2.0,0.3);
-    xianrenzhang.show();
-    xianrenzhang.set_humidity(humi);
-    double humi_1 = xianrenzhang.get_humidity();
-    cout << humi_1 << endl;
-    return 0;
-
-}
-******/

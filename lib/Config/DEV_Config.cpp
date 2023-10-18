@@ -23,7 +23,12 @@ void DEV::Digital_Write(UWORD Pin, UBYTE Value)
 
 }
 
-
+/**
+ * Function: Set the mode of a GPIO pin.
+ * 
+ * param Pin   : GPIO pin number.
+ * param Mode  : Desired mode for the pin (0 or SYSFS_GPIO_IN for input, any other value for output).
+ */
 void DEV::GPIO_Mode(UWORD Pin, UWORD Mode)
 {
     gpio.SYSFS_GPIO_Export(Pin);
@@ -55,11 +60,9 @@ void DEV::GPIO_Init(void)
     GPIO_Mode(OLED_DC, 1);
 }
 
-/******************************************************************************
-function:	Module Initialize, the library and initialize the pins, SPI protocol
-parameter:
-Info:
-******************************************************************************/
+/**
+ * Function: module intialization
+ */
 UBYTE DEV::ModuleInit(void)
 {
 	SPIMode mode = SPI_MODE3;
@@ -80,11 +83,9 @@ void DEV::SPI_WriteByte(UBYTE Value)
 }
 
 
-/******************************************************************************
-function:	Module exits, closes SPI and BCM2835 library
-parameter:
-Info:
-******************************************************************************/
+/**
+ * Function: modile exit in a normal way
+ */
 void DEV::ModuleExit(void)
 {
 

@@ -65,9 +65,6 @@ typedef struct {
 #define BLACK          0x0000
 
 
-#define IMAGE_BACKGROUND    WHITE
-#define FONT_FOREGROUND     BLACK
-#define FONT_BACKGROUND     WHITE
 
 
 /**

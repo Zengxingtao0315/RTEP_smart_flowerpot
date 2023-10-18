@@ -13,7 +13,7 @@ using namespace std;
 // Constructor for the Sensor class, which sets up the pins and starts the reading loop.
 Sensor::Sensor(int digitalPin, int dhtPin)
     : digitalPin(digitalPin), dhtPin(dhtPin), lastTemperature(0.0), lastHumidity(0.0),isThreaedRunning(false) {
-    // Initialize wiringPi. If it fails, print an error message and exit.
+    // Initialize wiringPi
     if (wiringPiSetup() == -1) {
         std::cerr << "Error initializing wiringPi" << std::endl;
         exit(1);
