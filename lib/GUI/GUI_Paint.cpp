@@ -146,9 +146,7 @@ void Paint::DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     for (UWORD Page = 0; Page < Font->Height; Page++) {
         // Pixel-by-pixel data processing
         for (UWORD Column = 0; Column < Font->Width; Column++) {
-            if (Xpoint + Column >= paint.Width || Ypoint + Page >= paint.Height) {
-                break; // Exit inner loop if out of screen range
-            }
+            
             // Determine if the current pixel is a foreground color pixel
             bool drawForeground = *ptr & (0x80 >> (Column % 8));
             UWORD color = drawForeground ? Color_Foreground : Color_Background;
