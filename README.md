@@ -156,8 +156,9 @@ We documented our weekly plan and progress in the Gantt Chart
 Our future plan for the intelligent flowerpot involves developing and implementing more advanced sensors and technologies to enhance its ability to monitor and regulate plant growth. We also plan to expand our product line to include various sizes and designs to cater to different customer needs. In addition, we aim to collaborate with botanical experts to incorporate their insights and recommendations for optimal plant growth. In terms of the marking value of our product, we will conduct market research and analysis to determine a competitive and fair price at around £50. We will emphasize the unique features and benefits of the intelligent flowerpot, such as real-time monitoring, mood expression, and remote access through a website interface. To increase brand awareness and engagement, we will utilize social media and influencer marketing. Furthermore, we will offer customer support and resources, such as tutorials and FAQs, to ensure a positive user experience and increase customer satisfaction.
 
 # Social media
-Facebook: https://www.facebook.com/profile.php?id=100092231731079
-Instagram: https://www.instagram.com/rtepsmartflowerpot9/
-Youtube: https://www.youtube.com/@RtepSmartFlowerpot
+Facebook: https://www.facebook.com/profile.php?id=100092231731079  
+Instagram: https://www.instagram.com/rtepsmartflowerpot9/  
+Youtube: https://www.youtube.com/@RtepSmartFlowerpot  
 X(twitter): https://twitter.com/RSmartFlowerpot
+
 
